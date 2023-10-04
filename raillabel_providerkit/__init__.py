@@ -3,6 +3,8 @@
 """A library for annotation providers of raillabel-formatted data."""
 from importlib import metadata
 
+from . import format
+
 try:
     __version__ = metadata.version("raillabel-providerkit")
 except metadata.PackageNotFoundError:
