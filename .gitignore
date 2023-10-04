@@ -166,4 +166,3 @@ cython_debug/
 # Project related
 playground/
 scripts/
-tests/__test_assets__/openlabel_v1_short.json
