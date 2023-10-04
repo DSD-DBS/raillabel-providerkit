@@ -6,30 +6,30 @@
 # RailLabel
 
 <!-- prettier-ignore -->
-![image](https://github.com/DSD-DBS/raillabel/actions/workflows/build-test-publish.yml/badge.svg)
-![image](https://github.com/DSD-DBS/raillabel/actions/workflows/lint.yml/badge.svg)
+![image](https://github.com/DSD-DBS/raillabel-providerkit/actions/workflows/build-test-publish.yml/badge.svg)
+![image](https://github.com/DSD-DBS/raillabel-providerkit/actions/workflows/lint.yml/badge.svg)
 
-A devkit for working with recorded and annotated train ride data from Deutsche Bahn.
+A library for annotation providers of raillabel-formatted data.
 
 # Documentation
 
 <!-- prettier-ignore -->
-Read the [full documentation on Github pages](https://dsd-dbs.github.io/raillabel).
+Read the [full documentation on Github pages](https://dsd-dbs.github.io/raillabel-providerkit).
 
 # Installation
 
 You can install the latest released version directly from PyPI.
 
 ```zsh
-pip install raillabel
+pip install raillabel-providerkit
 ```
 
 To set up a development environment, clone the project and install it into a
 virtual environment.
 
 ```zsh
-git clone https://github.com/DSD-DBS/raillabel
-cd raillabel
+git clone https://github.com/DSD-DBS/raillabel-providerkit
+cd raillabel-providerkit
 python -m venv .venv
 
 source .venv/bin/activate.sh  # for Linux / Mac
