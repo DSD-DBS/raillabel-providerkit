@@ -4,6 +4,8 @@
 from importlib import metadata
 
 from . import format
+from .convert import loader_classes
+from .convert.convert import convert
 
 try:
     __version__ = metadata.version("raillabel-providerkit")

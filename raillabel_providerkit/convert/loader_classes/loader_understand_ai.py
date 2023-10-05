@@ -4,10 +4,11 @@
 import typing as t
 from pathlib import Path
 
+import raillabel
+
 from ..._util._warning import _WarningsLogger
 from ...format import understand_ai as uai_format
 from ._loader_abc import LoaderABC
-from .loader_raillabel import LoaderRailLabel
 
 
 class LoaderUnderstandAi(LoaderABC):
@@ -55,7 +56,7 @@ class LoaderUnderstandAi(LoaderABC):
         with _WarningsLogger() as logger:
             data_converted_to_raillabel = uai_format.Scene.fromdict(data).to_raillabel()
 
-        raillabel_loader = LoaderRailLabel()
+        raillabel_loader = raillabel.load_.loader_classes.LoaderRailLabel()
         raillabel_scene = raillabel_loader.load(data_converted_to_raillabel, validate=False)
 
         self.warnings = logger.warnings + raillabel_loader.warnings

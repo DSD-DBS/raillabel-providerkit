@@ -5,9 +5,7 @@ import typing as t
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from ... import format
-from ...exceptions import SchemaError
-from ...validate.validate import validate as global_validate
+import raillabel
 
 
 class LoaderABC(ABC):
@@ -26,12 +24,12 @@ class LoaderABC(ABC):
         Absolute path to the JSON schema.
     """
 
-    scene: format.Scene
+    scene: raillabel.Scene
     warnings: t.List[str]
     SCHEMA_PATH: Path
 
     @abstractmethod
-    def load(self, data: dict, validate: bool = True) -> format.Scene:
+    def load(self, data: dict, validate: bool = True) -> raillabel.Scene:
         """Load JSON-data into a raillabel.Scene.
 
         Any non-critical errors are stored in the warnings-property.
@@ -49,11 +47,6 @@ class LoaderABC(ABC):
         -------
         scene: raillabel.Scene
             The loaded scene with the data.
-
-        Raises
-        ------
-        raillabel.exceptions.SchemaError
-            if validate is True and the data does not validate against the schema.
         """
         raise NotImplementedError
 
@@ -75,29 +68,3 @@ class LoaderABC(ABC):
             If True, the Loader class is suitable for the data.
         """
         raise NotImplementedError
-
-    def validate(self, data: dict) -> t.Tuple[bool, t.List[str]]:
-        """Validate JSON-data with the corresponding schema.
-
-        Parameters
-        ----------
-        data: dict
-            JSON data to be validated.
-
-        Raises
-        ------
-        raillabel.exceptions.SchemaError
-            if the schema is not valid.
-        """
-
-        is_data_valid, schema_errors = global_validate(data, str(self.SCHEMA_PATH))
-        if not is_data_valid:
-
-            error_msg = (
-                "The loaded data does not validate against the schema. Errors in the schema:\n"
-            )
-
-            for err in schema_errors:
-                error_msg += " - " + err + "\n"
-
-            raise SchemaError(error_msg)
