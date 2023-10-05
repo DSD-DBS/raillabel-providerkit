@@ -6,7 +6,7 @@
 Welcome to the documentation!
 *****************************
 
-Python RailLabel Development-Kit
+Python RailLabel Provider-Kit
 ================================
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
@@ -17,11 +17,7 @@ Python RailLabel Development-Kit
 
 Description
 -----------
-This library is designed to assist in the handling of the sensor annotations of Deutsche Bahn in the OpenLABEL data format. Common usage for the library:
-
-* fetching specific information from annotation files
-* filtering for specific frames, annotations or objects
-* editing annotation files
+This library is designed to assist annotation partners of DB in providing data, that meets our requirements.
 
 If you want a quickstart at how to use this package, head right into the
 :ref:`how-tos section <howtos>`.
