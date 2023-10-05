@@ -3,7 +3,7 @@
  ~ SPDX-License-Identifier: Apache-2.0
  -->
 
-# RailLabel
+# RailLabel Providerkit
 
 <!-- prettier-ignore -->
 ![image](https://github.com/DSD-DBS/raillabel-providerkit/actions/workflows/build-test-publish.yml/badge.svg)

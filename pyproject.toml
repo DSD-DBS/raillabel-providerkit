@@ -12,7 +12,7 @@ build-backend = "setuptools.build_meta"
 [project]
 dynamic = ["version"]
 
-name = "raillabel-providerkit-providerkit"
+name = "raillabel-providerkit"
 description = "A devkit for working with recorded and annotated train ride data from Deutsche Bahn."
 readme = "README.md"
 requires-python = ">=3.8, <3.12"
@@ -39,8 +39,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/DSD-DBS/raillabel-providerkit-providerkit"
-Documentation = "https://dsd-dbs.github.io/raillabel-providerkit-providerkit"
+Homepage = "https://github.com/DSD-DBS/raillabel-providerkit"
+Documentation = "https://dsd-dbs.github.io/raillabel-providerkit"
 
 [project.optional-dependencies]
 docs = [
