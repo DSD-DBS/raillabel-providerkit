@@ -49,4 +49,4 @@ def _select_loader_class(data: dict) -> t.Type[LoaderABC]:
         if loader_class().supports(data):
             return loader_class
 
-    raise UnsupportedFormatError(f"No loader could be found, that supported the provided data.")
+    raise UnsupportedFormatError("No loader could be found, that supported the provided data.")
