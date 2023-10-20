@@ -10,7 +10,7 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _MultiSelectAttribute(_Attribute):
 
-    options: set[str]
+    options: t.Set[str]
 
     @classmethod
     def supports(cls, data_dict: dict):
