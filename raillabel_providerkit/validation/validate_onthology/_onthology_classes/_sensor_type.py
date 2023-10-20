@@ -9,7 +9,7 @@ from ._attributes._attribute_abc import _Attribute, attribute_classes
 
 @dataclass
 class _SensorType:
-    attributes: dict[str, t.Type[_Attribute]]
+    attributes: t.Dict[str, t.Type[_Attribute]]
 
     @classmethod
     def fromdict(cls, data_dict: dict) -> "_SensorType":

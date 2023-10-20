@@ -11,7 +11,7 @@ from ._object_classes import _ObjectClass
 
 @dataclass
 class _Onthology:
-    classes: dict[str, _ObjectClass]
+    classes: t.Dict[str, _ObjectClass]
 
     @classmethod
     def fromdict(cls, data_dict: dict) -> "_Onthology":

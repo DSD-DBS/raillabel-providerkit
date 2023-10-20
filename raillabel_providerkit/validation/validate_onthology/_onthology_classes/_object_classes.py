@@ -12,8 +12,8 @@ from ._sensor_type import _SensorType
 
 @dataclass
 class _ObjectClass:
-    attributes: dict[str, t.Type[_Attribute]]
-    sensor_types: dict[raillabel.format.SensorType, _SensorType]
+    attributes: t.Dict[str, t.Type[_Attribute]]
+    sensor_types: t.Dict[raillabel.format.SensorType, _SensorType]
 
     @classmethod
     def fromdict(cls, data_dict: dict) -> "_ObjectClass":
@@ -103,7 +103,7 @@ class _ObjectClass:
 
     def _compile_applicable_attributes(
         self, annotation: t.Type[raillabel.format._ObjectAnnotation]
-    ) -> dict[str, t.Type[_Attribute]]:
+    ) -> t.Dict[str, t.Type[_Attribute]]:
 
         applicable_attributes = self.attributes
 
