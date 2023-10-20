@@ -1,0 +1,87 @@
+# Copyright DB Netz AG and contributors
+# SPDX-License-Identifier: Apache-2.0
+
+"$schema": http://json-schema.org/draft-07/schema#
+version: 1.0.0
+
+definitions:
+
+    attribute:
+        oneOf:
+            [
+                "$ref": "#/definitions/boolean_attribute",
+                "$ref": "#/definitions/integer_attribute",
+                "$ref": "#/definitions/multi_select_attribute",
+                "$ref": "#/definitions/single_select_attribute",
+                "$ref": "#/definitions/string_attribute",
+                "$ref": "#/definitions/vector_attribute",
+            ]
+
+    boolean_attribute:
+        const: boolean
+
+    class:
+        additionalProperties: false
+        properties:
+            attributes:
+                additionalProperties: false
+                patternProperties:
+                    "^":
+                        "$ref": "#/definitions/attribute"
+                type: object
+            sensor_types:
+                additionalProperties: false
+                patternProperties:
+                    "^(camera|lidar|radar)$":
+                        "$ref": "#/definitions/sensor_type"
+                type: object
+        type: object
+
+    integer_attribute:
+        const: integer
+
+    single_select_attribute:
+        additionalProperties: false
+        properties:
+            type:
+                const: single-select
+            options:
+                type: array
+                items:
+                    type: string
+        type: object
+
+    multi_select_attribute:
+        additionalProperties: false
+        properties:
+            type:
+                const: multi-select
+            options:
+                type: array
+                items:
+                    type: string
+        type: object
+
+    sensor_type:
+        additionalProperties: false
+        properties:
+            attributes:
+                additionalProperties: false
+                patternProperties:
+                    "^":
+                        "$ref": "#/definitions/attribute"
+                type: object
+        type: object
+
+    string_attribute:
+        const: string
+
+    vector_attribute:
+        const: vector
+
+additionalProperties: false
+patternProperties:
+    "^":
+        "$ref": "#/definitions/class"
+
+type: object

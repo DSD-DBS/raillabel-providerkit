@@ -12,3 +12,9 @@ class SchemaError(Exception):
     """Raised when the data does not validate against a given schema."""
 
     __module__ = "raillabel_providerkit"
+
+
+class OnthologySchemaError(Exception):
+    """Raised when the .yaml-file provided is not valid against the schema."""
+
+    __module__ = "raillabel_providerkit"
