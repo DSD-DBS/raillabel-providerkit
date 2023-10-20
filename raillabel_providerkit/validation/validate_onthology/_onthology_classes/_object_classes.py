@@ -51,7 +51,7 @@ class _ObjectClass:
         raise ValueError()
 
     @classmethod
-    def _sensor_types_fromdict(cls, sensor_types_dict: dict) -> dict[str, _SensorType]:
+    def _sensor_types_fromdict(cls, sensor_types_dict: dict) -> t.Dict[str, _SensorType]:
         sensor_types = {}
 
         for type_id, sensor_type_dict in sensor_types_dict.items():
