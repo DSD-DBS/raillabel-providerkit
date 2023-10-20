@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+import typing as t
 from pathlib import Path
 
 import jsonschema
@@ -30,7 +31,7 @@ def schema(schema_path) -> dict:
 def validator(schema) -> jsonschema.Draft7Validator:
     return jsonschema.Draft7Validator(schema)
 
-def schema_errors(data: dict, validator: jsonschema.Draft7Validator) -> list[str]:
+def schema_errors(data: dict, validator: jsonschema.Draft7Validator) -> t.List[str]:
     errors = []
 
     for error in validator.iter_errors(data):
