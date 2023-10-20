@@ -40,10 +40,6 @@ def build_scene(
     )
 
 @pytest.fixture
-def metadata():
-    return raillabel.format.Metadata(schema_version="1.0.0")
-
-@pytest.fixture
 def sensors() -> t.List[raillabel.format.Sensor]:
     return {
         "rgb_middle": raillabel.format.Sensor(
@@ -91,6 +87,39 @@ def build_annotation(
         attributes=attributes,
         pos=[],
         size=[],
+    )
+
+# == Fixtures =========================
+
+@pytest.fixture
+def metadata():
+    return raillabel.format.Metadata(schema_version="1.0.0")
+
+@pytest.fixture
+def demo_onthology() -> dict:
+    return {
+        "person": {},
+        "train": {},
+    }
+
+@pytest.fixture
+def valid_onthology_scene(metadata) -> raillabel.Scene:
+    return raillabel.format.Scene(
+        metadata=metadata,
+        objects=make_dict_with_uids([
+            build_object("person"),
+            build_object("person"),
+            build_object("train"),
+        ])
+    )
+
+@pytest.fixture
+def invalid_onthology_scene(metadata) -> raillabel.Scene:
+    return raillabel.format.Scene(
+        metadata=metadata,
+        objects=make_dict_with_uids([
+            build_object("INVALID_CLASS"),
+        ])
     )
 
 # == Tests ============================
