@@ -12,11 +12,13 @@ from pkgutil import iter_modules
 
 @dataclass
 class _Attribute(abc.ABC):
-    @abc.abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def supports(cls, data_dict: dict) -> bool:
         raise NotImplementedError
 
-    @abc.abstractclassmethod
+    @classmethod
+    @abc.abstractmethod
     def fromdict(cls, data_dict: dict) -> t.Type["_Attribute"]:
         raise NotImplementedError
 
