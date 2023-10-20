@@ -20,9 +20,9 @@ def make_dict_with_uids(objects: list) -> dict:
     return {obj.uid: obj for obj in objects}
 
 def build_scene(
-    sensors: list[raillabel.format.Sensor],
-    objects: list[raillabel.format.Object],
-    annotations: list[t.Type[raillabel.format._ObjectAnnotation]]
+    sensors: t.List[raillabel.format.Sensor],
+    objects: t.List[raillabel.format.Object],
+    annotations: t.List[t.Type[raillabel.format._ObjectAnnotation]]
 ) -> raillabel.Scene:
     if type(sensors) == list:
         sensors = make_dict_with_uids(sensors)
@@ -44,7 +44,7 @@ def metadata():
     return raillabel.format.Metadata(schema_version="1.0.0")
 
 @pytest.fixture
-def sensors() -> list[raillabel.format.Sensor]:
+def sensors() -> t.List[raillabel.format.Sensor]:
     return {
         "rgb_middle": raillabel.format.Sensor(
             uid="rgb_middle",

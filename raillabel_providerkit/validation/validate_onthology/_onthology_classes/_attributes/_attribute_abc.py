@@ -25,7 +25,7 @@ class _Attribute(abc.ABC):
         raise NotImplementedError
 
 
-def attribute_classes() -> list[t.Type[_Attribute]]:
+def attribute_classes() -> t.List[t.Type[_Attribute]]:
     """Return dictionary with Attribute child classes."""
     return ATTRIBUTE_CLASSES
 

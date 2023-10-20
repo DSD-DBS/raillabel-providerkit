@@ -38,7 +38,7 @@ class _Onthology:
 
     def _compile_annotations(
         self, scene: raillabel.Scene
-    ) -> list[t.Type[raillabel.format._ObjectAnnotation]]:
+    ) -> t.List[t.Type[raillabel.format._ObjectAnnotation]]:
         annotations = []
         for frame in scene.frames.values():
             annotations.extend(list(frame.annotations.values()))
