@@ -1,14 +1,9 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import sys
-from pathlib import Path
 from uuid import UUID
 
 import pytest
-
-sys.path.insert(1, str(Path(__file__).parent.parent.parent.parent.parent))
-
 import raillabel.format.understand_ai as uai_format
 from raillabel.format.understand_ai._translation import translate_class_id
 

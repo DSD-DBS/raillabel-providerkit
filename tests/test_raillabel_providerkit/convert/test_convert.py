@@ -7,8 +7,6 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(1, str(Path(__file__).parent.parent.parent.parent))
-
 import raillabel_providerkit
 
 
@@ -26,5 +24,4 @@ def test_convert_uai_provide_class(json_data):
 
 # Executes the test if the file is called
 if __name__ == "__main__":
-    os.system("clear")
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear"])
