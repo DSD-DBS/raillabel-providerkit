@@ -3,13 +3,10 @@
 
 import glob
 import json
-import sys
 import typing as t
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(1, str(Path(__file__).parent.parent))
 
 json_data_directories = [
     Path(__file__).parent / "__test_assets__",

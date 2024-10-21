@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-import sys
-from pathlib import Path
 
 import pytest
+import raillabel
 
-sys.path.insert(1, str(Path(__file__).parent.parent.parent.parent.parent))
 
-from raillabel_providerkit.convert.loader_classes.loader_understand_ai import LoaderUnderstandAi
+@pytest.fixture
+def loader():
+    return raillabel.load_.loader_classes.LoaderUnderstandAi()
 
 
 def test_supports_true(json_data):
@@ -126,5 +126,4 @@ def remove_non_parsed_fields(raillabel_data: dict) -> dict:
 
 # Executes the test if the file is called
 if __name__ == "__main__":
-    os.system("clear")
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear"])

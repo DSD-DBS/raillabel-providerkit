@@ -1,14 +1,9 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import sys
 from decimal import Decimal
-from pathlib import Path
 
 import pytest
-
-sys.path.insert(1, str(Path(__file__).parent.parent.parent.parent.parent))
-
 import raillabel.format.understand_ai as uai_format
 
 # == Fixtures =========================

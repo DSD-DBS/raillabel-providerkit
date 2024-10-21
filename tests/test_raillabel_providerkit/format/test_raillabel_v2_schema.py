@@ -30,5 +30,4 @@ def test_sample_data_validation_superschema(json_data):
 
 # Executes the test if the file is called
 if __name__ == "__main__":
-    os.system("clear")
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear"])

@@ -1,14 +1,9 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import os
-import sys
-from pathlib import Path
-
 import pytest
 import raillabel
 
-sys.path.append(str(Path(__file__).parent.parent.parent.parent.parent))
 from raillabel_providerkit.validation.validate_empty_frames.validate_empty_frames import (
     _is_frame_empty,
 )
@@ -36,5 +31,4 @@ def test_is_frame_empty__false():
 
 
 if __name__ == "__main__":
-    os.system("clear")
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear", "-v"])
