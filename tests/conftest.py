@@ -7,6 +7,7 @@ import typing as t
 from pathlib import Path
 
 import pytest
+import raillabel
 
 json_data_directories = [
     Path(__file__).parent / "__test_assets__",
@@ -65,3 +66,18 @@ def _load_json_data(path: Path) -> dict:
     with path.open() as f:
         json_data = json.load(f)
     return json_data
+
+@pytest.fixture
+def empty_annotation() -> raillabel.format.Bbox:
+    """Return a minimal possible annotation."""
+    return raillabel.format.Bbox(
+        uid="1f654afe-0a18-497f-9db8-afac360ce94c",
+        object=raillabel.format.Object(
+            uid="7df959d7-0ec2-4722-8b62-bb2e529de2ec",
+            name="person0000",
+            type="person",
+        ),
+        sensor=None,
+        pos=raillabel.format.Point2d(0.0, 0.0),
+        size=raillabel.format.Size2d(0.0, 0.0),
+    )
