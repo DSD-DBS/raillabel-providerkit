@@ -68,8 +68,38 @@ def _load_json_data(path: Path) -> dict:
     return json_data
 
 @pytest.fixture
+def empty_scene() -> raillabel.Scene:
+    return raillabel.Scene(
+        metadata=raillabel.format.Metadata(schema_version="1.0.0"),
+        sensors={},
+        objects={},
+        frames={},
+    )
+
+@pytest.fixture
+def default_frame(empty_annotation) -> raillabel.format.Frame:
+    return raillabel.format.Frame(
+        uid=0,
+        timestamp=None,
+        sensors={},
+        frame_data={},
+        annotations={
+            "0fb4fc0b-3eeb-443a-8dd0-2caf9912d016": empty_annotation
+        }
+    )
+
+@pytest.fixture
+def empty_frame() -> raillabel.format.Frame:
+    return raillabel.format.Frame(
+        uid=0,
+        timestamp=None,
+        sensors={},
+        frame_data={},
+        annotations={}
+    )
+
+@pytest.fixture
 def empty_annotation() -> raillabel.format.Bbox:
-    """Return a minimal possible annotation."""
     return raillabel.format.Bbox(
         uid="1f654afe-0a18-497f-9db8-afac360ce94c",
         object=raillabel.format.Object(
