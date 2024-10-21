@@ -38,7 +38,7 @@ def _collect_attribute_classes():
     global ATTRIBUTE_CLASSES
 
     package_dir = str(Path(__file__).resolve().parent)
-    for (_, module_name, _) in iter_modules([package_dir]):
+    for _, module_name, _ in iter_modules([package_dir]):
 
         module = import_module(
             f"raillabel_providerkit.validation.validate_onthology._onthology_classes._attributes.{module_name}"
