@@ -17,9 +17,16 @@ def validate_empty_frames(scene: raillabel.Scene) -> List[str]:
     Returns
     -------
     list[str]
-        list of all onthology errors in the scene. If an empty list is returned, then there are no
+        list of all empty frame errors in the scene. If an empty list is returned, then there are no
         errors present.
     """
+    errors: List[str] = []
+
+    for frame_uid, frame in scene.frames.items():
+        if _is_frame_empty(frame):
+            errors.append("Frame " + str(frame_uid) + " has no annotations!")
+
+    return errors
 
 
 def _is_frame_empty(frame: raillabel.format.Frame) -> bool:
