@@ -1,12 +1,14 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 import uuid
 from dataclasses import dataclass
 from decimal import Decimal
 
-from ..._util._warning import _warning
+from raillabel_providerkit._util._warning import _warning
+
 from ._annotation import _Annotation
 from ._translation import translate_class_id, translate_sensor_id
 from .bounding_box_2d import BoundingBox2d
@@ -30,17 +32,18 @@ class Frame:
         Dictionary containing all annotations. The keys are the uids of the annotations and the
         values are objects of type BoundingBox2d, BoundingBox3d, Polygon2d, Polyline2d or
         Segementation3d.
+
     """
 
     id: int
     timestamp: Decimal
-    bounding_box_2ds: t.Dict[str, BoundingBox2d]
-    bounding_box_3ds: t.Dict[str, BoundingBox3d]
-    polygon_2ds: t.Dict[str, Polygon2d]
-    polyline_2ds: t.Dict[str, Polyline2d]
-    segmentation_3ds: t.Dict[str, Segmentation3d]
+    bounding_box_2ds: dict[str, BoundingBox2d]
+    bounding_box_3ds: dict[str, BoundingBox3d]
+    polygon_2ds: dict[str, Polygon2d]
+    polyline_2ds: dict[str, Polyline2d]
+    segmentation_3ds: dict[str, Segmentation3d]
 
-    _annotation_uids: t.Set[str] = None
+    _annotation_uids: set[str] = None
 
     @property
     def annotations(self) -> dict:
@@ -62,6 +65,7 @@ class Frame:
         dict
             Dictionary containing all objects. Keys are the object IDs and values are the
             translated class names.
+
         """
         return {
             str(a.object_id): translate_class_id(a.class_name) for a in self.annotations.values()
@@ -76,6 +80,7 @@ class Frame:
         dict
             Dictionary containing all sensors. Keys are the translated sensor IDs and values are
             the SensorReference objects.
+
         """
         sensors_list = []
 
@@ -86,7 +91,7 @@ class Frame:
         return {sensor.type: sensor for sensor in sensors_list}
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> "Frame":
+    def fromdict(cls, data_dict: dict) -> Frame:
         """Generate a Frame from a dictionary in the UAI format.
 
         Parameters
@@ -98,8 +103,8 @@ class Frame:
         -------
         Frame
             Converted frame.
-        """
 
+        """
         cls._annotation_uids = set()
 
         return Frame(
@@ -132,6 +137,7 @@ class Frame:
         -------
         Frame
             Converted frame.
+
         """
         return {
             "frame_properties": self._frame_properties_to_raillabel(),
@@ -140,9 +146,8 @@ class Frame:
 
     @classmethod
     def _annotation_fromdict(
-        cls, data_dict: dict, annotation_class: t.Type[_Annotation]
-    ) -> t.Dict[str, t.Type[_Annotation]]:
-
+        cls, data_dict: dict, annotation_class: type[_Annotation]
+    ) -> dict[str, type[_Annotation]]:
         annotations = {}
         for annotation_dict in data_dict:
             annotation_dict["id"] = cls._check_duplicate_annotation_uid(annotation_dict["id"])
@@ -152,7 +157,6 @@ class Frame:
 
     @classmethod
     def _check_duplicate_annotation_uid(cls, uid: str) -> str:
-
         if uid in cls._annotation_uids:
             _warning(
                 f"Annotation uid {uid} is contained more than once. A new uid will be assigned."
@@ -163,7 +167,6 @@ class Frame:
         return uid
 
     def _frame_properties_to_raillabel(self) -> dict:
-
         streams_dict = {}
         for stream_id, stream in self.translated_sensors.items():
             streams_dict[stream_id] = {
@@ -182,7 +185,6 @@ class Frame:
         object_data = {}
 
         for annotation in self.annotations.values():
-
             object_id = str(annotation.object_id)
 
             if object_id not in object_data:

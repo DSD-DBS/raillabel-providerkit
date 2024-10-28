@@ -9,6 +9,7 @@ from raillabel.format.understand_ai._translation import translate_class_id
 
 # == Fixtures =========================
 
+
 @pytest.fixture
 def segmentation_3d_uai_dict(sensor_lidar_uai_dict, attributes_uai_dict) -> dict:
     return {
@@ -17,11 +18,12 @@ def segmentation_3d_uai_dict(sensor_lidar_uai_dict, attributes_uai_dict) -> dict
         "className": "test_class",
         "geometry": {
             "associatedPoints": [39814, 39815, 39816, 39817, 39818],
-            "numberOfPointsInBox": 5
+            "numberOfPointsInBox": 5,
         },
         "attributes": attributes_uai_dict,
         "sensor": sensor_lidar_uai_dict,
     }
+
 
 @pytest.fixture
 def segmentation_3d_uai(attributes_uai, sensor_lidar_uai) -> dict:
@@ -35,21 +37,23 @@ def segmentation_3d_uai(attributes_uai, sensor_lidar_uai) -> dict:
         sensor=sensor_lidar_uai,
     )
 
+
 @pytest.fixture
-def segmentation_3d_raillabel_dict(attributes_raillabel_dict, coordinate_system_lidar_translated_uid) -> dict:
+def segmentation_3d_raillabel_dict(
+    attributes_raillabel_dict, coordinate_system_lidar_translated_uid
+) -> dict:
     return {
         "name": "13478f94-d556-4f64-a72b-47662e94988e",
         "val": [39814, 39815, 39816, 39817, 39818],
         "coordinate_system": coordinate_system_lidar_translated_uid,
-        "attributes": attributes_raillabel_dict
+        "attributes": attributes_raillabel_dict,
     }
+
 
 # == Tests ============================
 
-def test_fromdict(
-    attributes_uai_dict, attributes_uai,
-    sensor_lidar_uai_dict, sensor_lidar_uai
-):
+
+def test_fromdict(attributes_uai_dict, attributes_uai, sensor_lidar_uai_dict, sensor_lidar_uai):
     segmentation_3d = uai_format.Segmentation3d.fromdict(
         {
             "id": "13478f94-d556-4f64-a72b-47662e94988e",
@@ -57,7 +61,7 @@ def test_fromdict(
             "className": "test_class",
             "geometry": {
                 "associatedPoints": [39814, 39815, 39816, 39817, 39818],
-                "numberOfPointsInBox": 5
+                "numberOfPointsInBox": 5,
             },
             "attributes": attributes_uai_dict,
             "sensor": sensor_lidar_uai_dict,
@@ -74,8 +78,11 @@ def test_fromdict(
 
 
 def test_to_raillabel(
-    attributes_uai, attributes_raillabel_dict,
-    sensor_lidar_uai, sensor_lidar_raillabel_dict, coordinate_system_lidar_translated_uid,
+    attributes_uai,
+    attributes_raillabel_dict,
+    sensor_lidar_uai,
+    sensor_lidar_raillabel_dict,
+    coordinate_system_lidar_translated_uid,
 ):
     segmentation_3d = uai_format.Segmentation3d(
         id=UUID("13478f94-d556-4f64-a72b-47662e94988e"),
@@ -99,7 +106,9 @@ def test_to_raillabel(
     assert translated_class_id == translate_class_id(segmentation_3d.class_name)
     assert sensor_reference == sensor_lidar_raillabel_dict
 
+
 if __name__ == "__main__":
     import os
+
     os.system("clear")
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear", "-v"])

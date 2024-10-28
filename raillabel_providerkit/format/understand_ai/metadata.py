@@ -26,6 +26,7 @@ class Metadata:
     coordinate_system_reference: str
     folder_name: str
         Directory with the exported reference data (e.g. images, point clouds).
+
     """
 
     clip_id: str
@@ -50,8 +51,8 @@ class Metadata:
         -------
         metadata: Metadata
             Converted metadata.
-        """
 
+        """
         return Metadata(
             clip_id=data_dict["clip_id"],
             external_clip_id=data_dict["external_clip_id"],
@@ -70,8 +71,8 @@ class Metadata:
         -------
         metadata: dict
             Converted metadata.
-        """
 
+        """
         return {
             "name": self.external_clip_id,
             "schema_version": "1.0.0",
@@ -81,11 +82,9 @@ class Metadata:
         }
 
     def _get_subschema_version(self) -> str:
-        RAILLABEL_SCHEMA_PATH = (
+        raillabel_schema_path = (
             Path(__file__).parent.parent.parent / "format" / "raillabel_schema.json"
         )
 
-        with RAILLABEL_SCHEMA_PATH.open() as schema_file:
-            subschema_version = json.load(schema_file)["version"]
-
-        return subschema_version
+        with raillabel_schema_path.open() as schema_file:
+            return json.load(schema_file)["version"]

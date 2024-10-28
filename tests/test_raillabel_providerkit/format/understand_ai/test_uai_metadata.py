@@ -6,6 +6,7 @@ import raillabel.format.understand_ai as uai_format
 
 # == Fixtures =========================
 
+
 @pytest.fixture
 def metadata_uai_dict() -> dict:
     return {
@@ -18,6 +19,7 @@ def metadata_uai_dict() -> dict:
         "coordinate_system_reference": "SENSOR",
         "folder_name": "2021-09-22-14-28-01_2021-09-22-14-44-03",
     }
+
 
 @pytest.fixture
 def metadata_uai():
@@ -32,6 +34,7 @@ def metadata_uai():
         folder_name="2021-09-22-14-28-01_2021-09-22-14-44-03",
     )
 
+
 @pytest.fixture
 def metadata_raillabel_dict(json_data) -> dict:
     return {
@@ -39,11 +42,12 @@ def metadata_raillabel_dict(json_data) -> dict:
         "schema_version": "1.0.0",
         "name": "2021-09-22-14-28-01_2021-09-22-14-44-03",
         "subschema_version": json_data["raillabel_schema"]["version"],
-        "tagged_file": "2021-09-22-14-28-01_2021-09-22-14-44-03"
+        "tagged_file": "2021-09-22-14-28-01_2021-09-22-14-44-03",
     }
 
 
 # == Tests ============================
+
 
 def test_fromdict():
     metadata = uai_format.Metadata.fromdict(
@@ -86,10 +90,12 @@ def test_to_raillabel(json_data):
         "schema_version": "1.0.0",
         "name": "2021-09-22-14-28-01_2021-09-22-14-44-03",
         "subschema_version": json_data["raillabel_schema"]["version"],
-        "tagged_file": "2021-09-22-14-28-01_2021-09-22-14-44-03"
+        "tagged_file": "2021-09-22-14-28-01_2021-09-22-14-44-03",
     }
+
 
 if __name__ == "__main__":
     import os
+
     os.system("clear")
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear", "-v"])

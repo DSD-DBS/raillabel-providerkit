@@ -14,11 +14,13 @@ def test_is_frame_empty__true():
     frame = raillabel.format.Frame(uid=0, annotations={})
     assert _is_frame_empty(frame)
 
+
 def test_is_frame_empty__false(empty_annotation, empty_frame):
     frame = empty_frame
     frame.annotations["581b0df1-c4cf-4a97-828e-13dd740defe5"] = empty_annotation
 
     assert not _is_frame_empty(frame)
+
 
 def test_validate_empty_frames__no_error(default_frame, empty_scene):
     scene = empty_scene
@@ -30,6 +32,7 @@ def test_validate_empty_frames__no_error(default_frame, empty_scene):
 
     assert len(validate_empty_frames(scene)) == 0
 
+
 def test_validate_empty_frames__one_error(default_frame, empty_frame, empty_scene):
     scene = empty_scene
     scene.frames = {
@@ -40,6 +43,7 @@ def test_validate_empty_frames__one_error(default_frame, empty_frame, empty_scen
 
     assert len(validate_empty_frames(scene)) == 1
 
+
 def test_validate_empty_frames__two_errors(default_frame, empty_frame, empty_scene):
     scene = empty_scene
     scene.frames = {
@@ -49,6 +53,7 @@ def test_validate_empty_frames__two_errors(default_frame, empty_frame, empty_sce
     }
 
     assert len(validate_empty_frames(scene)) == 2
+
 
 def test_validate_empty_frames__error_message_contains_indentifying_info(empty_frame, empty_scene):
     scene = empty_scene

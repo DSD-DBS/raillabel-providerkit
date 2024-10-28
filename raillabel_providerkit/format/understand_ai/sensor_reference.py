@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 from decimal import Decimal
 
@@ -18,6 +19,7 @@ class SensorReference:
         URI to the file containing the frame specific sensor output from the project directory.
     timestamp: decimal.Decimal
         Unix timestamp of the sensor recording.
+
     """
 
     type: str
@@ -25,7 +27,7 @@ class SensorReference:
     timestamp: Decimal
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> "SensorReference":
+    def fromdict(cls, data_dict: dict) -> SensorReference:
         """Generate a SensorReference from a dictionary in the UAI format.
 
         Parameters
@@ -37,13 +39,13 @@ class SensorReference:
         -------
         SensorReference
             Converted sensor reference.
-        """
 
+        """
         return SensorReference(
             type=data_dict["type"], uri=data_dict["uri"], timestamp=Decimal(data_dict["timestamp"])
         )
 
-    def to_raillabel(self) -> t.Tuple[str, dict]:
+    def to_raillabel(self) -> tuple[str, dict]:
         """Convert to a raillabel compatible dict.
 
         Returns
@@ -52,8 +54,8 @@ class SensorReference:
             Friendly identifier of the sensor.
         sensor_reference: dict
             Dictionary valid for the raillabel schema.
-        """
 
+        """
         return (
             self.type,
             {

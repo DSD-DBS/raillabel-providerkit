@@ -1,6 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+from __future__ import annotations
+
 import typing as t
 from dataclasses import dataclass
 
@@ -11,16 +13,16 @@ from ._object_classes import _ObjectClass
 
 @dataclass
 class _Onthology:
-    classes: t.Dict[str, _ObjectClass]
-    errors = []
+    classes: dict[str, _ObjectClass]
+    errors: t.ClassVar = []
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> "_Onthology":
+    def fromdict(cls, data_dict: dict) -> _Onthology:
         return _Onthology(
             {class_id: _ObjectClass.fromdict(class_) for class_id, class_ in data_dict.items()}
         )
 
-    def check(self, scene: raillabel.Scene) -> t.List[str]:
+    def check(self, scene: raillabel.Scene) -> list[str]:
         self.errors = []
 
         self._check_class_validity(scene)
@@ -30,7 +32,7 @@ class _Onthology:
 
         return self.errors
 
-    def _check_class_validity(self, scene: raillabel.Scene) -> t.List[str]:
+    def _check_class_validity(self, scene: raillabel.Scene) -> list[str]:
         object_classes_in_scene = [obj.type for obj in scene.objects.values()]
 
         for object_class in object_classes_in_scene:
@@ -39,7 +41,7 @@ class _Onthology:
 
     def _compile_annotations(
         self, scene: raillabel.Scene
-    ) -> t.List[t.Type[raillabel.format._ObjectAnnotation]]:
+    ) -> list[type[raillabel.format._ObjectAnnotation]]:
         annotations = []
         for frame in scene.frames.values():
             annotations.extend(list(frame.annotations.values()))

@@ -6,6 +6,7 @@ import raillabel.format.understand_ai as uai_format
 
 # == Fixtures =========================
 
+
 @pytest.fixture
 def size_3d_uai_dict() -> dict:
     return {
@@ -13,6 +14,7 @@ def size_3d_uai_dict() -> dict:
         "length": 4,
         "height": 5,
     }
+
 
 @pytest.fixture
 def size_3d_uai() -> dict:
@@ -22,11 +24,14 @@ def size_3d_uai() -> dict:
         height=5,
     )
 
+
 @pytest.fixture
 def size_3d_vec() -> dict:
     return [3, 4, 5]
 
+
 # == Tests ============================
+
 
 def test_fromdict():
     size_3d = uai_format.Size3d.fromdict(
@@ -44,5 +49,6 @@ def test_fromdict():
 
 if __name__ == "__main__":
     import os
+
     os.system("clear")
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear", "-v"])

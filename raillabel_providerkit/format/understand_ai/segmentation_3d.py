@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 from uuid import UUID
 
@@ -30,15 +31,16 @@ class Segmentation3d(_Annotation):
         List of point indices of the lidar pointcloud.
     number_of_points: int
         Total number of points in the associated_points.
+
     """
 
-    associated_points: t.List[int]
+    associated_points: list[int]
     number_of_points: int
 
     OPENLABEL_ID = "vec"
 
     @classmethod
-    def fromdict(cls, data_dict: t.Dict) -> "Segmentation3d":
+    def fromdict(cls, data_dict: dict) -> Segmentation3d:
         """Generate a Segmentation3d from a dictionary in the UAI format.
 
         Parameters
@@ -50,8 +52,8 @@ class Segmentation3d(_Annotation):
         -------
         Segmentation3d
             Converted 3d segmentation.
-        """
 
+        """
         return Segmentation3d(
             id=UUID(data_dict["id"]),
             object_id=UUID(data_dict["objectId"]),

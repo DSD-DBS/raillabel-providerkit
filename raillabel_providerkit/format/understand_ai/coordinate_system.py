@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from ._translation import fetch_sensor_resolutions, fetch_sensor_type, translate_sensor_id
@@ -35,19 +36,20 @@ class CoordinateSystem:
     dist_coeffs: list of float, optional
         Distortion coefficients of the sensor. Only applies to sensors of type camera. Default is
         None.
+
     """
 
     uid: str
     topic: str
     frame_id: str
-    position: t.List[float]
-    rotation_quaternion: t.List[float]
-    rotation_matrix: t.List[float]
-    angle_axis_rotation: t.List[float]
-    homogeneous_transform: t.Optional[t.List[float]] = None
-    measured_position: t.Optional[t.List[float]] = None
-    camera_matrix: t.Optional[t.List[float]] = None
-    dist_coeffs: t.Optional[t.List[float]] = None
+    position: list[float]
+    rotation_quaternion: list[float]
+    rotation_matrix: list[float]
+    angle_axis_rotation: list[float]
+    homogeneous_transform: list[float] | None = None
+    measured_position: list[float] | None = None
+    camera_matrix: list[float] | None = None
+    dist_coeffs: list[float] | None = None
 
     @property
     def translated_uid(self) -> str:
@@ -55,7 +57,7 @@ class CoordinateSystem:
         return translate_sensor_id(self.uid)
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> "CoordinateSystem":
+    def fromdict(cls, data_dict: dict) -> CoordinateSystem:
         """Generate a CoordinateSystem from a dictionary in the UAI format.
 
         Parameters
@@ -67,8 +69,8 @@ class CoordinateSystem:
         -------
         coordinate_system: CoordinateSystem
             Converted coordinate_system.
-        """
 
+        """
         return CoordinateSystem(
             uid=data_dict["coordinate_system_id"],
             topic=data_dict["topic"],
@@ -83,7 +85,7 @@ class CoordinateSystem:
             dist_coeffs=data_dict.get("dist_coeffs"),
         )
 
-    def to_raillabel(self) -> t.Tuple[dict, dict]:
+    def to_raillabel(self) -> tuple[dict, dict]:
         """Convert to a raillabel compatible dict.
 
         Returns
@@ -92,8 +94,8 @@ class CoordinateSystem:
             Dictionary of the raillabel coordinate system.
         stream_dict: dict
             Dictionary of the raillabel stream.
-        """
 
+        """
         stream_dict = {
             "type": "sensor",
             "parent": "base",
@@ -116,9 +118,8 @@ class CoordinateSystem:
 
         return stream_dict, coordinate_system_dict
 
-    def _stream_properties_to_raillabel(self, type: str) -> t.Optional[dict]:
-
-        if type == "camera":
+    def _stream_properties_to_raillabel(self, sensor_type: str) -> dict | None:
+        if sensor_type == "camera":
             return {
                 "intrinsics_pinhole": {
                     "camera_matrix": self._convert_camera_matrix(self.camera_matrix[:]),
@@ -128,7 +129,7 @@ class CoordinateSystem:
                 }
             }
 
-        elif type == "radar":
+        if sensor_type == "radar":
             return {
                 "intrinsics_radar": {
                     "resolution_px_per_m": fetch_sensor_resolutions(self.translated_uid)[
@@ -139,11 +140,9 @@ class CoordinateSystem:
                 }
             }
 
-        else:
-            return None
+        return None
 
     def _convert_camera_matrix(self, camera_matrix: list) -> list:
-
         camera_matrix.insert(9, 0)
         camera_matrix.insert(6, 0)
         camera_matrix.insert(3, 0)

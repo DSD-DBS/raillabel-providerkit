@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from ._attributes._attribute_abc import _Attribute, attribute_classes
@@ -9,11 +10,10 @@ from ._attributes._attribute_abc import _Attribute, attribute_classes
 
 @dataclass
 class _SensorType:
-    attributes: t.Dict[str, t.Type[_Attribute]]
+    attributes: dict[str, type[_Attribute]]
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> "_SensorType":
-
+    def fromdict(cls, data_dict: dict) -> _SensorType:
         if "attributes" not in data_dict:
             data_dict["attributes"] = {}
 
@@ -25,10 +25,9 @@ class _SensorType:
         )
 
     @classmethod
-    def _attribute_fromdict(cls, attribute: dict or str) -> t.Type[_Attribute]:
-
+    def _attribute_fromdict(cls, attribute: dict | str) -> type[_Attribute]:
         for attribute_class in attribute_classes():
             if attribute_class.supports(attribute):
                 return attribute_class.fromdict(attribute)
 
-        raise ValueError()
+        raise ValueError

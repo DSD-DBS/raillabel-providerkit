@@ -1,18 +1,20 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from pathlib import Path
 
 import jsonschema
 import raillabel
 import yaml
 
-from ...exceptions import OnthologySchemaError
+from raillabel_providerkit.exceptions import OnthologySchemaError
+
 from ._onthology_classes._onthology import _Onthology
 
 
-def validate_onthology(scene: raillabel.Scene, onthology: t.Union[dict, Path]) -> t.List[str]:
+def validate_onthology(scene: raillabel.Scene, onthology: dict | Path) -> list[str]:
     """Validate a scene based on the classes and attributes.
 
     Parameters
@@ -29,8 +31,8 @@ def validate_onthology(scene: raillabel.Scene, onthology: t.Union[dict, Path]) -
     list[str]
         list of all onthology errors in the scene. If an empty list is returned, then there are no
         errors present.
-    """
 
+    """
     if isinstance(onthology, Path):
         onthology = _load_onthology(Path(onthology))
 
@@ -43,14 +45,13 @@ def validate_onthology(scene: raillabel.Scene, onthology: t.Union[dict, Path]) -
 
 def _load_onthology(path: Path) -> dict:
     with path.open() as f:
-        onthology = yaml.safe_load(f)
-    return onthology
+        return yaml.safe_load(f)
 
 
-def _validate_onthology_schema(onthology: dict):
-    SCHEMA_PATH = Path(__file__).parent / "onthology_schema_v1.yaml"
+def _validate_onthology_schema(onthology: dict) -> None:
+    schema_path = Path(__file__).parent / "onthology_schema_v1.yaml"
 
-    with SCHEMA_PATH.open() as f:
+    with schema_path.open() as f:
         onthology_schema = yaml.safe_load(f)
 
     validator = jsonschema.Draft7Validator(schema=onthology_schema)

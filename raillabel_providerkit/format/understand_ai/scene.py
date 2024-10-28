@@ -1,10 +1,12 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 
-from ..._util._warning import _warning
+from raillabel_providerkit._util._warning import _warning
+
 from .coordinate_system import CoordinateSystem
 from .frame import Frame
 from .metadata import Metadata
@@ -21,14 +23,15 @@ class Scene:
     coordinate_systems: dict[str, raillabel.format.understand_ai.CoordinateSystem]
         Global information for sensors regarding calibration.
     frames: dict[int, raillabel.format.understand_ai.Frame]
+
     """
 
     metadata: Metadata
-    coordinate_systems: t.Dict[str, CoordinateSystem]
-    frames: t.Dict[int, Frame]
+    coordinate_systems: dict[str, CoordinateSystem]
+    frames: dict[int, Frame]
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> "Scene":
+    def fromdict(cls, data_dict: dict) -> Scene:
         """Generate a Scene from a dictionary in the UAI format.
 
         Parameters
@@ -40,8 +43,8 @@ class Scene:
         -------
         Scene
             Converted scene.
-        """
 
+        """
         return Scene(
             metadata=Metadata.fromdict(data_dict["metadata"]),
             coordinate_systems=cls._coordinate_systems_fromdict(data_dict["coordinateSystems"]),
@@ -55,6 +58,7 @@ class Scene:
         -------
         dict:
             Dictionary of the raillabel scene.
+
         """
         return {
             "openlabel": {
@@ -67,7 +71,7 @@ class Scene:
         }
 
     @classmethod
-    def _coordinate_systems_fromdict(cls, data_dict: t.List[dict]) -> t.Dict[str, CoordinateSystem]:
+    def _coordinate_systems_fromdict(cls, data_dict: list[dict]) -> dict[str, CoordinateSystem]:
         coordinate_systems = {}
         for cs in data_dict:
             coordinate_systems[cs["coordinate_system_id"]] = CoordinateSystem.fromdict(cs)
@@ -75,7 +79,7 @@ class Scene:
         return coordinate_systems
 
     @classmethod
-    def _frames_fromdict(cls, data_dict: t.List[dict]) -> t.Dict[int, Frame]:
+    def _frames_fromdict(cls, data_dict: list[dict]) -> dict[int, Frame]:
         frames = {}
         for frame in data_dict:
             frame_id = int(frame["frameId"])
@@ -83,7 +87,7 @@ class Scene:
             if frame_id in frames:
                 _warning(
                     f"Frame UID {frame_id} is contained more than once in the scene. "
-                    + "The duplicate frame will be omitted."
+                    "The duplicate frame will be omitted."
                 )
                 continue
 
@@ -108,13 +112,11 @@ class Scene:
         return coordinate_systems
 
     def _objects_to_raillabel(self) -> dict:
-
         object_dicts = self._collect_all_translated_objects()
 
         object_name_counter = {}
         objects = {}
         for object_id, object_class in object_dicts.items():
-
             if object_class not in object_name_counter:
                 object_name_counter[object_class] = 0
 

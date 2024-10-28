@@ -9,14 +9,14 @@ def test_issue_warning():
     with _WarningsLogger() as logger:
         _warning("lorem ipsum")
 
-    assert logger.warnings == [
-        "lorem ipsum"
-    ]
+    assert logger.warnings == ["lorem ipsum"]
+
 
 def test_handover_exception():
     with pytest.raises(RuntimeError):
         with _WarningsLogger():
             raise RuntimeError("weewoo something went wrong")
+
 
 def test_clear_warnings():
     with _WarningsLogger():

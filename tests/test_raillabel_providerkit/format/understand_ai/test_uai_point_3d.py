@@ -6,6 +6,7 @@ import raillabel.format.understand_ai as uai_format
 
 # == Fixtures =========================
 
+
 @pytest.fixture
 def point_3d_uai_dict() -> dict:
     return {
@@ -13,6 +14,7 @@ def point_3d_uai_dict() -> dict:
         "y": 1,
         "z": 2,
     }
+
 
 @pytest.fixture
 def point_3d_uai() -> dict:
@@ -22,11 +24,14 @@ def point_3d_uai() -> dict:
         z=2,
     )
 
+
 @pytest.fixture
 def point_3d_vec() -> dict:
     return [0, 1, 2]
 
+
 # == Tests ============================
+
 
 def test_fromdict():
     point_3d = uai_format.Point3d.fromdict(
@@ -44,5 +49,6 @@ def test_fromdict():
 
 if __name__ == "__main__":
     import os
+
     os.system("clear")
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear", "-v"])

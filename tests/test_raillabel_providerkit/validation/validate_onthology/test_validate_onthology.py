@@ -12,13 +12,15 @@ from raillabel_providerkit.validation import validate_onthology
 
 # == Helpers ==========================
 
+
 def make_dict_with_uids(objects: list) -> dict:
     return {obj.uid: obj for obj in objects}
+
 
 def build_scene(
     sensors: t.List[raillabel.format.Sensor],
     objects: t.List[raillabel.format.Object],
-    annotations: t.List[t.Type[raillabel.format._ObjectAnnotation]]
+    annotations: t.List[t.Type[raillabel.format._ObjectAnnotation]],
 ) -> raillabel.Scene:
     if type(sensors) == list:
         sensors = make_dict_with_uids(sensors)
@@ -27,13 +29,9 @@ def build_scene(
         metadata=raillabel.format.Metadata(schema_version="1.0.0"),
         sensors=sensors,
         objects=make_dict_with_uids(objects),
-        frames={
-            0: raillabel.format.Frame(
-                uid=0,
-                annotations=make_dict_with_uids(annotations)
-            )
-        }
+        frames={0: raillabel.format.Frame(uid=0, annotations=make_dict_with_uids(annotations))},
     )
+
 
 @pytest.fixture
 def sensors() -> t.List[raillabel.format.Sensor]:
@@ -52,6 +50,7 @@ def sensors() -> t.List[raillabel.format.Sensor]:
         ),
     }
 
+
 @pytest.fixture
 def object_person() -> raillabel.format.Object:
     return raillabel.format.Object(
@@ -60,6 +59,7 @@ def object_person() -> raillabel.format.Object:
         type="person",
     )
 
+
 def build_object(type: str) -> raillabel.format.Object:
     return raillabel.format.Object(
         uid=uuid4,
@@ -67,14 +67,15 @@ def build_object(type: str) -> raillabel.format.Object:
         type=type,
     )
 
+
 def build_annotation(
     object: raillabel.format.Object,
-    uid: str="a3f3abe5-082d-42ce-966c-bae9c6dae9d9",
-    sensor: raillabel.format.Sensor=raillabel.format.Sensor(
+    uid: str = "a3f3abe5-082d-42ce-966c-bae9c6dae9d9",
+    sensor: raillabel.format.Sensor = raillabel.format.Sensor(
         uid="rgb_middle",
         type=raillabel.format.SensorType.CAMERA,
     ),
-    attributes: dict={}
+    attributes: dict = {},
 ) -> raillabel.format.Bbox:
     return raillabel.format.Bbox(
         uid=uid,
@@ -85,11 +86,14 @@ def build_annotation(
         size=[],
     )
 
+
 # == Fixtures =========================
+
 
 @pytest.fixture
 def metadata():
     return raillabel.format.Metadata(schema_version="1.0.0")
+
 
 @pytest.fixture
 def demo_onthology() -> dict:
@@ -98,34 +102,38 @@ def demo_onthology() -> dict:
         "train": {},
     }
 
+
 @pytest.fixture
 def valid_onthology_scene(metadata) -> raillabel.Scene:
     return raillabel.format.Scene(
         metadata=metadata,
-        objects=make_dict_with_uids([
-            build_object("person"),
-            build_object("person"),
-            build_object("train"),
-        ])
+        objects=make_dict_with_uids(
+            [
+                build_object("person"),
+                build_object("person"),
+                build_object("train"),
+            ]
+        ),
     )
+
 
 @pytest.fixture
 def invalid_onthology_scene(metadata) -> raillabel.Scene:
     return raillabel.format.Scene(
         metadata=metadata,
-        objects=make_dict_with_uids([
-            build_object("INVALID_CLASS"),
-        ])
+        objects=make_dict_with_uids(
+            [
+                build_object("INVALID_CLASS"),
+            ]
+        ),
     )
+
 
 # == Tests ============================
 
+
 def test_onthology_schema_invalid():
-    onthology = {
-        "person": {
-            "INVALID_FIELD": {}
-        }
-    }
+    onthology = {"person": {"INVALID_FIELD": {}}}
 
     with pytest.raises(exceptions.OnthologySchemaError):
         validate_onthology(None, onthology)
@@ -139,14 +147,17 @@ def test_valid_classes(metadata):
 
     scene = raillabel.format.Scene(
         metadata=metadata,
-        objects=make_dict_with_uids([
-            build_object("person"),
-            build_object("person"),
-            build_object("train"),
-        ])
+        objects=make_dict_with_uids(
+            [
+                build_object("person"),
+                build_object("person"),
+                build_object("train"),
+            ]
+        ),
     )
 
     assert validate_onthology(scene, onthology) == []
+
 
 def test_invalid_class(metadata):
     onthology = {
@@ -156,30 +167,24 @@ def test_invalid_class(metadata):
 
     scene = raillabel.format.Scene(
         metadata=metadata,
-        objects=make_dict_with_uids([
-            build_object("person"),
-            build_object("UNDEFINED_CLASS"),
-        ])
+        objects=make_dict_with_uids(
+            [
+                build_object("person"),
+                build_object("UNDEFINED_CLASS"),
+            ]
+        ),
     )
 
-    assert validate_onthology(scene, onthology) == [
-        "Object type 'UNDEFINED_CLASS' is not defined."
-    ]
+    assert validate_onthology(scene, onthology) == ["Object type 'UNDEFINED_CLASS' is not defined."]
 
 
 def test_undefined_attribute(sensors, object_person):
     onthology = {
-        "person": {
-            "attributes": {}
-        },
+        "person": {"attributes": {}},
     }
 
     annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={
-            "UNKNOWN_ATTRIBUTE": 10
-        }
+        object=object_person, sensor=sensors["lidar"], attributes={"UNKNOWN_ATTRIBUTE": 10}
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
@@ -187,20 +192,13 @@ def test_undefined_attribute(sensors, object_person):
         f"Undefined attribute 'UNKNOWN_ATTRIBUTE' in annotation {annotation.uid}."
     ]
 
+
 def test_missing_attribute(sensors, object_person):
     onthology = {
-        "person": {
-            "attributes": {
-                "number_of_fingers": "integer"
-            }
-        },
+        "person": {"attributes": {"number_of_fingers": "integer"}},
     }
 
-    annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={}
-    )
+    annotation = build_annotation(object=object_person, sensor=sensors["lidar"], attributes={})
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == [
@@ -210,39 +208,26 @@ def test_missing_attribute(sensors, object_person):
 
 def test_valid_integer_attribute(sensors, object_person):
     onthology = {
-        "person": {
-            "attributes": {
-                "number_of_fingers": "integer"
-            }
-        },
+        "person": {"attributes": {"number_of_fingers": "integer"}},
     }
 
     annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={
-            "number_of_fingers": 10
-        }
+        object=object_person, sensor=sensors["lidar"], attributes={"number_of_fingers": 10}
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == []
 
+
 def test_false_integer_attribute_type(sensors, object_person):
     onthology = {
-        "person": {
-            "attributes": {
-                "number_of_fingers": "integer"
-            }
-        },
+        "person": {"attributes": {"number_of_fingers": "integer"}},
     }
 
     annotation = build_annotation(
         object=object_person,
         sensor=sensors["lidar"],
-        attributes={
-            "number_of_fingers": "THIS SHOULD BE AN INTEGER"
-        }
+        attributes={"number_of_fingers": "THIS SHOULD BE AN INTEGER"},
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
@@ -250,41 +235,27 @@ def test_false_integer_attribute_type(sensors, object_person):
         f"Attribute 'number_of_fingers' of annotation {annotation.uid} is of type 'str' (should be 'int')."
     ]
 
+
 def test_valid_string_attribute(sensors, object_person):
     onthology = {
-        "person": {
-            "attributes": {
-                "first_name": "string"
-            }
-        },
+        "person": {"attributes": {"first_name": "string"}},
     }
 
     annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={
-            "first_name": "Gudrun"
-        }
+        object=object_person, sensor=sensors["lidar"], attributes={"first_name": "Gudrun"}
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == []
 
+
 def test_false_string_attribute_type(sensors, object_person):
     onthology = {
-        "person": {
-            "attributes": {
-                "first_name": "string"
-            }
-        },
+        "person": {"attributes": {"first_name": "string"}},
     }
 
     annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={
-            "first_name": 42
-        }
+        object=object_person, sensor=sensors["lidar"], attributes={"first_name": 42}
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
@@ -292,41 +263,29 @@ def test_false_string_attribute_type(sensors, object_person):
         f"Attribute 'first_name' of annotation {annotation.uid} is of type 'int' (should be 'str')."
     ]
 
+
 def test_valid_boolean_attribute(sensors, object_person):
     onthology = {
-        "person": {
-            "attributes": {
-                "has_cool_blue_shirt": "boolean"
-            }
-        },
+        "person": {"attributes": {"has_cool_blue_shirt": "boolean"}},
     }
 
     annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={
-            "has_cool_blue_shirt": False
-        }
+        object=object_person, sensor=sensors["lidar"], attributes={"has_cool_blue_shirt": False}
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == []
 
+
 def test_false_boolean_attribute_type(sensors, object_person):
     onthology = {
-        "person": {
-            "attributes": {
-                "has_cool_blue_shirt": "boolean"
-            }
-        },
+        "person": {"attributes": {"has_cool_blue_shirt": "boolean"}},
     }
 
     annotation = build_annotation(
         object=object_person,
         sensor=sensors["lidar"],
-        attributes={
-            "has_cool_blue_shirt": "NO THE SHIRT IS ORANGE ... AND THIS SHOULD BE A BOOL"
-        }
+        attributes={"has_cool_blue_shirt": "NO THE SHIRT IS ORANGE ... AND THIS SHOULD BE A BOOL"},
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
@@ -334,33 +293,25 @@ def test_false_boolean_attribute_type(sensors, object_person):
         f"Attribute 'has_cool_blue_shirt' of annotation {annotation.uid} is of type 'str' (should be 'bool')."
     ]
 
+
 def test_valid_vector_attribute(sensors, object_person):
     onthology = {
-        "person": {
-            "attributes": {
-                "favorite_pizzas": "vector"
-            }
-        },
+        "person": {"attributes": {"favorite_pizzas": "vector"}},
     }
 
     annotation = build_annotation(
         object=object_person,
         sensor=sensors["lidar"],
-        attributes={
-            "favorite_pizzas": ["Diavolo", "Neapolitan", "Quattro Formaggi"]
-        }
+        attributes={"favorite_pizzas": ["Diavolo", "Neapolitan", "Quattro Formaggi"]},
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == []
 
+
 def test_false_vector_attribute_type(sensors, object_person):
     onthology = {
-        "person": {
-            "attributes": {
-                "favorite_pizzas": "vector"
-            }
-        },
+        "person": {"attributes": {"favorite_pizzas": "vector"}},
     }
 
     annotation = build_annotation(
@@ -368,13 +319,14 @@ def test_false_vector_attribute_type(sensors, object_person):
         sensor=sensors["lidar"],
         attributes={
             "favorite_pizzas": "does not like pizza (ikr)... THIS SHOULD BE A VECTOR AS WELL"
-        }
+        },
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == [
         f"Attribute 'favorite_pizzas' of annotation {annotation.uid} is of type 'str' (should be 'list')."
     ]
+
 
 def test_valid_single_select_attribute(sensors, object_person):
     onthology = {
@@ -386,22 +338,19 @@ def test_valid_single_select_attribute(sensors, object_person):
                         "groceries",
                         "a baby",
                         "the SlicerDicer 3000™ (wow!)",
-                    ]
+                    ],
                 }
             }
         },
     }
 
     annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={
-            "carries": "groceries"
-        }
+        object=object_person, sensor=sensors["lidar"], attributes={"carries": "groceries"}
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == []
+
 
 def test_false_single_select_attribute_type(sensors, object_person):
     onthology = {
@@ -413,24 +362,21 @@ def test_false_single_select_attribute_type(sensors, object_person):
                         "groceries",
                         "a baby",
                         "the SlicerDicer 3000™ (wow!)",
-                    ]
+                    ],
                 }
             }
         },
     }
 
     annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={
-            "carries": False
-        }
+        object=object_person, sensor=sensors["lidar"], attributes={"carries": False}
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == [
         f"Attribute 'carries' of annotation {annotation.uid} is of type 'bool' (should be 'str')."
     ]
+
 
 def test_single_select_attribute_undefined_option(sensors, object_person):
     onthology = {
@@ -442,7 +388,7 @@ def test_single_select_attribute_undefined_option(sensors, object_person):
                         "groceries",
                         "a baby",
                         "the SlicerDicer 3000™ (wow!)",
-                    ]
+                    ],
                 }
             }
         },
@@ -451,9 +397,7 @@ def test_single_select_attribute_undefined_option(sensors, object_person):
     annotation = build_annotation(
         object=object_person,
         sensor=sensors["lidar"],
-        attributes={
-            "carries": "something very unexpected"
-        }
+        attributes={"carries": "something very unexpected"},
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
@@ -461,6 +405,7 @@ def test_single_select_attribute_undefined_option(sensors, object_person):
         f"Attribute 'carries' of annotation {annotation.uid} has an undefined value "
         + "'something very unexpected' (defined options: 'a baby', 'groceries', 'the SlicerDicer 3000™ (wow!)')."
     ]
+
 
 def test_valid_multi_select_attribute(sensors, object_person):
     onthology = {
@@ -472,7 +417,7 @@ def test_valid_multi_select_attribute(sensors, object_person):
                         "groceries",
                         "a baby",
                         "the SlicerDicer 3000™ (wow!)",
-                    ]
+                    ],
                 }
             }
         },
@@ -481,13 +426,12 @@ def test_valid_multi_select_attribute(sensors, object_person):
     annotation = build_annotation(
         object=object_person,
         sensor=sensors["lidar"],
-        attributes={
-            "carries": ["groceries", "a baby"]
-        }
+        attributes={"carries": ["groceries", "a baby"]},
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == []
+
 
 def test_false_multi_select_attribute_type(sensors, object_person):
     onthology = {
@@ -499,24 +443,21 @@ def test_false_multi_select_attribute_type(sensors, object_person):
                         "groceries",
                         "a baby",
                         "the SlicerDicer 3000™ (wow!)",
-                    ]
+                    ],
                 }
             }
         },
     }
 
     annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={
-            "carries": "a baby"
-        }
+        object=object_person, sensor=sensors["lidar"], attributes={"carries": "a baby"}
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == [
         f"Attribute 'carries' of annotation {annotation.uid} is of type 'str' (should be 'list')."
     ]
+
 
 def test_multi_select_attribute_undefined_option(sensors, object_person):
     onthology = {
@@ -528,7 +469,7 @@ def test_multi_select_attribute_undefined_option(sensors, object_person):
                         "groceries",
                         "a baby",
                         "the SlicerDicer 3000™ (wow!)",
-                    ]
+                    ],
                 }
             }
         },
@@ -537,9 +478,7 @@ def test_multi_select_attribute_undefined_option(sensors, object_person):
     annotation = build_annotation(
         object=object_person,
         sensor=sensors["lidar"],
-        attributes={
-            "carries": ["a baby", "something very unexpected"]
-        }
+        attributes={"carries": ["a baby", "something very unexpected"]},
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
@@ -547,6 +486,7 @@ def test_multi_select_attribute_undefined_option(sensors, object_person):
         f"Attribute 'carries' of annotation {annotation.uid} has an undefined value "
         + "'something very unexpected' (defined options: 'a baby', 'groceries', 'the SlicerDicer 3000™ (wow!)')."
     ]
+
 
 def test_multiple_attributes_valid(sensors, object_person):
     onthology = {
@@ -560,8 +500,8 @@ def test_multiple_attributes_valid(sensors, object_person):
                         "groceries",
                         "a baby",
                         "the SlicerDicer 3000™ (wow!)",
-                    ]
-                }
+                    ],
+                },
             }
         }
     }
@@ -573,11 +513,12 @@ def test_multiple_attributes_valid(sensors, object_person):
             "carries": "groceries",
             "number_of_fingers": 9,
             "first_name": "Brunhilde",
-        }
+        },
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == []
+
 
 def test_multiple_attributes_invalid(sensors, object_person):
     onthology = {
@@ -591,8 +532,8 @@ def test_multiple_attributes_invalid(sensors, object_person):
                         "groceries",
                         "a baby",
                         "the SlicerDicer 3000™ (wow!)",
-                    ]
-                }
+                    ],
+                },
             }
         }
     }
@@ -604,7 +545,7 @@ def test_multiple_attributes_invalid(sensors, object_person):
             "carries": "something very unexpected",
             "number_of_fingers": 9,
             "first_name": True,
-        }
+        },
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
@@ -618,47 +559,24 @@ def test_multiple_attributes_invalid(sensors, object_person):
 
 def test_valid_sensor_type_attribute(sensors, object_person):
     onthology = {
-        "person": {
-            "sensor_types": {
-                "lidar": {
-                    "attributes": {
-                        "number_of_fingers": "integer"
-                    }
-                }
-            }
-        },
+        "person": {"sensor_types": {"lidar": {"attributes": {"number_of_fingers": "integer"}}}},
     }
 
     annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={
-            "number_of_fingers": 10
-        }
+        object=object_person, sensor=sensors["lidar"], attributes={"number_of_fingers": 10}
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == []
 
+
 def test_invalid_sensor_type_attribute(sensors, object_person):
     onthology = {
-        "person": {
-            "sensor_types": {
-                "lidar": {
-                    "attributes": {
-                        "number_of_fingers": "integer"
-                    }
-                }
-            }
-        },
+        "person": {"sensor_types": {"lidar": {"attributes": {"number_of_fingers": "integer"}}}},
     }
 
     annotation = build_annotation(
-        object=object_person,
-        sensor=sensors["lidar"],
-        attributes={
-            "number_of_fingers": "None"
-        }
+        object=object_person, sensor=sensors["lidar"], attributes={"number_of_fingers": "None"}
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
@@ -670,16 +588,8 @@ def test_invalid_sensor_type_attribute(sensors, object_person):
 def test_valid_sensor_type_attributes_and_attributes(sensors, object_person):
     onthology = {
         "person": {
-            "attributes": {
-                "first_name": "string"
-            },
-            "sensor_types": {
-                "lidar": {
-                    "attributes": {
-                        "number_of_fingers": "integer"
-                    }
-                }
-            }
+            "attributes": {"first_name": "string"},
+            "sensor_types": {"lidar": {"attributes": {"number_of_fingers": "integer"}}},
         },
     }
 
@@ -689,25 +599,18 @@ def test_valid_sensor_type_attributes_and_attributes(sensors, object_person):
         attributes={
             "number_of_fingers": 10,
             "first_name": "Brunhilde",
-        }
+        },
     )
 
     scene = build_scene(sensors, [object_person], [annotation])
     assert validate_onthology(scene, onthology) == []
 
+
 def test_invalid_sensor_type_attributes_and_attributes(sensors, object_person):
     onthology = {
         "person": {
-            "attributes": {
-                "first_name": "string"
-            },
-            "sensor_types": {
-                "lidar": {
-                    "attributes": {
-                        "number_of_fingers": "integer"
-                    }
-                }
-            }
+            "attributes": {"first_name": "string"},
+            "sensor_types": {"lidar": {"attributes": {"number_of_fingers": "integer"}}},
         },
     }
 
@@ -716,7 +619,7 @@ def test_invalid_sensor_type_attributes_and_attributes(sensors, object_person):
         sensor=sensors["lidar"],
         attributes={
             "first_name": "Brunhilde",
-        }
+        },
     )
 
     scene = build_scene(sensors, [object_person], [annotation])

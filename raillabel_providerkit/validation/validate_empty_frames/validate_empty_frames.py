@@ -1,12 +1,12 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-from typing import List
+from __future__ import annotations
 
 import raillabel
 
 
-def validate_empty_frames(scene: raillabel.Scene) -> List[str]:
+def validate_empty_frames(scene: raillabel.Scene) -> list[str]:
     """Validate whether all frames of a scene have at least one annotation.
 
     Parameters
@@ -19,8 +19,9 @@ def validate_empty_frames(scene: raillabel.Scene) -> List[str]:
     list[str]
         list of all empty frame errors in the scene. If an empty list is returned, then there are no
         errors present.
+
     """
-    errors: List[str] = []
+    errors: list[str] = []
 
     for frame_uid, frame in scene.frames.items():
         if _is_frame_empty(frame):

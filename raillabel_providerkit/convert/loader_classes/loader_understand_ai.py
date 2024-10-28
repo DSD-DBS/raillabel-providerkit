@@ -1,15 +1,17 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+from __future__ import annotations
+
 import json
-import typing as t
 from pathlib import Path
 
 import jsonschema
 import raillabel
 
-from ..._util._warning import _WarningsLogger
-from ...format import understand_ai as uai_format
+from raillabel_providerkit._util._warning import _WarningsLogger
+from raillabel_providerkit.format import understand_ai as uai_format
+
 from ._loader_abc import LoaderABC
 
 
@@ -22,10 +24,11 @@ class LoaderUnderstandAi(LoaderABC):
         Loaded raillabel.format.understand_ai.Scene with the data.
     warnings: t.List[str]
         List of warning strings, that have been found during the execution of load().
+
     """
 
     scene: uai_format.Scene
-    warnings: t.List[str]
+    warnings: list[str]
 
     SCHEMA_PATH: Path = (
         Path(__file__).parent.parent.parent / "format" / "understand_ai_t4_schema.json"
@@ -47,8 +50,8 @@ class LoaderUnderstandAi(LoaderABC):
         -------
         scene: raillabel.format.understand_ai.UAIScene
             The loaded scene with the data.
-        """
 
+        """
         if validate_schema:
             self.validate_schema(data)
 
@@ -74,8 +77,8 @@ class LoaderUnderstandAi(LoaderABC):
         -------
         bool:
             If True, the Loader class is suitable for the data.
-        """
 
+        """
         return (
             "metadata" in data
             and "project_id" in data["metadata"]
@@ -83,15 +86,13 @@ class LoaderUnderstandAi(LoaderABC):
             and "frames" in data
         )
 
-    def validate_schema(self, data: dict) -> t.List[str]:
+    def validate_schema(self, data: dict) -> list[str]:
         """Check if the schema is correct."""
         with self.SCHEMA_PATH.open() as file:
             schema = json.load(file)
 
         validator = jsonschema.Draft7Validator(schema=schema)
-        schema_errors = []
-
-        for error in validator.iter_errors(data):
-            schema_errors.append("$" + error.json_path[1:] + ": " + str(error.message))
-
-        return schema_errors
+        return [
+            "$" + error.json_path[1:] + ": " + str(error.message)
+            for error in validator.iter_errors(data)
+        ]

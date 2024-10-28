@@ -1,16 +1,18 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+from __future__ import annotations
+
 import logging
 import typing as t
 from io import StringIO
+from types import TracebackType
 
 
 class _WarningsLogger:
+    warnings: t.ClassVar[list[str]] = []
 
-    warnings: t.List[str] = []
-
-    def __enter__(self) -> "_WarningsLogger":
+    def __enter__(self) -> None:
         logger = logging.getLogger("loader_warnings")
         warnings_stream = StringIO()
         handler = logging.StreamHandler(warnings_stream)
@@ -19,7 +21,12 @@ class _WarningsLogger:
 
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(
+        self,
+        typ: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: TracebackType | None,
+    ) -> None:
         logger = logging.getLogger("loader_warnings")
         stream = logger.handlers[-1].stream
         stream.seek(0)

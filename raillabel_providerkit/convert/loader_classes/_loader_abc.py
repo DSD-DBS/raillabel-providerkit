@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -22,10 +23,11 @@ class LoaderABC(ABC):
         List of warning strings, that have been found during the execution of load().
     SCHEMA_PATH: Path
         Absolute path to the JSON schema.
+
     """
 
     scene: raillabel.Scene
-    warnings: t.List[str]
+    warnings: list[str]
     SCHEMA_PATH: Path
 
     @abstractmethod
@@ -47,6 +49,7 @@ class LoaderABC(ABC):
         -------
         scene: raillabel.Scene
             The loaded scene with the data.
+
         """
         raise NotImplementedError
 
@@ -66,5 +69,6 @@ class LoaderABC(ABC):
         -------
         bool:
             If True, the Loader class is suitable for the data.
+
         """
         raise NotImplementedError

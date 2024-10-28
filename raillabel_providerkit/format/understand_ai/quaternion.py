@@ -18,6 +18,7 @@ class Quaternion:
         The z component of the quaternion.
     w: float
         The w component of the quaternion.
+
     """
 
     x: float
@@ -38,8 +39,8 @@ class Quaternion:
         -------
         Quaternion
             Converted quaternion.
-        """
 
+        """
         return Quaternion(
             x=float(data_dict["x"]),
             y=float(data_dict["y"]),

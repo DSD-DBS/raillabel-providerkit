@@ -11,8 +11,9 @@ import raillabel
 
 json_data_directories = [
     Path(__file__).parent / "__test_assets__",
-    Path(__file__).parent.parent / "raillabel_providerkit" / "format"
+    Path(__file__).parent.parent / "raillabel_providerkit" / "format",
 ]
+
 
 @pytest.fixture
 def json_paths(request) -> t.Dict[str, Path]:
@@ -23,8 +24,10 @@ def json_paths(request) -> t.Dict[str, Path]:
 
     return out
 
+
 def _fetch_json_paths_from_cache(request) -> t.Optional[t.Dict[str, Path]]:
     return request.config.cache.get("json_paths", None)
+
 
 def _collect_json_paths() -> t.List[Path]:
     out = []
@@ -33,6 +36,7 @@ def _collect_json_paths() -> t.List[Path]:
         out.extend([Path(p) for p in glob.glob(str(dir) + "/**/**.json", recursive=True)])
 
     return out
+
 
 def _get_file_identifier(path: Path) -> str:
     """Return relative path from test asset dir as string."""
@@ -43,12 +47,13 @@ def _get_file_identifier(path: Path) -> str:
     test_assets_dir_index = path.parts.index("__test_assets__")
 
     relative_path = ""
-    for part in path.parts[test_assets_dir_index+1:-1]:
+    for part in path.parts[test_assets_dir_index + 1 : -1]:
         relative_path += part + "/"
 
     relative_path += path.stem
 
     return relative_path
+
 
 @pytest.fixture
 def json_data(request) -> t.Dict[str, dict]:
@@ -59,13 +64,16 @@ def json_data(request) -> t.Dict[str, dict]:
 
     return out
 
+
 def _fetch_json_data_from_cache(request) -> t.Optional[t.Dict[str, Path]]:
     return request.config.cache.get("json_data", None)
+
 
 def _load_json_data(path: Path) -> dict:
     with path.open() as f:
         out = json.load(f)
     return out
+
 
 @pytest.fixture
 def empty_scene() -> raillabel.Scene:
@@ -76,6 +84,7 @@ def empty_scene() -> raillabel.Scene:
         frames={},
     )
 
+
 @pytest.fixture
 def default_frame(empty_annotation) -> raillabel.format.Frame:
     return raillabel.format.Frame(
@@ -83,20 +92,14 @@ def default_frame(empty_annotation) -> raillabel.format.Frame:
         timestamp=None,
         sensors={},
         frame_data={},
-        annotations={
-            "0fb4fc0b-3eeb-443a-8dd0-2caf9912d016": empty_annotation
-        }
+        annotations={"0fb4fc0b-3eeb-443a-8dd0-2caf9912d016": empty_annotation},
     )
+
 
 @pytest.fixture
 def empty_frame() -> raillabel.format.Frame:
-    return raillabel.format.Frame(
-        uid=0,
-        timestamp=None,
-        sensors={},
-        frame_data={},
-        annotations={}
-    )
+    return raillabel.format.Frame(uid=0, timestamp=None, sensors={}, frame_data={}, annotations={})
+
 
 @pytest.fixture
 def empty_annotation() -> raillabel.format.Bbox:

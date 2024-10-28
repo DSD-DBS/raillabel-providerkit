@@ -25,27 +25,16 @@ repos:
       - id: end-of-file-fixer
       - id: fix-byte-order-marker
       - id: trailing-whitespace
-  - repo: https://github.com/psf/black
-    rev: 24.10.0
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.7.0
     hooks:
-      - id: black
-  - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-  - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.5
-    hooks:
-      - id: docformatter
-        additional_dependencies:
-          - docformatter[tomli]
-  - repo: https://github.com/PyCQA/pydocstyle
-    rev: 6.3.0
-    hooks:
-      - id: pydocstyle
-        exclude: '^tests/'
-        additional_dependencies:
-          - pydocstyle[toml]
+      - id: ruff-format
+        name: Run Formatter
+      - id: ruff
+        name: Run Linter
+        args: [ --fix ]
+
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.5
     hooks:
@@ -89,6 +78,7 @@ repos:
           - LICENSES/.license_header.txt
           - --comment-style
           - '..|  |'
+
   - repo: https://github.com/fsfe/reuse-tool
     rev: v4.0.3
     hooks:

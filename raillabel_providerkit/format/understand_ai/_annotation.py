@@ -1,36 +1,32 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
-from abc import ABC, abstractmethod, abstractproperty
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from uuid import UUID
 
-from ..._util._attribute_type import AttributeType
+from raillabel_providerkit._util._attribute_type import AttributeType
+
 from ._translation import translate_class_id, translate_sensor_id
 from .sensor_reference import SensorReference
 
 
 @dataclass
 class _Annotation(ABC):
-
     id: UUID
     object_id: UUID
     class_name: str
     attributes: dict
     sensor: SensorReference
 
-    @property
-    @abstractproperty
-    def OPENLABEL_ID(self) -> t.List[str]:
-        raise NotImplementedError
-
     @classmethod
     @abstractmethod
-    def fromdict(cls, data_dict: t.Dict) -> t.Type["_Annotation"]:
+    def fromdict(cls, data_dict: dict) -> type[_Annotation]:
         raise NotImplementedError
 
-    def to_raillabel(self) -> t.Tuple[dict, str, str, dict]:
+    def to_raillabel(self) -> tuple[dict, str, str, dict]:
         """Convert to a raillabel compatible dict.
 
         Returns
@@ -43,8 +39,8 @@ class _Annotation(ABC):
             Friendly identifier of the class the annotated object belongs to.
         sensor_reference: dict
             Dictionary of the sensor reference.
-        """
 
+        """
         return (
             {
                 "name": str(self.id),
@@ -58,11 +54,9 @@ class _Annotation(ABC):
         )
 
     def _attributes_to_raillabel(self) -> dict:
-
         attributes = {}
 
         for attr_name, attr_value in self.attributes.items():
-
             attr_type = AttributeType.from_value(type(attr_value)).value
 
             if attr_type not in attributes:
