@@ -16,23 +16,23 @@ json_data_directories = [
 
 @pytest.fixture
 def json_paths(request) -> t.Dict[str, Path]:
-    json_paths = _fetch_json_paths_from_cache(request)
+    out = _fetch_json_paths_from_cache(request)
 
-    if json_paths is None:
-        json_paths = {_get_file_identifier(p): p for p in _collect_json_paths()}
+    if out is None:
+        out = {_get_file_identifier(p): p for p in _collect_json_paths()}
 
-    return json_paths
+    return out
 
 def _fetch_json_paths_from_cache(request) -> t.Optional[t.Dict[str, Path]]:
     return request.config.cache.get("json_paths", None)
 
 def _collect_json_paths() -> t.List[Path]:
-    json_paths = []
+    out = []
 
     for dir in json_data_directories:
-        json_paths.extend([Path(p) for p in glob.glob(str(dir) + "/**/**.json", recursive=True)])
+        out.extend([Path(p) for p in glob.glob(str(dir) + "/**/**.json", recursive=True)])
 
-    return json_paths
+    return out
 
 def _get_file_identifier(path: Path) -> str:
     """Return relative path from test asset dir as string."""
@@ -52,20 +52,20 @@ def _get_file_identifier(path: Path) -> str:
 
 @pytest.fixture
 def json_data(request) -> t.Dict[str, dict]:
-    json_data = _fetch_json_data_from_cache(request)
+    out = _fetch_json_data_from_cache(request)
 
-    if json_data is None:
-        json_data = {_get_file_identifier(p): _load_json_data(p) for p in _collect_json_paths()}
+    if out is None:
+        out = {_get_file_identifier(p): _load_json_data(p) for p in _collect_json_paths()}
 
-    return json_data
+    return out
 
 def _fetch_json_data_from_cache(request) -> t.Optional[t.Dict[str, Path]]:
     return request.config.cache.get("json_data", None)
 
 def _load_json_data(path: Path) -> dict:
     with path.open() as f:
-        json_data = json.load(f)
-    return json_data
+        out = json.load(f)
+    return out
 
 @pytest.fixture
 def empty_scene() -> raillabel.Scene:

@@ -6,13 +6,11 @@ import pytest
 from raillabel_providerkit.convert.loader_classes.loader_understand_ai import LoaderUnderstandAi
 
 
-def test_supports_true(json_data):
-    assert LoaderUnderstandAi().supports(json_data["understand_ai_real_life"])
-def test_supports_true(json_data):
+def test_supports__true(json_data):
     assert LoaderUnderstandAi().supports(json_data["understand_ai_real_life"])
 
 
-def test_supports_false(json_data):
+def test_supports__false(json_data):
     data = json_data["understand_ai_real_life"]
     del data["metadata"]["project_id"]
     assert not LoaderUnderstandAi().supports(data)
@@ -31,6 +29,6 @@ def test_validate_schema__real_life_file__errors(json_data):
     assert len(actual) == 1
     assert "topic" in actual[0]
 
-    
+
 if __name__ == "__main__":
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear"])
