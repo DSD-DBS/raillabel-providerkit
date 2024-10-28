@@ -19,8 +19,6 @@ class _Annotation(ABC):
     attributes: dict
     sensor: SensorReference
 
-    OPENLABEL_ID: str
-
     @classmethod
     @abstractmethod
     def fromdict(cls, data_dict: t.Dict) -> t.Type["_Annotation"]:

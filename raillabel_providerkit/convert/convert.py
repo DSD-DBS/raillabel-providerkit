@@ -39,10 +39,11 @@ def convert(data: dict, loader_class: t.Optional[t.Type[LoaderABC]] = None) -> r
 
 
 def _select_loader_class(data: dict) -> t.Type[LoaderABC]:
-    loader_classes = []
-    for cls in loader_classes_pkg.__dict__.values():
-        if isinstance(cls, type) and issubclass(cls, LoaderABC) and cls != LoaderABC:
-            loader_classes.append(cls)
+    loader_classes = [
+        cls
+        for cls in loader_classes_pkg.__dict__.values()
+        if isinstance(cls, type) and issubclass(cls, LoaderABC) and cls != LoaderABC
+    ]
 
     for loader_class in loader_classes:
         if loader_class().supports(data):

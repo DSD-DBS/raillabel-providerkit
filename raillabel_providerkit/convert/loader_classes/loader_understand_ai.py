@@ -90,9 +90,7 @@ class LoaderUnderstandAi(LoaderABC):
             schema = json.load(file)
 
         validator = jsonschema.Draft7Validator(schema=schema)
-        schema_errors = []
-
-        for error in validator.iter_errors(data):
-            schema_errors.append("$" + error.json_path[1:] + ": " + str(error.message))
-
-        return schema_errors
+        return [
+            "$" + error.json_path[1:] + ": " + str(error.message)
+            for error in validator.iter_errors(data)
+        ]

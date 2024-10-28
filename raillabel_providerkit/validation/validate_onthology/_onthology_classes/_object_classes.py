@@ -50,38 +50,28 @@ class _ObjectClass:
 
     @classmethod
     def _sensor_types_fromdict(cls, sensor_types_dict: dict) -> t.Dict[str, _SensorType]:
-        sensor_types = {}
-
-        for type_id, sensor_type_dict in sensor_types_dict.items():
-            sensor_types[raillabel.format.SensorType(type_id)] = _SensorType.fromdict(
-                sensor_type_dict
-            )
-
-        return sensor_types
+        return {
+            raillabel.format.SensorType(type_id): _SensorType.fromdict(sensor_type_dict)
+            for type_id, sensor_type_dict in sensor_types_dict.items()
+        }
 
     def _check_undefined_attributes(
         self, annotation: t.Type[raillabel.format._ObjectAnnotation]
     ) -> t.List[str]:
-        errors = []
-
-        applicable_attributes = self._compile_applicable_attributes(annotation)
-
-        for attr_name in annotation.attributes:
-            if attr_name not in applicable_attributes:
-                errors.append(f"Undefined attribute '{attr_name}' in annotation {annotation.uid}.")
-
-        return errors
+        return [
+            f"Undefined attribute '{attr_name}' in annotation {annotation.uid}."
+            for attr_name in annotation.attributes
+            if attr_name not in self._compile_applicable_attributes(annotation)
+        ]
 
     def _check_missing_attributes(
         self, annotation: t.Type[raillabel.format._ObjectAnnotation]
     ) -> t.List[str]:
-        errors = []
-
-        for attr_name in self._compile_applicable_attributes(annotation):
-            if attr_name not in annotation.attributes:
-                errors.append(f"Missing attribute '{attr_name}' in annotation {annotation.uid}.")
-
-        return errors
+        return [
+            f"Missing attribute '{attr_name}' in annotation {annotation.uid}."
+            for attr_name in self._compile_applicable_attributes(annotation)
+            if attr_name not in annotation.attributes
+        ]
 
     def _check_false_attribute_type(
         self, annotation: t.Type[raillabel.format._ObjectAnnotation]
