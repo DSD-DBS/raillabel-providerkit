@@ -7,7 +7,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from uuid import UUID
 
-from ..._util._attribute_type import AttributeType
+from raillabel_providerkit._util._attribute_type import AttributeType
+
 from ._translation import translate_class_id, translate_sensor_id
 from .sensor_reference import SensorReference
 

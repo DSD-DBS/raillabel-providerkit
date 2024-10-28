@@ -5,7 +5,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ..._util._warning import _warning
+from raillabel_providerkit._util._warning import _warning
+
 from .coordinate_system import CoordinateSystem
 from .frame import Frame
 from .metadata import Metadata

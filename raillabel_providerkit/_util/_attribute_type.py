@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from enum import Enum
 
-from ..exceptions import ValueDoesNotMatchTypeError
+from raillabel_providerkit.exceptions import ValueDoesNotMatchTypeError
 
 
 class AttributeType(Enum):

@@ -7,7 +7,8 @@ import uuid
 from dataclasses import dataclass
 from decimal import Decimal
 
-from ..._util._warning import _warning
+from raillabel_providerkit._util._warning import _warning
+
 from ._annotation import _Annotation
 from ._translation import translate_class_id, translate_sensor_id
 from .bounding_box_2d import BoundingBox2d

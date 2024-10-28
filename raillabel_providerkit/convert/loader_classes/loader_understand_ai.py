@@ -9,8 +9,9 @@ from pathlib import Path
 import jsonschema
 import raillabel
 
-from ..._util._warning import _WarningsLogger
-from ...format import understand_ai as uai_format
+from raillabel_providerkit._util._warning import _WarningsLogger
+from raillabel_providerkit.format import understand_ai as uai_format
+
 from ._loader_abc import LoaderABC
 
 

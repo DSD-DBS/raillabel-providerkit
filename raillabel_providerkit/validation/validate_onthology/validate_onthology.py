@@ -9,7 +9,8 @@ import jsonschema
 import raillabel
 import yaml
 
-from ...exceptions import OnthologySchemaError
+from raillabel_providerkit.exceptions import OnthologySchemaError
+
 from ._onthology_classes._onthology import _Onthology
 
 

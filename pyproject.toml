@@ -81,9 +81,6 @@ ignore = [
     "TCH003",  # same as TCH001
 
     "SIM103",  # less readable in some cases imo
-
-    # to be removed later
-    "TID252",
 ]
 
 [tool.mypy]

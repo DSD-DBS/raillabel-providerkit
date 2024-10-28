@@ -5,7 +5,8 @@ from __future__ import annotations
 
 import raillabel
 
-from ..exceptions import UnsupportedFormatError
+from raillabel_providerkit.exceptions import UnsupportedFormatError
+
 from . import loader_classes as loader_classes_pkg
 from .loader_classes import LoaderABC
 
