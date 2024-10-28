@@ -1,9 +1,11 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+import json
 import typing as t
 from pathlib import Path
 
+import jsonschema
 import raillabel
 
 from ..._util._warning import _WarningsLogger
@@ -26,20 +28,17 @@ class LoaderUnderstandAi(LoaderABC):
     warnings: t.List[str]
 
     SCHEMA_PATH: Path = (
-        Path(__file__).parent.parent.parent
-        / "validate"
-        / "schemas"
-        / "understand_ai_t4_schema.json"
+        Path(__file__).parent.parent.parent / "format" / "understand_ai_t4_schema.json"
     )
 
-    def load(self, data: dict, validate: bool = False) -> uai_format.Scene:
+    def load(self, data: dict, validate_schema: bool = False) -> uai_format.Scene:
         """Load the data into a UAIScene and return it.
 
         Parameters
         ----------
         data: dict
             A dictionary loaded from a JSON-file.
-        validate: bool
+        validate_schema: bool
             If True, the annotation data is validated via the respective schema. This is highly
             recommended, as not validating the data may lead to Errors during loading or while
             handling the scene. However, validating may increase the loading time. Default is False.
@@ -50,8 +49,8 @@ class LoaderUnderstandAi(LoaderABC):
             The loaded scene with the data.
         """
 
-        if validate:
-            self.validate(data)
+        if validate_schema:
+            self.validate_schema(data)
 
         with _WarningsLogger() as logger:
             data_converted_to_raillabel = uai_format.Scene.fromdict(data).to_raillabel()
@@ -83,3 +82,16 @@ class LoaderUnderstandAi(LoaderABC):
             and "coordinateSystems" in data
             and "frames" in data
         )
+
+    def validate_schema(self, data: dict) -> t.List[str]:
+        """Check if the schema is correct."""
+        with self.SCHEMA_PATH.open() as file:
+            schema = json.load(file)
+
+        validator = jsonschema.Draft7Validator(schema=schema)
+        schema_errors = []
+
+        for error in validator.iter_errors(data):
+            schema_errors.append("$" + error.json_path[1:] + ": " + str(error.message))
+
+        return schema_errors
