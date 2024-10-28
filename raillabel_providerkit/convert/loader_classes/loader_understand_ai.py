@@ -22,6 +22,7 @@ class LoaderUnderstandAi(LoaderABC):
         Loaded raillabel.format.understand_ai.Scene with the data.
     warnings: t.List[str]
         List of warning strings, that have been found during the execution of load().
+
     """
 
     scene: uai_format.Scene
@@ -47,8 +48,8 @@ class LoaderUnderstandAi(LoaderABC):
         -------
         scene: raillabel.format.understand_ai.UAIScene
             The loaded scene with the data.
-        """
 
+        """
         if validate_schema:
             self.validate_schema(data)
 
@@ -74,8 +75,8 @@ class LoaderUnderstandAi(LoaderABC):
         -------
         bool:
             If True, the Loader class is suitable for the data.
-        """
 
+        """
         return (
             "metadata" in data
             and "project_id" in data["metadata"]

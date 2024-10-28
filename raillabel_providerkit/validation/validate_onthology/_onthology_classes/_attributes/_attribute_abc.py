@@ -1,8 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
+from __future__ import annotations
 
 import abc
-import typing as t
 from dataclasses import dataclass
 from importlib import import_module
 from inspect import isclass
@@ -19,27 +19,25 @@ class _Attribute(abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def fromdict(cls, data_dict: dict) -> t.Type["_Attribute"]:
+    def fromdict(cls, data_dict: dict) -> type[_Attribute]:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def check(self, attribute_name: str, attribute_value, annotation_id: str) -> t.List[str]:
+    def check(
+        self, attribute_name: str, attribute_value: bool | float | str | list, annotation_id: str
+    ) -> list[str]:
         raise NotImplementedError
 
 
-def attribute_classes() -> t.List[t.Type[_Attribute]]:
+def attribute_classes() -> list[type[_Attribute]]:
     """Return dictionary with Attribute child classes."""
     return ATTRIBUTE_CLASSES
 
 
-def _collect_attribute_classes():
+def _collect_attribute_classes() -> None:
     """Collect attribute child classes and store them."""
-
-    global ATTRIBUTE_CLASSES
-
     package_dir = str(Path(__file__).resolve().parent)
     for _, module_name, _ in iter_modules([package_dir]):
-
         module = import_module(
             f"raillabel_providerkit.validation.validate_onthology._onthology_classes._attributes.{module_name}"
         )

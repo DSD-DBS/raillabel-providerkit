@@ -7,6 +7,7 @@ from raillabel._util._warning import _WarningsLogger
 
 # == Fixtures =========================
 
+
 @pytest.fixture
 def frame_uai_dict(
     bounding_box_2d_uai_dict,
@@ -25,8 +26,9 @@ def frame_uai_dict(
             "2D_POLYGON": [polygon_2d_uai_dict],
             "3D_BOUNDING_BOX": [bounding_box_3d_uai_dict],
             "3D_SEGMENTATION": [segmentation_3d_uai_dict],
-        }
+        },
     }
+
 
 @pytest.fixture
 def frame_uai(
@@ -47,15 +49,23 @@ def frame_uai(
         segmentation_3ds={str(segmentation_3d_uai.id): segmentation_3d_uai},
     )
 
+
 @pytest.fixture
 def frame_raillabel_dict(
-    bounding_box_2d_uai, bounding_box_2d_raillabel_dict,
+    bounding_box_2d_uai,
+    bounding_box_2d_raillabel_dict,
     bounding_box_3d_raillabel_dict,
-    polygon_2d_uai, polygon_2d_raillabel_dict,
-    polyline_2d_uai, polyline_2d_raillabel_dict,
-    segmentation_3d_uai, segmentation_3d_raillabel_dict,
-    sensor_lidar_uai, sensor_lidar_raillabel_dict, coordinate_system_lidar_translated_uid,
-    sensor_camera_raillabel_dict, coordinate_system_camera_translated_uid,
+    polygon_2d_uai,
+    polygon_2d_raillabel_dict,
+    polyline_2d_uai,
+    polyline_2d_raillabel_dict,
+    segmentation_3d_uai,
+    segmentation_3d_raillabel_dict,
+    sensor_lidar_uai,
+    sensor_lidar_raillabel_dict,
+    coordinate_system_lidar_translated_uid,
+    sensor_camera_raillabel_dict,
+    coordinate_system_camera_translated_uid,
 ) -> dict:
     return {
         "frame_properties": {
@@ -63,7 +73,7 @@ def frame_raillabel_dict(
             "streams": {
                 coordinate_system_camera_translated_uid: sensor_camera_raillabel_dict,
                 coordinate_system_lidar_translated_uid: sensor_lidar_raillabel_dict,
-            }
+            },
         },
         "objects": {
             str(bounding_box_2d_uai.object_id): {
@@ -72,33 +82,33 @@ def frame_raillabel_dict(
                     "cuboid": [bounding_box_3d_raillabel_dict],
                 }
             },
-            str(polygon_2d_uai.object_id): {
-                "object_data": {
-                    "poly2d": [polygon_2d_raillabel_dict]
-                }
-            },
+            str(polygon_2d_uai.object_id): {"object_data": {"poly2d": [polygon_2d_raillabel_dict]}},
             str(polyline_2d_uai.object_id): {
-                "object_data": {
-                    "poly2d": [polyline_2d_raillabel_dict]
-                }
+                "object_data": {"poly2d": [polyline_2d_raillabel_dict]}
             },
             str(segmentation_3d_uai.object_id): {
-                "object_data": {
-                    "vec": [segmentation_3d_raillabel_dict]
-                }
+                "object_data": {"vec": [segmentation_3d_raillabel_dict]}
             },
-        }
+        },
     }
+
 
 # == Tests ============================
 
+
 def test_fromdict(
-    bounding_box_2d_uai_dict, bounding_box_2d_uai,
-    bounding_box_3d_uai_dict, bounding_box_3d_uai,
-    polygon_2d_uai_dict, polygon_2d_uai,
-    polyline_2d_uai_dict, polyline_2d_uai,
-    segmentation_3d_uai_dict, segmentation_3d_uai,
-    sensor_lidar_uai_dict, sensor_lidar_uai,
+    bounding_box_2d_uai_dict,
+    bounding_box_2d_uai,
+    bounding_box_3d_uai_dict,
+    bounding_box_3d_uai,
+    polygon_2d_uai_dict,
+    polygon_2d_uai,
+    polyline_2d_uai_dict,
+    polyline_2d_uai,
+    segmentation_3d_uai_dict,
+    segmentation_3d_uai,
+    sensor_lidar_uai_dict,
+    sensor_lidar_uai,
 ):
     frame = uai_format.Frame.fromdict(
         {
@@ -110,7 +120,7 @@ def test_fromdict(
                 "2D_POLYGON": [polygon_2d_uai_dict],
                 "3D_BOUNDING_BOX": [bounding_box_3d_uai_dict],
                 "3D_SEGMENTATION": [segmentation_3d_uai_dict],
-            }
+            },
         }
     )
 
@@ -124,13 +134,21 @@ def test_fromdict(
 
 
 def test_to_raillabel(
-    bounding_box_2d_uai, bounding_box_2d_raillabel_dict,
-    bounding_box_3d_uai, bounding_box_3d_raillabel_dict,
-    polygon_2d_uai, polygon_2d_raillabel_dict,
-    polyline_2d_uai, polyline_2d_raillabel_dict,
-    segmentation_3d_uai, segmentation_3d_raillabel_dict,
-    sensor_lidar_uai, sensor_lidar_raillabel_dict, coordinate_system_lidar_translated_uid,
-    sensor_camera_raillabel_dict, coordinate_system_camera_translated_uid,
+    bounding_box_2d_uai,
+    bounding_box_2d_raillabel_dict,
+    bounding_box_3d_uai,
+    bounding_box_3d_raillabel_dict,
+    polygon_2d_uai,
+    polygon_2d_raillabel_dict,
+    polyline_2d_uai,
+    polyline_2d_raillabel_dict,
+    segmentation_3d_uai,
+    segmentation_3d_raillabel_dict,
+    sensor_lidar_uai,
+    sensor_lidar_raillabel_dict,
+    coordinate_system_lidar_translated_uid,
+    sensor_camera_raillabel_dict,
+    coordinate_system_camera_translated_uid,
 ):
     frame = uai_format.Frame(
         id=0,
@@ -148,7 +166,7 @@ def test_to_raillabel(
             "streams": {
                 coordinate_system_camera_translated_uid: sensor_camera_raillabel_dict,
                 coordinate_system_lidar_translated_uid: sensor_lidar_raillabel_dict,
-            }
+            },
         },
         "objects": {
             str(bounding_box_2d_uai.object_id): {
@@ -157,28 +175,19 @@ def test_to_raillabel(
                     "cuboid": [bounding_box_3d_raillabel_dict],
                 }
             },
-            str(polygon_2d_uai.object_id): {
-                "object_data": {
-                    "poly2d": [polygon_2d_raillabel_dict]
-                }
-            },
+            str(polygon_2d_uai.object_id): {"object_data": {"poly2d": [polygon_2d_raillabel_dict]}},
             str(polyline_2d_uai.object_id): {
-                "object_data": {
-                    "poly2d": [polyline_2d_raillabel_dict]
-                }
+                "object_data": {"poly2d": [polyline_2d_raillabel_dict]}
             },
             str(segmentation_3d_uai.object_id): {
-                "object_data": {
-                    "vec": [segmentation_3d_raillabel_dict]
-                }
+                "object_data": {"vec": [segmentation_3d_raillabel_dict]}
             },
-        }
+        },
     }
 
 
 def test_warning_duplicate_annotation_id(
-    bounding_box_2d_uai_dict, polyline_2d_uai_dict,
-    sensor_lidar_uai_dict
+    bounding_box_2d_uai_dict, polyline_2d_uai_dict, sensor_lidar_uai_dict
 ):
     polyline_2d_uai_dict["id"] = bounding_box_2d_uai_dict["id"]
 
@@ -191,7 +200,7 @@ def test_warning_duplicate_annotation_id(
             "2D_POLYGON": [],
             "3D_BOUNDING_BOX": [],
             "3D_SEGMENTATION": [],
-        }
+        },
     }
 
     with _WarningsLogger() as logger:
@@ -203,5 +212,6 @@ def test_warning_duplicate_annotation_id(
 
 if __name__ == "__main__":
     import os
+
     os.system("clear")
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear", "-vv"])

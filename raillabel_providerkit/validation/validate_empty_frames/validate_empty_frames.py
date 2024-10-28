@@ -19,6 +19,7 @@ def validate_empty_frames(scene: raillabel.Scene) -> List[str]:
     list[str]
         list of all empty frame errors in the scene. If an empty list is returned, then there are no
         errors present.
+
     """
     errors: List[str] = []
 

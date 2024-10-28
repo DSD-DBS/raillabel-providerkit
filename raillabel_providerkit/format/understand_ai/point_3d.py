@@ -16,6 +16,7 @@ class Point3d:
         Position of the object in the y-dimension.
     z: float
         Position of the object in the z-dimension.
+
     """
 
     x: float
@@ -35,8 +36,8 @@ class Point3d:
         -------
         Point3d
             Converted 3d point.
-        """
 
+        """
         return Point3d(
             x=float(data_dict["x"]),
             y=float(data_dict["y"]),

@@ -35,6 +35,7 @@ class CoordinateSystem:
     dist_coeffs: list of float, optional
         Distortion coefficients of the sensor. Only applies to sensors of type camera. Default is
         None.
+
     """
 
     uid: str
@@ -67,8 +68,8 @@ class CoordinateSystem:
         -------
         coordinate_system: CoordinateSystem
             Converted coordinate_system.
-        """
 
+        """
         return CoordinateSystem(
             uid=data_dict["coordinate_system_id"],
             topic=data_dict["topic"],
@@ -92,8 +93,8 @@ class CoordinateSystem:
             Dictionary of the raillabel coordinate system.
         stream_dict: dict
             Dictionary of the raillabel stream.
-        """
 
+        """
         stream_dict = {
             "type": "sensor",
             "parent": "base",
@@ -116,9 +117,8 @@ class CoordinateSystem:
 
         return stream_dict, coordinate_system_dict
 
-    def _stream_properties_to_raillabel(self, type: str) -> t.Optional[dict]:
-
-        if type == "camera":
+    def _stream_properties_to_raillabel(self, sensor_type: str) -> t.Optional[dict]:
+        if sensor_type == "camera":
             return {
                 "intrinsics_pinhole": {
                     "camera_matrix": self._convert_camera_matrix(self.camera_matrix[:]),
@@ -128,7 +128,7 @@ class CoordinateSystem:
                 }
             }
 
-        elif type == "radar":
+        if sensor_type == "radar":
             return {
                 "intrinsics_radar": {
                     "resolution_px_per_m": fetch_sensor_resolutions(self.translated_uid)[
@@ -139,11 +139,9 @@ class CoordinateSystem:
                 }
             }
 
-        else:
-            return None
+        return None
 
     def _convert_camera_matrix(self, camera_matrix: list) -> list:
-
         camera_matrix.insert(9, 0)
         camera_matrix.insert(6, 0)
         camera_matrix.insert(3, 0)

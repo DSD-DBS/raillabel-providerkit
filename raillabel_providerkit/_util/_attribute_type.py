@@ -4,6 +4,8 @@
 import typing as t
 from enum import Enum
 
+from ..exceptions import ValueDoesNotMatchTypeError
+
 
 class AttributeType(Enum):
     """Enum of all valid RailLabel attribute types."""
@@ -31,22 +33,18 @@ class AttributeType(Enum):
         ------
         ValueError
             if attribute value class does not correspond to an Attribute Type.
-        """
 
-        if attribute_value_class == str:
+        """
+        if attribute_value_class is str:
             return AttributeType.TEXT
 
-        elif attribute_value_class in [float, int]:
+        if attribute_value_class in [float, int]:
             return AttributeType.NUM
 
-        elif attribute_value_class == bool:
+        if attribute_value_class is bool:
             return AttributeType.BOOLEAN
 
-        elif attribute_value_class in [list, tuple]:
+        if attribute_value_class in [list, tuple]:
             return AttributeType.VEC
 
-        else:
-            raise ValueError(
-                f"Type {attribute_value_class} does not correspond to a valid RailLabel attribute "
-                + "type. Supported types are str, float, int, bool, list, tuple."
-            )
+        raise ValueDoesNotMatchTypeError(attribute_value_class)

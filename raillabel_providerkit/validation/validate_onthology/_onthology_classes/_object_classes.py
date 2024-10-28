@@ -17,7 +17,6 @@ class _ObjectClass:
 
     @classmethod
     def fromdict(cls, data_dict: dict) -> "_ObjectClass":
-
         if "attributes" not in data_dict:
             data_dict["attributes"] = {}
 
@@ -43,12 +42,11 @@ class _ObjectClass:
 
     @classmethod
     def _attribute_fromdict(cls, attribute: dict or str) -> t.Type[_Attribute]:
-
         for attribute_class in attribute_classes():
             if attribute_class.supports(attribute):
                 return attribute_class.fromdict(attribute)
 
-        raise ValueError()
+        raise ValueError
 
     @classmethod
     def _sensor_types_fromdict(cls, sensor_types_dict: dict) -> t.Dict[str, _SensorType]:
@@ -68,7 +66,7 @@ class _ObjectClass:
 
         applicable_attributes = self._compile_applicable_attributes(annotation)
 
-        for attr_name in annotation.attributes.keys():
+        for attr_name in annotation.attributes:
             if attr_name not in applicable_attributes:
                 errors.append(f"Undefined attribute '{attr_name}' in annotation {annotation.uid}.")
 
@@ -104,7 +102,6 @@ class _ObjectClass:
     def _compile_applicable_attributes(
         self, annotation: t.Type[raillabel.format._ObjectAnnotation]
     ) -> t.Dict[str, t.Type[_Attribute]]:
-
         applicable_attributes = self.attributes
 
         if annotation.sensor.type in self.sensor_types:

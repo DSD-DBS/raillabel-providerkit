@@ -18,6 +18,7 @@ class SensorReference:
         URI to the file containing the frame specific sensor output from the project directory.
     timestamp: decimal.Decimal
         Unix timestamp of the sensor recording.
+
     """
 
     type: str
@@ -37,8 +38,8 @@ class SensorReference:
         -------
         SensorReference
             Converted sensor reference.
-        """
 
+        """
         return SensorReference(
             type=data_dict["type"], uri=data_dict["uri"], timestamp=Decimal(data_dict["timestamp"])
         )
@@ -52,8 +53,8 @@ class SensorReference:
             Friendly identifier of the sensor.
         sensor_reference: dict
             Dictionary valid for the raillabel schema.
-        """
 
+        """
         return (
             self.type,
             {

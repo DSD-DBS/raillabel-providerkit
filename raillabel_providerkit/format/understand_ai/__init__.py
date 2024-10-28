@@ -15,3 +15,19 @@ from .scene import Scene
 from .segmentation_3d import Segmentation3d
 from .sensor_reference import SensorReference
 from .size_3d import Size3d
+
+__all__ = [
+    "BoundingBox2d",
+    "BoundingBox3d",
+    "CoordinateSystem",
+    "Frame",
+    "Metadata",
+    "Point3d",
+    "Polygon2d",
+    "Polyline2d",
+    "Quaternion",
+    "Scene",
+    "Segmentation3d",
+    "SensorReference",
+    "Size3d",
+]

@@ -30,6 +30,7 @@ class Frame:
         Dictionary containing all annotations. The keys are the uids of the annotations and the
         values are objects of type BoundingBox2d, BoundingBox3d, Polygon2d, Polyline2d or
         Segementation3d.
+
     """
 
     id: int
@@ -62,6 +63,7 @@ class Frame:
         dict
             Dictionary containing all objects. Keys are the object IDs and values are the
             translated class names.
+
         """
         return {
             str(a.object_id): translate_class_id(a.class_name) for a in self.annotations.values()
@@ -76,6 +78,7 @@ class Frame:
         dict
             Dictionary containing all sensors. Keys are the translated sensor IDs and values are
             the SensorReference objects.
+
         """
         sensors_list = []
 
@@ -98,8 +101,8 @@ class Frame:
         -------
         Frame
             Converted frame.
-        """
 
+        """
         cls._annotation_uids = set()
 
         return Frame(
@@ -132,6 +135,7 @@ class Frame:
         -------
         Frame
             Converted frame.
+
         """
         return {
             "frame_properties": self._frame_properties_to_raillabel(),
@@ -142,7 +146,6 @@ class Frame:
     def _annotation_fromdict(
         cls, data_dict: dict, annotation_class: t.Type[_Annotation]
     ) -> t.Dict[str, t.Type[_Annotation]]:
-
         annotations = {}
         for annotation_dict in data_dict:
             annotation_dict["id"] = cls._check_duplicate_annotation_uid(annotation_dict["id"])
@@ -152,7 +155,6 @@ class Frame:
 
     @classmethod
     def _check_duplicate_annotation_uid(cls, uid: str) -> str:
-
         if uid in cls._annotation_uids:
             _warning(
                 f"Annotation uid {uid} is contained more than once. A new uid will be assigned."
@@ -163,7 +165,6 @@ class Frame:
         return uid
 
     def _frame_properties_to_raillabel(self) -> dict:
-
         streams_dict = {}
         for stream_id, stream in self.translated_sensors.items():
             streams_dict[stream_id] = {
@@ -182,7 +183,6 @@ class Frame:
         object_data = {}
 
         for annotation in self.annotations.values():
-
             object_id = str(annotation.object_id)
 
             if object_id not in object_data:

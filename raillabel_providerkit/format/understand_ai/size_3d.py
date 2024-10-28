@@ -16,6 +16,7 @@ class Size3d:
         Size of the object in the y-dimension.
     height: float
         Size of the object in the z-dimension.
+
     """
 
     width: float
@@ -35,8 +36,8 @@ class Size3d:
         -------
         Size3d
             Converted 3d size.
-        """
 
+        """
         return Size3d(
             width=float(data_dict["width"]),
             length=float(data_dict["length"]),

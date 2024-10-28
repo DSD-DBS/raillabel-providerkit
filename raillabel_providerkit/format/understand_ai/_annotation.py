@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import typing as t
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from uuid import UUID
 
@@ -13,17 +13,13 @@ from .sensor_reference import SensorReference
 
 @dataclass
 class _Annotation(ABC):
-
     id: UUID
     object_id: UUID
     class_name: str
     attributes: dict
     sensor: SensorReference
 
-    @property
-    @abstractproperty
-    def OPENLABEL_ID(self) -> t.List[str]:
-        raise NotImplementedError
+    OPENLABEL_ID: str
 
     @classmethod
     @abstractmethod
@@ -43,8 +39,8 @@ class _Annotation(ABC):
             Friendly identifier of the class the annotated object belongs to.
         sensor_reference: dict
             Dictionary of the sensor reference.
-        """
 
+        """
         return (
             {
                 "name": str(self.id),
@@ -58,11 +54,9 @@ class _Annotation(ABC):
         )
 
     def _attributes_to_raillabel(self) -> dict:
-
         attributes = {}
 
         for attr_name, attr_value in self.attributes.items():
-
             attr_type = AttributeType.from_value(type(attr_value)).value
 
             if attr_type not in attributes:

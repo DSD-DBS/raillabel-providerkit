@@ -35,6 +35,7 @@ class BoundingBox3d(_Annotation):
         3d size of the bounding box.
     quaternion: raillabel.format.understand_ai.Quaternion
         Rotation quaternion of the bounding box.
+
     """
 
     center: Point3d
@@ -56,8 +57,8 @@ class BoundingBox3d(_Annotation):
         -------
         BoundingBox3d
             Converted 3d bounding box.
-        """
 
+        """
         return BoundingBox3d(
             id=UUID(data_dict["id"]),
             object_id=UUID(data_dict["objectId"]),

@@ -34,6 +34,7 @@ class BoundingBox2d(_Annotation):
         Right corner of the bounding box in pixels.
     y_max: float
         Bottom corner of the bounding box in pixels.
+
     """
 
     x_min: float
@@ -56,8 +57,8 @@ class BoundingBox2d(_Annotation):
         -------
         BoundingBox2d
             Converted 2d bounding box.
-        """
 
+        """
         return BoundingBox2d(
             id=UUID(data_dict["id"]),
             object_id=UUID(data_dict["objectId"]),

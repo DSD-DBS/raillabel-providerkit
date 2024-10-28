@@ -21,6 +21,7 @@ class Scene:
     coordinate_systems: dict[str, raillabel.format.understand_ai.CoordinateSystem]
         Global information for sensors regarding calibration.
     frames: dict[int, raillabel.format.understand_ai.Frame]
+
     """
 
     metadata: Metadata
@@ -40,8 +41,8 @@ class Scene:
         -------
         Scene
             Converted scene.
-        """
 
+        """
         return Scene(
             metadata=Metadata.fromdict(data_dict["metadata"]),
             coordinate_systems=cls._coordinate_systems_fromdict(data_dict["coordinateSystems"]),
@@ -55,6 +56,7 @@ class Scene:
         -------
         dict:
             Dictionary of the raillabel scene.
+
         """
         return {
             "openlabel": {
@@ -83,7 +85,7 @@ class Scene:
             if frame_id in frames:
                 _warning(
                     f"Frame UID {frame_id} is contained more than once in the scene. "
-                    + "The duplicate frame will be omitted."
+                    "The duplicate frame will be omitted."
                 )
                 continue
 
@@ -108,13 +110,11 @@ class Scene:
         return coordinate_systems
 
     def _objects_to_raillabel(self) -> dict:
-
         object_dicts = self._collect_all_translated_objects()
 
         object_name_counter = {}
         objects = {}
         for object_id, object_class in object_dicts.items():
-
             if object_class not in object_name_counter:
                 object_name_counter[object_class] = 0
 

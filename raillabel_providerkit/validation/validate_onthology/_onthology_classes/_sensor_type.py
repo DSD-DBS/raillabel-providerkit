@@ -13,7 +13,6 @@ class _SensorType:
 
     @classmethod
     def fromdict(cls, data_dict: dict) -> "_SensorType":
-
         if "attributes" not in data_dict:
             data_dict["attributes"] = {}
 
@@ -26,9 +25,8 @@ class _SensorType:
 
     @classmethod
     def _attribute_fromdict(cls, attribute: dict or str) -> t.Type[_Attribute]:
-
         for attribute_class in attribute_classes():
             if attribute_class.supports(attribute):
                 return attribute_class.fromdict(attribute)
 
-        raise ValueError()
+        raise ValueError

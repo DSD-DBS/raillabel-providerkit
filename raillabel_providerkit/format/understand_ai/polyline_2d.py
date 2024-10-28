@@ -28,6 +28,7 @@ class Polyline2d(_Annotation):
         Information about the sensor this annotation is labeled in.
     points: list[tuple[float, float]]
         2d points belonging to the polyline.
+
     """
 
     points: t.List[t.Tuple[float, float]]
@@ -47,8 +48,8 @@ class Polyline2d(_Annotation):
         -------
         Polyline2d
             Converted 2d polyline.
-        """
 
+        """
         return Polyline2d(
             id=UUID(data_dict["id"]),
             object_id=UUID(data_dict["objectId"]),
@@ -71,8 +72,8 @@ class Polyline2d(_Annotation):
             Friendly identifier of the class the annotated object belongs to.
         sensor_reference: dict
             Dictionary of the sensor reference.
-        """
 
+        """
         polyline = super().to_raillabel()
         polyline[0]["closed"] = False
         polyline[0]["mode"] = "MODE_POLY2D_ABSOLUTE"

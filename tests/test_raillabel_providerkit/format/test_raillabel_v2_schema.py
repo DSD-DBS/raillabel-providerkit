@@ -8,24 +8,20 @@ import pytest
 
 
 def test_metaschema_validation(json_data):
-    assert jsonschema.validate(
-        json_data["raillabel_schema"],
-        json_data["metaschema"]
-    ) is None
+    assert jsonschema.validate(json_data["raillabel_schema"], json_data["metaschema"]) is None
 
 
 def test_sample_data_validation_subschema(json_data):
-    assert jsonschema.validate(
-        json_data["openlabel_v1_short"],
-        json_data["raillabel_schema"]
-    ) is None
+    assert (
+        jsonschema.validate(json_data["openlabel_v1_short"], json_data["raillabel_schema"]) is None
+    )
 
 
 def test_sample_data_validation_superschema(json_data):
-    assert jsonschema.validate(
-        json_data["openlabel_v1_short"],
-        json_data["openlabel_v1_schema"]
-    ) is None
+    assert (
+        jsonschema.validate(json_data["openlabel_v1_short"], json_data["openlabel_v1_schema"])
+        is None
+    )
 
 
 # Executes the test if the file is called

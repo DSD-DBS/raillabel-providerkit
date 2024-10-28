@@ -4,3 +4,5 @@
 
 from . import understand_ai
 from . import understand_ai as uai
+
+__all__ = ["uai", "understand_ai"]

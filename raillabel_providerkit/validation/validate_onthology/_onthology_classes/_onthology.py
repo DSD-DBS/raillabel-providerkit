@@ -12,7 +12,7 @@ from ._object_classes import _ObjectClass
 @dataclass
 class _Onthology:
     classes: t.Dict[str, _ObjectClass]
-    errors = []
+    errors: t.ClassVar = []
 
     @classmethod
     def fromdict(cls, data_dict: dict) -> "_Onthology":

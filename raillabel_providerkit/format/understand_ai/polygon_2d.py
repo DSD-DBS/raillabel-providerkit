@@ -28,6 +28,7 @@ class Polygon2d(_Annotation):
         Information about the sensor this annotation is labeled in.
     points: list[tuple[float, float]]
         2d points belonging to the polygon.
+
     """
 
     points: t.List[t.Tuple[float, float]]
@@ -47,8 +48,8 @@ class Polygon2d(_Annotation):
         -------
         Polygon2d
             Converted 2d polygon.
-        """
 
+        """
         return Polygon2d(
             id=UUID(data_dict["id"]),
             object_id=UUID(data_dict["objectId"]),
@@ -71,8 +72,8 @@ class Polygon2d(_Annotation):
             Friendly identifier of the class the annotated object belongs to.
         sensor_reference: dict
             Dictionary of the sensor reference.
-        """
 
+        """
         polygon = super().to_raillabel()
         polygon[0]["closed"] = True
         polygon[0]["mode"] = "MODE_POLY2D_ABSOLUTE"

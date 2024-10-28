@@ -30,6 +30,7 @@ class Segmentation3d(_Annotation):
         List of point indices of the lidar pointcloud.
     number_of_points: int
         Total number of points in the associated_points.
+
     """
 
     associated_points: t.List[int]
@@ -50,8 +51,8 @@ class Segmentation3d(_Annotation):
         -------
         Segmentation3d
             Converted 3d segmentation.
-        """
 
+        """
         return Segmentation3d(
             id=UUID(data_dict["id"]),
             object_id=UUID(data_dict["objectId"]),

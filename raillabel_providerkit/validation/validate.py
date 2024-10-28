@@ -26,8 +26,8 @@ def validate(scene: raillabel.Scene, onthology: t.Union[dict, Path]) -> t.List[s
     list[str]
         list of all requirement errors in the scene. If an empty list is returned, then there are
         no errors present and the scene is valid.
-    """
 
+    """
     errors = []
 
     errors += validate_onthology(scene, onthology)

@@ -63,12 +63,10 @@ templates_path = ["_templates"]
 
 # The full version, including alpha/beta/rc tags.
 version = raillabel_providerkit.__version__
-rst_epilog = """
+rst_epilog = f"""
 .. |Project| replace:: {project}
 .. |Version| replace:: {version}
-""".format(
-    project=project, version=version
-)
+"""
 
 
 # -- Options for copy-button -------------------------------------------------
