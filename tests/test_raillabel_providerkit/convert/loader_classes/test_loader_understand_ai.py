@@ -3,12 +3,8 @@
 
 import pytest
 import raillabel
-import raillabel.load_
-import raillabel.load_.loader_classes
-import raillabel.load_.loader_classes.loader_raillabel
 
 from raillabel_providerkit.convert.loader_classes.loader_understand_ai import LoaderUnderstandAi
-
 
 def test_supports__true(json_data):
     assert LoaderUnderstandAi().supports(json_data["understand_ai_real_life"])
@@ -64,4 +60,4 @@ def remove_non_parsed_fields(raillabel_data: dict) -> dict:
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-vv"])
+    pytest.main([__file__, "-v"])
