@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from ._translation import fetch_sensor_resolutions, fetch_sensor_type, translate_sensor_id
@@ -41,14 +42,14 @@ class CoordinateSystem:
     uid: str
     topic: str
     frame_id: str
-    position: t.List[float]
-    rotation_quaternion: t.List[float]
-    rotation_matrix: t.List[float]
-    angle_axis_rotation: t.List[float]
-    homogeneous_transform: t.Optional[t.List[float]] = None
-    measured_position: t.Optional[t.List[float]] = None
-    camera_matrix: t.Optional[t.List[float]] = None
-    dist_coeffs: t.Optional[t.List[float]] = None
+    position: list[float]
+    rotation_quaternion: list[float]
+    rotation_matrix: list[float]
+    angle_axis_rotation: list[float]
+    homogeneous_transform: list[float] | None = None
+    measured_position: list[float] | None = None
+    camera_matrix: list[float] | None = None
+    dist_coeffs: list[float] | None = None
 
     @property
     def translated_uid(self) -> str:
@@ -56,7 +57,7 @@ class CoordinateSystem:
         return translate_sensor_id(self.uid)
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> "CoordinateSystem":
+    def fromdict(cls, data_dict: dict) -> CoordinateSystem:
         """Generate a CoordinateSystem from a dictionary in the UAI format.
 
         Parameters
@@ -84,7 +85,7 @@ class CoordinateSystem:
             dist_coeffs=data_dict.get("dist_coeffs"),
         )
 
-    def to_raillabel(self) -> t.Tuple[dict, dict]:
+    def to_raillabel(self) -> tuple[dict, dict]:
         """Convert to a raillabel compatible dict.
 
         Returns
@@ -117,7 +118,7 @@ class CoordinateSystem:
 
         return stream_dict, coordinate_system_dict
 
-    def _stream_properties_to_raillabel(self, sensor_type: str) -> t.Optional[dict]:
+    def _stream_properties_to_raillabel(self, sensor_type: str) -> dict | None:
         if sensor_type == "camera":
             return {
                 "intrinsics_pinhole": {

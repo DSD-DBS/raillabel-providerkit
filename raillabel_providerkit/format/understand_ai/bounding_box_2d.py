@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 from uuid import UUID
 
@@ -45,7 +46,7 @@ class BoundingBox2d(_Annotation):
     OPENLABEL_ID = "bbox"
 
     @classmethod
-    def fromdict(cls, data_dict: t.Dict) -> "BoundingBox2d":
+    def fromdict(cls, data_dict: dict) -> BoundingBox2d:
         """Generate a BoundingBox2d from a dictionary in the UAI format.
 
         Parameters
@@ -71,7 +72,7 @@ class BoundingBox2d(_Annotation):
             sensor=SensorReference.fromdict(data_dict["sensor"]),
         )
 
-    def _val_to_raillabel(self) -> list:
+    def _val_to_raillabel(self) -> list[float]:
         return [
             (self.x_max + self.x_min) / 2,
             (self.y_max + self.y_min) / 2,

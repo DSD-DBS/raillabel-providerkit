@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 from uuid import UUID
 
@@ -33,13 +34,13 @@ class Segmentation3d(_Annotation):
 
     """
 
-    associated_points: t.List[int]
+    associated_points: list[int]
     number_of_points: int
 
     OPENLABEL_ID = "vec"
 
     @classmethod
-    def fromdict(cls, data_dict: t.Dict) -> "Segmentation3d":
+    def fromdict(cls, data_dict: dict) -> Segmentation3d:
         """Generate a Segmentation3d from a dictionary in the UAI format.
 
         Parameters

@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 from ..._util._warning import _warning
@@ -25,11 +26,11 @@ class Scene:
     """
 
     metadata: Metadata
-    coordinate_systems: t.Dict[str, CoordinateSystem]
-    frames: t.Dict[int, Frame]
+    coordinate_systems: dict[str, CoordinateSystem]
+    frames: dict[int, Frame]
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> "Scene":
+    def fromdict(cls, data_dict: dict) -> Scene:
         """Generate a Scene from a dictionary in the UAI format.
 
         Parameters
@@ -69,7 +70,7 @@ class Scene:
         }
 
     @classmethod
-    def _coordinate_systems_fromdict(cls, data_dict: t.List[dict]) -> t.Dict[str, CoordinateSystem]:
+    def _coordinate_systems_fromdict(cls, data_dict: list[dict]) -> dict[str, CoordinateSystem]:
         coordinate_systems = {}
         for cs in data_dict:
             coordinate_systems[cs["coordinate_system_id"]] = CoordinateSystem.fromdict(cs)
@@ -77,7 +78,7 @@ class Scene:
         return coordinate_systems
 
     @classmethod
-    def _frames_fromdict(cls, data_dict: t.List[dict]) -> t.Dict[int, Frame]:
+    def _frames_fromdict(cls, data_dict: list[dict]) -> dict[int, Frame]:
         frames = {}
         for frame in data_dict:
             frame_id = int(frame["frameId"])

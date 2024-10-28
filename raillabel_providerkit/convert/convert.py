@@ -1,7 +1,7 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
 
 import raillabel
 
@@ -10,7 +10,7 @@ from . import loader_classes as loader_classes_pkg
 from .loader_classes import LoaderABC
 
 
-def convert(data: dict, loader_class: t.Optional[t.Type[LoaderABC]] = None) -> raillabel.Scene:
+def convert(data: dict, loader_class: type[LoaderABC] | None = None) -> raillabel.Scene:
     """Convert annotation data from provider formats into raillabel.
 
     Parameters
@@ -38,7 +38,7 @@ def convert(data: dict, loader_class: t.Optional[t.Type[LoaderABC]] = None) -> r
     return loader_class().load(data)
 
 
-def _select_loader_class(data: dict) -> t.Type[LoaderABC]:
+def _select_loader_class(data: dict) -> type[LoaderABC]:
     loader_classes = [
         cls
         for cls in loader_classes_pkg.__dict__.values()

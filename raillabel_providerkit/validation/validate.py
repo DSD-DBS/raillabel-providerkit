@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from pathlib import Path
 
 import raillabel
@@ -9,7 +10,7 @@ import raillabel
 from . import validate_onthology
 
 
-def validate(scene: raillabel.Scene, onthology: t.Union[dict, Path]) -> t.List[str]:
+def validate(scene: raillabel.Scene, onthology: dict | Path) -> list[str]:
     """Validate a scene based on the Deutsche Bahn Requirements.
 
     Parameters

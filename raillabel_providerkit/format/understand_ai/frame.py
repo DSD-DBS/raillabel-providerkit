@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 import uuid
 from dataclasses import dataclass
 from decimal import Decimal
@@ -35,13 +36,13 @@ class Frame:
 
     id: int
     timestamp: Decimal
-    bounding_box_2ds: t.Dict[str, BoundingBox2d]
-    bounding_box_3ds: t.Dict[str, BoundingBox3d]
-    polygon_2ds: t.Dict[str, Polygon2d]
-    polyline_2ds: t.Dict[str, Polyline2d]
-    segmentation_3ds: t.Dict[str, Segmentation3d]
+    bounding_box_2ds: dict[str, BoundingBox2d]
+    bounding_box_3ds: dict[str, BoundingBox3d]
+    polygon_2ds: dict[str, Polygon2d]
+    polyline_2ds: dict[str, Polyline2d]
+    segmentation_3ds: dict[str, Segmentation3d]
 
-    _annotation_uids: t.Set[str] = None
+    _annotation_uids: set[str] = None
 
     @property
     def annotations(self) -> dict:
@@ -89,7 +90,7 @@ class Frame:
         return {sensor.type: sensor for sensor in sensors_list}
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> "Frame":
+    def fromdict(cls, data_dict: dict) -> Frame:
         """Generate a Frame from a dictionary in the UAI format.
 
         Parameters
@@ -144,8 +145,8 @@ class Frame:
 
     @classmethod
     def _annotation_fromdict(
-        cls, data_dict: dict, annotation_class: t.Type[_Annotation]
-    ) -> t.Dict[str, t.Type[_Annotation]]:
+        cls, data_dict: dict, annotation_class: type[_Annotation]
+    ) -> dict[str, type[_Annotation]]:
         annotations = {}
         for annotation_dict in data_dict:
             annotation_dict["id"] = cls._check_duplicate_annotation_uid(annotation_dict["id"])

@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from enum import Enum
 
 from ..exceptions import ValueDoesNotMatchTypeError
@@ -16,7 +17,7 @@ class AttributeType(Enum):
     VEC = "vec"
 
     @classmethod
-    def from_value(cls, attribute_value_class: t.Type) -> "AttributeType":
+    def from_value(cls, attribute_value_class: type) -> AttributeType:
         """Return AttributeType based on class of attribute value.
 
         Parameters

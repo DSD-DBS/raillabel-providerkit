@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 from uuid import UUID
 
@@ -31,12 +32,12 @@ class Polygon2d(_Annotation):
 
     """
 
-    points: t.List[t.Tuple[float, float]]
+    points: list[tuple[float, float]]
 
     OPENLABEL_ID = "poly2d"
 
     @classmethod
-    def fromdict(cls, data_dict: t.Dict) -> "Polygon2d":
+    def fromdict(cls, data_dict: dict) -> Polygon2d:
         """Generate a Polygon2d from a dictionary in the UAI format.
 
         Parameters
@@ -59,7 +60,7 @@ class Polygon2d(_Annotation):
             points=[(p[0], p[1]) for p in data_dict["geometry"]["points"]],
         )
 
-    def to_raillabel(self) -> t.Tuple[dict, str, str, dict]:
+    def to_raillabel(self) -> tuple[dict, str, str, dict]:
         """Convert to a raillabel compatible dict.
 
         Returns
@@ -80,5 +81,5 @@ class Polygon2d(_Annotation):
 
         return polygon
 
-    def _val_to_raillabel(self) -> t.List[float]:
+    def _val_to_raillabel(self) -> list[float]:
         return [coordinate for point in self.points for coordinate in point]

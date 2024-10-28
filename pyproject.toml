@@ -84,7 +84,6 @@ ignore = [
 
     # to be removed later
     "TID252",
-    "FA100",
 ]
 
 [tool.mypy]

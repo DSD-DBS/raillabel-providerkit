@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -26,7 +27,7 @@ class LoaderABC(ABC):
     """
 
     scene: raillabel.Scene
-    warnings: t.List[str]
+    warnings: list[str]
     SCHEMA_PATH: Path
 
     @abstractmethod

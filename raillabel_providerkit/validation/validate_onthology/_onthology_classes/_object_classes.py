@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from dataclasses import dataclass
 
 import raillabel
@@ -12,11 +13,11 @@ from ._sensor_type import _SensorType
 
 @dataclass
 class _ObjectClass:
-    attributes: t.Dict[str, t.Type[_Attribute]]
-    sensor_types: t.Dict[raillabel.format.SensorType, _SensorType]
+    attributes: dict[str, type[_Attribute]]
+    sensor_types: dict[raillabel.format.SensorType, _SensorType]
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> "_ObjectClass":
+    def fromdict(cls, data_dict: dict) -> _ObjectClass:
         if "attributes" not in data_dict:
             data_dict["attributes"] = {}
 
@@ -31,7 +32,7 @@ class _ObjectClass:
             sensor_types=cls._sensor_types_fromdict(data_dict["sensor_types"]),
         )
 
-    def check(self, annotation: t.Type[raillabel.format._ObjectAnnotation]) -> t.List[str]:
+    def check(self, annotation: type[raillabel.format._ObjectAnnotation]) -> list[str]:
         errors = []
 
         errors.extend(self._check_undefined_attributes(annotation))
@@ -41,7 +42,7 @@ class _ObjectClass:
         return errors
 
     @classmethod
-    def _attribute_fromdict(cls, attribute: dict or str) -> t.Type[_Attribute]:
+    def _attribute_fromdict(cls, attribute: dict or str) -> type[_Attribute]:
         for attribute_class in attribute_classes():
             if attribute_class.supports(attribute):
                 return attribute_class.fromdict(attribute)
@@ -49,15 +50,15 @@ class _ObjectClass:
         raise ValueError
 
     @classmethod
-    def _sensor_types_fromdict(cls, sensor_types_dict: dict) -> t.Dict[str, _SensorType]:
+    def _sensor_types_fromdict(cls, sensor_types_dict: dict) -> dict[str, _SensorType]:
         return {
             raillabel.format.SensorType(type_id): _SensorType.fromdict(sensor_type_dict)
             for type_id, sensor_type_dict in sensor_types_dict.items()
         }
 
     def _check_undefined_attributes(
-        self, annotation: t.Type[raillabel.format._ObjectAnnotation]
-    ) -> t.List[str]:
+        self, annotation: type[raillabel.format._ObjectAnnotation]
+    ) -> list[str]:
         return [
             f"Undefined attribute '{attr_name}' in annotation {annotation.uid}."
             for attr_name in annotation.attributes
@@ -65,8 +66,8 @@ class _ObjectClass:
         ]
 
     def _check_missing_attributes(
-        self, annotation: t.Type[raillabel.format._ObjectAnnotation]
-    ) -> t.List[str]:
+        self, annotation: type[raillabel.format._ObjectAnnotation]
+    ) -> list[str]:
         return [
             f"Missing attribute '{attr_name}' in annotation {annotation.uid}."
             for attr_name in self._compile_applicable_attributes(annotation)
@@ -74,8 +75,8 @@ class _ObjectClass:
         ]
 
     def _check_false_attribute_type(
-        self, annotation: t.Type[raillabel.format._ObjectAnnotation]
-    ) -> t.List[str]:
+        self, annotation: type[raillabel.format._ObjectAnnotation]
+    ) -> list[str]:
         errors = []
 
         applicable_attributes = self._compile_applicable_attributes(annotation)
@@ -90,8 +91,8 @@ class _ObjectClass:
         return errors
 
     def _compile_applicable_attributes(
-        self, annotation: t.Type[raillabel.format._ObjectAnnotation]
-    ) -> t.Dict[str, t.Type[_Attribute]]:
+        self, annotation: type[raillabel.format._ObjectAnnotation]
+    ) -> dict[str, type[_Attribute]]:
         applicable_attributes = self.attributes
 
         if annotation.sensor.type in self.sensor_types:

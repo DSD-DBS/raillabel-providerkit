@@ -1,8 +1,9 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+from __future__ import annotations
+
 import json
-import typing as t
 from pathlib import Path
 
 import jsonschema
@@ -26,7 +27,7 @@ class LoaderUnderstandAi(LoaderABC):
     """
 
     scene: uai_format.Scene
-    warnings: t.List[str]
+    warnings: list[str]
 
     SCHEMA_PATH: Path = (
         Path(__file__).parent.parent.parent / "format" / "understand_ai_t4_schema.json"
@@ -84,7 +85,7 @@ class LoaderUnderstandAi(LoaderABC):
             and "frames" in data
         )
 
-    def validate_schema(self, data: dict) -> t.List[str]:
+    def validate_schema(self, data: dict) -> list[str]:
         """Check if the schema is correct."""
         with self.SCHEMA_PATH.open() as file:
             schema = json.load(file)

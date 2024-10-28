@@ -1,7 +1,8 @@
 # Copyright DB Netz AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import typing as t
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from uuid import UUID
@@ -21,10 +22,10 @@ class _Annotation(ABC):
 
     @classmethod
     @abstractmethod
-    def fromdict(cls, data_dict: t.Dict) -> t.Type["_Annotation"]:
+    def fromdict(cls, data_dict: dict) -> type[_Annotation]:
         raise NotImplementedError
 
-    def to_raillabel(self) -> t.Tuple[dict, str, str, dict]:
+    def to_raillabel(self) -> tuple[dict, str, str, dict]:
         """Convert to a raillabel compatible dict.
 
         Returns
