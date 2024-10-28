@@ -3,13 +3,11 @@
 
 import glob
 import json
-import sys
 import typing as t
 from pathlib import Path
 
 import pytest
-
-sys.path.insert(1, str(Path(__file__).parent.parent))
+import raillabel
 
 json_data_directories = [
     Path(__file__).parent / "__test_assets__",
@@ -68,3 +66,48 @@ def _load_json_data(path: Path) -> dict:
     with path.open() as f:
         json_data = json.load(f)
     return json_data
+
+@pytest.fixture
+def empty_scene() -> raillabel.Scene:
+    return raillabel.Scene(
+        metadata=raillabel.format.Metadata(schema_version="1.0.0"),
+        sensors={},
+        objects={},
+        frames={},
+    )
+
+@pytest.fixture
+def default_frame(empty_annotation) -> raillabel.format.Frame:
+    return raillabel.format.Frame(
+        uid=0,
+        timestamp=None,
+        sensors={},
+        frame_data={},
+        annotations={
+            "0fb4fc0b-3eeb-443a-8dd0-2caf9912d016": empty_annotation
+        }
+    )
+
+@pytest.fixture
+def empty_frame() -> raillabel.format.Frame:
+    return raillabel.format.Frame(
+        uid=0,
+        timestamp=None,
+        sensors={},
+        frame_data={},
+        annotations={}
+    )
+
+@pytest.fixture
+def empty_annotation() -> raillabel.format.Bbox:
+    return raillabel.format.Bbox(
+        uid="1f654afe-0a18-497f-9db8-afac360ce94c",
+        object=raillabel.format.Object(
+            uid="7df959d7-0ec2-4722-8b62-bb2e529de2ec",
+            name="person0000",
+            type="person",
+        ),
+        sensor=None,
+        pos=raillabel.format.Point2d(0.0, 0.0),
+        size=raillabel.format.Size2d(0.0, 0.0),
+    )

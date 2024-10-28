@@ -2,13 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-import sys
-from pathlib import Path
 
 import pytest
-
-sys.path.insert(1, str(Path(__file__).parent.parent.parent.parent.parent))
-
 import raillabel
 
 
@@ -115,5 +110,4 @@ def test_raillabel_loader_warnings(loader):
 
 # Executes the test if the file is called
 if __name__ == "__main__":
-    os.system("clear")
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear"])
