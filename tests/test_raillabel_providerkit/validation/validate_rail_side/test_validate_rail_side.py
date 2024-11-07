@@ -11,16 +11,15 @@ from raillabel_providerkit.validation.validate_rail_side.validate_rail_side impo
 
 def test_validate_rail_side__no_errors(empty_scene, empty_frame):
     scene = empty_scene
-    scene.objects["a1082ef9-555b-4b69-a888-7da531d8a2eb"] = raillabel.format.Object(
-        uid="a1082ef9-555b-4b69-a888-7da531d8a2eb", name="track0001", type="track"
-    )
     object = raillabel.format.Object(
         uid="a1082ef9-555b-4b69-a888-7da531d8a2eb", name="track0001", type="track"
     )
+    scene.objects[object.uid] = object
     sensor = raillabel.format.Sensor(
         uid="rgb_center",
         type=raillabel.format.SensorType.CAMERA,
     )
+    scene.sensors[sensor.uid] = sensor
     frame = empty_frame
     frame.annotations["325b1f55-a2ef-475f-a780-13e1a9e823c3"] = raillabel.format.Poly2d(
         uid="325b1f55-a2ef-475f-a780-13e1a9e823c3",
@@ -44,6 +43,7 @@ def test_validate_rail_side__no_errors(empty_scene, empty_frame):
         closed=False,
         attributes={"railSide": "rightRail"},
     )
+    scene.frames[frame.uid] = frame
 
     actual = validate_rail_side(scene)
     assert len(actual) == 0
@@ -51,16 +51,15 @@ def test_validate_rail_side__no_errors(empty_scene, empty_frame):
 
 def test_validate_rail_side__rail_sides_switched(empty_scene, empty_frame):
     scene = empty_scene
-    scene.objects["a1082ef9-555b-4b69-a888-7da531d8a2eb"] = raillabel.format.Object(
-        uid="a1082ef9-555b-4b69-a888-7da531d8a2eb", name="track0001", type="track"
-    )
     object = raillabel.format.Object(
         uid="a1082ef9-555b-4b69-a888-7da531d8a2eb", name="track0001", type="track"
     )
+    scene.objects[object.uid] = object
     sensor = raillabel.format.Sensor(
         uid="rgb_center",
         type=raillabel.format.SensorType.CAMERA,
     )
+    scene.sensors[sensor.uid] = sensor
     frame = empty_frame
     frame.annotations["325b1f55-a2ef-475f-a780-13e1a9e823c3"] = raillabel.format.Poly2d(
         uid="325b1f55-a2ef-475f-a780-13e1a9e823c3",
@@ -84,6 +83,7 @@ def test_validate_rail_side__rail_sides_switched(empty_scene, empty_frame):
         closed=False,
         attributes={"railSide": "leftRail"},
     )
+    scene.frames[frame.uid] = frame
 
     actual = validate_rail_side(scene)
     assert len(actual) == 1
@@ -91,16 +91,15 @@ def test_validate_rail_side__rail_sides_switched(empty_scene, empty_frame):
 
 def test_validate_rail_side__two_left_rails(empty_scene, empty_frame):
     scene = empty_scene
-    scene.objects["a1082ef9-555b-4b69-a888-7da531d8a2eb"] = raillabel.format.Object(
-        uid="a1082ef9-555b-4b69-a888-7da531d8a2eb", name="track0001", type="track"
-    )
     object = raillabel.format.Object(
         uid="a1082ef9-555b-4b69-a888-7da531d8a2eb", name="track0001", type="track"
     )
+    scene.objects[object.uid] = object
     sensor = raillabel.format.Sensor(
         uid="rgb_center",
         type=raillabel.format.SensorType.CAMERA,
     )
+    scene.sensors[sensor.uid] = sensor
     frame = empty_frame
     frame.annotations["325b1f55-a2ef-475f-a780-13e1a9e823c3"] = raillabel.format.Poly2d(
         uid="325b1f55-a2ef-475f-a780-13e1a9e823c3",
@@ -124,6 +123,7 @@ def test_validate_rail_side__two_left_rails(empty_scene, empty_frame):
         closed=False,
         attributes={"railSide": "leftRail"},
     )
+    scene.frames[frame.uid] = frame
 
     actual = validate_rail_side(scene)
     assert len(actual) == 1
@@ -131,16 +131,15 @@ def test_validate_rail_side__two_left_rails(empty_scene, empty_frame):
 
 def test_validate_rail_side__two_right_rails(empty_scene, empty_frame):
     scene = empty_scene
-    scene.objects["a1082ef9-555b-4b69-a888-7da531d8a2eb"] = raillabel.format.Object(
-        uid="a1082ef9-555b-4b69-a888-7da531d8a2eb", name="track0001", type="track"
-    )
     object = raillabel.format.Object(
         uid="a1082ef9-555b-4b69-a888-7da531d8a2eb", name="track0001", type="track"
     )
+    scene.objects[object.uid] = object
     sensor = raillabel.format.Sensor(
         uid="rgb_center",
         type=raillabel.format.SensorType.CAMERA,
     )
+    scene.sensors[sensor.uid] = sensor
     frame = empty_frame
     frame.annotations["325b1f55-a2ef-475f-a780-13e1a9e823c3"] = raillabel.format.Poly2d(
         uid="325b1f55-a2ef-475f-a780-13e1a9e823c3",
@@ -164,6 +163,7 @@ def test_validate_rail_side__two_right_rails(empty_scene, empty_frame):
         closed=False,
         attributes={"railSide": "rightRail"},
     )
+    scene.frames[frame.uid] = frame
 
     actual = validate_rail_side(scene)
     assert len(actual) == 1
