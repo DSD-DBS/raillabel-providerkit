@@ -169,5 +169,117 @@ def test_validate_rail_side__two_right_rails(empty_scene, empty_frame):
     assert len(actual) == 1
 
 
+def test_validate_rail_side__two_sensors_with_two_right_rails_each(empty_scene, empty_frame):
+    scene = empty_scene
+    object = raillabel.format.Object(
+        uid="a1082ef9-555b-4b69-a888-7da531d8a2eb", name="track0001", type="track"
+    )
+    scene.objects[object.uid] = object
+    sensor1 = raillabel.format.Sensor(
+        uid="rgb_center",
+        type=raillabel.format.SensorType.CAMERA,
+    )
+    sensor2 = raillabel.format.Sensor(
+        uid="ir_center",
+        type=raillabel.format.SensorType.CAMERA,
+    )
+    for sensor in [sensor1, sensor2]:
+        scene.sensors[sensor.uid] = sensor
+    frame = empty_frame
+    frame.annotations["325b1f55-a2ef-475f-a780-13e1a9e823c3"] = raillabel.format.Poly2d(
+        uid="325b1f55-a2ef-475f-a780-13e1a9e823c3",
+        object=object,
+        sensor=sensor1,
+        points=[
+            raillabel.format.Point2d(0, 0),
+            raillabel.format.Point2d(0, 1),
+        ],
+        closed=False,
+        attributes={"railSide": "rightRail"},
+    )
+    frame.annotations["be7d136a-8364-4fbd-b098-6f4a21205d22"] = raillabel.format.Poly2d(
+        uid="be7d136a-8364-4fbd-b098-6f4a21205d22",
+        object=object,
+        sensor=sensor1,
+        points=[
+            raillabel.format.Point2d(1, 0),
+            raillabel.format.Point2d(1, 1),
+        ],
+        closed=False,
+        attributes={"railSide": "rightRail"},
+    )
+    frame.annotations["f6db5b28-bdcd-437f-bf39-c044bb516de8"] = raillabel.format.Poly2d(
+        uid="f6db5b28-bdcd-437f-bf39-c044bb516de8",
+        object=object,
+        sensor=sensor2,
+        points=[
+            raillabel.format.Point2d(0, 0),
+            raillabel.format.Point2d(0, 1),
+        ],
+        closed=False,
+        attributes={"railSide": "rightRail"},
+    )
+    frame.annotations["89f8cf2c-1dc9-4956-9661-f1054ff069f9"] = raillabel.format.Poly2d(
+        uid="89f8cf2c-1dc9-4956-9661-f1054ff069f9",
+        object=object,
+        sensor=sensor2,
+        points=[
+            raillabel.format.Point2d(1, 0),
+            raillabel.format.Point2d(1, 1),
+        ],
+        closed=False,
+        attributes={"railSide": "rightRail"},
+    )
+    scene.frames[frame.uid] = frame
+
+    actual = validate_rail_side(scene)
+    assert len(actual) == 2
+
+
+def test_validate_rail_side__two_sensors_with_one_right_rail_each(empty_scene, empty_frame):
+    scene = empty_scene
+    object = raillabel.format.Object(
+        uid="a1082ef9-555b-4b69-a888-7da531d8a2eb", name="track0001", type="track"
+    )
+    scene.objects[object.uid] = object
+    sensor1 = raillabel.format.Sensor(
+        uid="rgb_center",
+        type=raillabel.format.SensorType.CAMERA,
+    )
+    sensor2 = raillabel.format.Sensor(
+        uid="ir_center",
+        type=raillabel.format.SensorType.CAMERA,
+    )
+    for sensor in [sensor1, sensor2]:
+        scene.sensors[sensor.uid] = sensor
+    frame = empty_frame
+    frame.annotations["325b1f55-a2ef-475f-a780-13e1a9e823c3"] = raillabel.format.Poly2d(
+        uid="325b1f55-a2ef-475f-a780-13e1a9e823c3",
+        object=object,
+        sensor=sensor1,
+        points=[
+            raillabel.format.Point2d(0, 0),
+            raillabel.format.Point2d(0, 1),
+        ],
+        closed=False,
+        attributes={"railSide": "rightRail"},
+    )
+    frame.annotations["f6db5b28-bdcd-437f-bf39-c044bb516de8"] = raillabel.format.Poly2d(
+        uid="f6db5b28-bdcd-437f-bf39-c044bb516de8",
+        object=object,
+        sensor=sensor2,
+        points=[
+            raillabel.format.Point2d(0, 0),
+            raillabel.format.Point2d(0, 1),
+        ],
+        closed=False,
+        attributes={"railSide": "rightRail"},
+    )
+    scene.frames[frame.uid] = frame
+
+    actual = validate_rail_side(scene)
+    assert len(actual) == 0
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear", "-v"])
