@@ -30,26 +30,30 @@ def validate_rail_side(scene: raillabel.Scene) -> list[str]:
         list(scene.sensors.values()), raillabel.format.SensorType.CAMERA
     )
 
-    # Filter scene for track annotations in camera sensors
-    filtered_scene = raillabel.filter(scene, include_object_types=["track"], include_sensors=cameras)
+    # Check per camera
+    for camera in cameras:
+        # Filter scene for track annotations in the selected camera sensor
+        filtered_scene = raillabel.filter(
+            scene, include_object_types=["track"], include_sensors=[camera]
+        )
 
-    # Check per frame
-    for frame_uid, frame in filtered_scene.frames.items():
-        # Count rails per track
-        counts_per_track = _count_rails_per_track_in_frame(frame)
+        # Check per frame
+        for frame_uid, frame in filtered_scene.frames.items():
+            # Count rails per track
+            counts_per_track = _count_rails_per_track_in_frame(frame)
 
-        # Add errors if there is more than one left or right rail
-        for object_uid, (left_count, right_count) in counts_per_track.items():
-            if left_count > 1:
-                errors.append(
-                    f"In frame {frame_uid}, the track with object_uid {object_uid} "
-                    f"has more than one ({left_count}) left rail."
-                )
-            if right_count > 1:
-                errors.append(
-                    f"In frame {frame_uid}, the track with object_uid {object_uid} "
-                    f"has more than one ({right_count}) right rail."
-                )
+            # Add errors if there is more than one left or right rail
+            for object_uid, (left_count, right_count) in counts_per_track.items():
+                if left_count > 1:
+                    errors.append(
+                        f"In sensor {camera} frame {frame_uid}, the track with"
+                        f" object_uid {object_uid} has more than one ({left_count}) left rail."
+                    )
+                if right_count > 1:
+                    errors.append(
+                        f"In sensor {camera} frame {frame_uid}, the track with"
+                        f" object_uid {object_uid} has more than one ({right_count}) right rail."
+                    )
 
     return errors
 
