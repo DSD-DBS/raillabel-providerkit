@@ -7,6 +7,8 @@ import raillabel
 from raillabel_providerkit.validation.validate_rail_side.validate_rail_side import (
     validate_rail_side,
     _count_rails_per_track_in_frame,
+    _get_track_limits_in_frame,
+    _filter_for_poly2ds,
 )
 
 
@@ -136,6 +138,51 @@ def test_count_rails_per_track_in_frame__many_rails_for_two_tracks(
     assert object2.uid in results.keys()
     assert results[object1.uid] == (LEFT_COUNT, RIGHT_COUNT)
     assert results[object2.uid] == (LEFT_COUNT, RIGHT_COUNT)
+
+
+def test_get_track_limits_in_frame__empty(empty_frame):
+    frame = empty_frame
+    results = _get_track_limits_in_frame(frame)
+    assert len(results) == 0
+
+
+def test_get_track_limits_in_frame__one_track_two_rails(
+    empty_frame, example_camera_1, example_track_1
+):
+    frame = empty_frame
+    sensor = example_camera_1
+    object = example_track_1
+
+    MAX_X_OF_LEFT = 42
+    MIN_X_OF_RIGHT = 73
+
+    frame.annotations["325b1f55-a2ef-475f-a780-13e1a9e823c3"] = raillabel.format.Poly2d(
+        uid="325b1f55-a2ef-475f-a780-13e1a9e823c3",
+        object=object,
+        sensor=sensor,
+        points=[
+            raillabel.format.Point2d(0, 0),
+            raillabel.format.Point2d(MAX_X_OF_LEFT, 1),
+        ],
+        closed=False,
+        attributes={"railSide": "leftRail"},
+    )
+    frame.annotations["be7d136a-8364-4fbd-b098-6f4a21205d22"] = raillabel.format.Poly2d(
+        uid="be7d136a-8364-4fbd-b098-6f4a21205d22",
+        object=object,
+        sensor=sensor,
+        points=[
+            raillabel.format.Point2d(1000, 0),
+            raillabel.format.Point2d(MIN_X_OF_RIGHT, 1),
+        ],
+        closed=False,
+        attributes={"railSide": "rightRail"},
+    )
+
+    results = _get_track_limits_in_frame(frame)
+    assert len(results) == 1
+    assert object.uid in results.keys()
+    assert results[object.uid] == (MAX_X_OF_LEFT, MIN_X_OF_RIGHT)
 
 
 def test_validate_rail_side__no_errors(empty_scene, empty_frame, example_camera_1, example_track_1):
