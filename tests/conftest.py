@@ -98,7 +98,7 @@ def default_frame(empty_annotation) -> raillabel.format.Frame:
 
 @pytest.fixture
 def empty_frame() -> raillabel.format.Frame:
-    return raillabel.format.Frame(uid=0, timestamp=None, sensors={}, frame_data={}, annotations={})
+    return raillabel.format.Frame(timestamp=None, sensors={}, frame_data={}, annotations={})
 
 
 @pytest.fixture
