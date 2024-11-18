@@ -131,14 +131,14 @@ def _count_rails_per_track_in_frame(frame: raillabel.format.Frame) -> dict[str, 
         left_count: int = 0
         right_count: int = 0
         for poly2d in poly2ds:
-            match poly2d.attributes["railSide"]:
-                case "leftRail":
-                    left_count += 1
-                case "rightRail":
-                    right_count += 1
-                case _:
-                    # NOTE: This is ignored because it is covered by validate_onthology
-                    continue
+            rail_side = poly2d.attributes["railSide"]
+            if rail_side == "leftRail":
+                left_count += 1
+            elif rail_side == "rightRail":
+                right_count += 1
+            else:
+                # NOTE: This is ignored because it is covered by validate_onthology
+                continue
 
         # Store counts of current track
         counts[object_uid] = (left_count, right_count)
