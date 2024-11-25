@@ -26,6 +26,8 @@ def _make_errors_readable(errors: ValidationError) -> list[str]:
             readable_errors.append(_convert_missing_error_to_string(error))
         elif error["type"] == "extra_forbidden":
             readable_errors.append(_convert_unexpected_field_error_to_string(error))
+        elif error["type"] == "literal_error":
+            readable_errors.append(_convert_literal_error_to_string(error))
         else:
             raise ValueError
 
@@ -38,6 +40,13 @@ def _convert_missing_error_to_string(error: dict) -> str:
 
 def _convert_unexpected_field_error_to_string(error: dict) -> str:
     return f"{_build_error_path(error["loc"][:-1])}: found unexpected field '{error["loc"][-1]}'."
+
+
+def _convert_literal_error_to_string(error: dict) -> str:
+    return (
+        f"{_build_error_path(error["loc"])}: value '{error["input"]}' does not match allowed values "
+        f"({error["ctx"]["expected"]})."
+    )
 
 
 def _build_error_path(loc: list[str]) -> str:
