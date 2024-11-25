@@ -5,6 +5,7 @@ import glob
 import json
 import typing as t
 from pathlib import Path
+from uuid import UUID
 
 import pytest
 import raillabel
@@ -88,11 +89,10 @@ def empty_scene() -> raillabel.Scene:
 @pytest.fixture
 def default_frame(empty_annotation) -> raillabel.format.Frame:
     return raillabel.format.Frame(
-        uid=0,
         timestamp=None,
         sensors={},
         frame_data={},
-        annotations={"0fb4fc0b-3eeb-443a-8dd0-2caf9912d016": empty_annotation},
+        annotations={UUID("0fb4fc0b-3eeb-443a-8dd0-2caf9912d016"): empty_annotation},
     )
 
 
@@ -104,13 +104,9 @@ def empty_frame() -> raillabel.format.Frame:
 @pytest.fixture
 def empty_annotation() -> raillabel.format.Bbox:
     return raillabel.format.Bbox(
-        uid="1f654afe-0a18-497f-9db8-afac360ce94c",
-        object=raillabel.format.Object(
-            uid="7df959d7-0ec2-4722-8b62-bb2e529de2ec",
-            name="person0000",
-            type="person",
-        ),
-        sensor=None,
+        object_id=UUID("7df959d7-0ec2-4722-8b62-bb2e529de2ec"),
+        sensor_id="IGNORE_THIS",
         pos=raillabel.format.Point2d(0.0, 0.0),
         size=raillabel.format.Size2d(0.0, 0.0),
+        attributes={},
     )

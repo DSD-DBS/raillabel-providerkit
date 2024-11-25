@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-import raillabel
 
 from raillabel_providerkit.validation.validate_empty_frames.validate_empty_frames import (
     _is_frame_empty,
@@ -10,9 +9,8 @@ from raillabel_providerkit.validation.validate_empty_frames.validate_empty_frame
 )
 
 
-def test_is_frame_empty__true():
-    frame = raillabel.format.Frame(uid=0, annotations={})
-    assert _is_frame_empty(frame)
+def test_is_frame_empty__true(empty_frame):
+    assert _is_frame_empty(empty_frame)
 
 
 def test_is_frame_empty__false(empty_annotation, empty_frame):
