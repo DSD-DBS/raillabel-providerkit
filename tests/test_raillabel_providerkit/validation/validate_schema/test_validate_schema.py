@@ -145,5 +145,30 @@ def test_wrong_type_uuid():
     assert "NOT A VALID UUID" in actual[0]
 
 
+def test_tuple_too_long():
+    data = {
+        "openlabel": {
+            "metadata": {"schema_version": "1.0.0"},
+            "coordinate_systems": {
+                "rgb_middle": {
+                    "pose_wrt_parent": {
+                        "translation": (0.0, 0.0, 0.0, 0.0),  # should have length of 3
+                        "quaternion": (0.0, 0.0, 0.0, 0.0),
+                    },
+                    "parent": "",
+                    "type": "sensor",
+                }
+            },
+        }
+    }
+
+    actual = validate_schema(data)
+    assert len(actual) == 1
+    assert "$.openlabel.coordinate_systems.rgb_middle.pose_wrt_parent.translation:" in actual[0]
+    assert "length" in actual[0]
+    assert "4" in actual[0]
+    assert "3" in actual[0]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

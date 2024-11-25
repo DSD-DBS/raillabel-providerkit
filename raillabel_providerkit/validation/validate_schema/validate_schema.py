@@ -40,6 +40,8 @@ def _make_errors_readable(errors: ValidationError) -> list[str]:  # noqa: C901
             readable_errors.append(_convert_false_type_error_to_string(error, "float"))
         elif error["type"] in ["uuid_type", "uuid_parsing"]:
             readable_errors.append(_convert_false_type_error_to_string(error, "UUID"))
+        elif error["type"] == "too_long":
+            readable_errors.append(_convert_too_long_error_to_string(error))
         else:
             raise ValueError
 
@@ -75,3 +77,10 @@ def _convert_false_type_error_to_string(error: dict, target_type: str) -> str:
         error_path = _build_error_path(error["loc"])
 
     return f"{error_path}: value '{error["input"]}' could not be interpreted " f"as {target_type}."
+
+
+def _convert_too_long_error_to_string(error: dict) -> str:
+    return (
+        f"{_build_error_path(error["loc"])}: should have length of {error["ctx"]["actual_length"]} "
+        f"but  has length of {error["ctx"]["max_length"]}."
+    )
