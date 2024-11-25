@@ -74,7 +74,7 @@ def test_wrong_type_bool():
     actual = validate_schema(data)
     assert len(actual) == 1
     assert (
-        "$.openlabel.frames.1.objects.113c2b35-0965-4c80-a212-08b262e94203.object_data.poly2d.0"
+        "$.openlabel.frames.1.objects.113c2b35-0965-4c80-a212-08b262e94203.object_data.poly2d.0.closed:"
         in actual[0]
     )
     assert "bool" in actual[0]
@@ -86,9 +86,19 @@ def test_wrong_type_int():
 
     actual = validate_schema(data)
     assert len(actual) == 1
-    assert "$.openlabel.frames" in actual[0]
+    assert "$.openlabel.frames:" in actual[0]
     assert "int" in actual[0]
     assert "NOT AN INT" in actual[0]
+
+
+def test_wrong_type_string():
+    data = {"openlabel": {"metadata": {"schema_version": "1.0.0", "comment": False}}}
+
+    actual = validate_schema(data)
+    assert len(actual) == 1
+    assert "$.openlabel.metadata.comment:" in actual[0]
+    assert "str" in actual[0]
+    assert "False" in actual[0]
 
 
 if __name__ == "__main__":

@@ -30,8 +30,12 @@ def _make_errors_readable(errors: ValidationError) -> list[str]:
             readable_errors.append(_convert_literal_error_to_string(error))
         elif error["type"] in ["bool_type", "bool_parsing"]:
             readable_errors.append(_convert_false_type_error_to_string(error, "bool"))
-        elif error["type"] in ["int_type", "int_parsing"]:
+        elif error["type"] in ["int_type", "int_parsing", "int_from_float"]:
             readable_errors.append(_convert_false_type_error_to_string(error, "int"))
+        elif error["type"] in ["decimal_type", "decimal_parsing"]:
+            readable_errors.append(_convert_false_type_error_to_string(error, "Decimal"))
+        elif error["type"] in ["string_type", "string_parsing"]:
+            readable_errors.append(_convert_false_type_error_to_string(error, "str"))
         else:
             raise ValueError
 
@@ -61,7 +65,9 @@ def _convert_literal_error_to_string(error: dict) -> str:
 
 
 def _convert_false_type_error_to_string(error: dict, target_type: str) -> str:
-    return (
-        f"{_build_error_path(error["loc"][:-1])}: value '{error["input"]}' could not be interpreted "
-        f"as {target_type}."
-    )
+    if "[key]" in error["loc"]:
+        error_path = _build_error_path(error["loc"][:-2])
+    else:
+        error_path = _build_error_path(error["loc"])
+
+    return f"{error_path}: value '{error["input"]}' could not be interpreted " f"as {target_type}."
