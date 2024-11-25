@@ -45,5 +45,41 @@ def test_unexpected_value():
     assert "'1.0.0'" in actual[0]
 
 
+def test_wrong_type_bool():
+    data = {
+        "openlabel": {
+            "metadata": {"schema_version": "1.0.0"},
+            "frames": {
+                "1": {
+                    "objects": {
+                        "113c2b35-0965-4c80-a212-08b262e94203": {
+                            "object_data": {
+                                "poly2d": [
+                                    {
+                                        "closed": "NOT A BOOLEAN",
+                                        "name": "not_important",
+                                        "val": [],
+                                        "mode": "MODE_POLY2D_ABSOLUTE",
+                                        "coordinate_system": "not_important",
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+        }
+    }
+
+    actual = validate_schema(data)
+    assert len(actual) == 1
+    assert (
+        "$.openlabel.frames.1.objects.113c2b35-0965-4c80-a212-08b262e94203.object_data.poly2d.0"
+        in actual[0]
+    )
+    assert "bool" in actual[0]
+    assert "NOT A BOOLEAN" in actual[0]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

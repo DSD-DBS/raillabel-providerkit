@@ -28,10 +28,19 @@ def _make_errors_readable(errors: ValidationError) -> list[str]:
             readable_errors.append(_convert_unexpected_field_error_to_string(error))
         elif error["type"] == "literal_error":
             readable_errors.append(_convert_literal_error_to_string(error))
+        elif error["type"] in ["bool_type", "bool_parsing"]:
+            readable_errors.append(_convert_false_type_error_to_string(error, "bool"))
         else:
             raise ValueError
 
     return readable_errors
+
+
+def _build_error_path(loc: list[str]) -> str:
+    path = "$"
+    for part in loc:
+        path += f".{part}"
+    return path
 
 
 def _convert_missing_error_to_string(error: dict) -> str:
@@ -49,8 +58,8 @@ def _convert_literal_error_to_string(error: dict) -> str:
     )
 
 
-def _build_error_path(loc: list[str]) -> str:
-    path = "$"
-    for part in loc:
-        path += f".{part}"
-    return path
+def _convert_false_type_error_to_string(error: dict, target_type: str) -> str:
+    return (
+        f"{_build_error_path(error["loc"][:-1])}: value '{error["input"]}' could not be interpreted "
+        f"as {target_type}."
+    )
