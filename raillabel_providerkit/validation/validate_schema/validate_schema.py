@@ -43,7 +43,7 @@ def _make_errors_readable(errors: ValidationError) -> list[str]:  # noqa: C901
         elif error["type"] == "too_long":
             readable_errors.append(_convert_too_long_error_to_string(error))
         else:
-            raise ValueError
+            readable_errors.append(str(error))
 
     return readable_errors
 
