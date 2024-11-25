@@ -51,7 +51,7 @@ def test_count_rails_per_track_in_frame__empty(empty_frame):
 # def test_count_rails_per_track_in_frame__many_rails_for_one_track(
 #     empty_frame, example_camera_1, example_track_1
 # ):
-    
+
 
 #     frame = empty_frame
 #     sensor = example_camera_1

@@ -5,9 +5,12 @@ from __future__ import annotations
 
 import numpy as np
 import raillabel
-from raillabel.filter import IncludeObjectTypeFilter, IncludeSensorIdFilter, IncludeAnnotationTypeFilter, IncludeSensorTypeFilter, IncludeAttributesFilter
-
-from raillabel_providerkit._util._filters import filter_sensor_uids_by_type
+from raillabel.filter import (
+    IncludeAnnotationTypeFilter,
+    IncludeObjectTypeFilter,
+    IncludeSensorIdFilter,
+    IncludeSensorTypeFilter,
+)
 
 
 def validate_rail_side(scene: raillabel.Scene) -> list[str]:
@@ -33,11 +36,13 @@ def validate_rail_side(scene: raillabel.Scene) -> list[str]:
     # Check per camera
     for camera in cameras:
         # Filter scene for track annotations in the selected camera sensor
-        filtered_scene = scene.filter([
-            IncludeObjectTypeFilter(["track"]),
-            IncludeSensorIdFilter([camera]),
-            IncludeAnnotationTypeFilter(["poly2d"]),
-        ])
+        filtered_scene = scene.filter(
+            [
+                IncludeObjectTypeFilter(["track"]),
+                IncludeSensorIdFilter([camera]),
+                IncludeAnnotationTypeFilter(["poly2d"]),
+            ]
+        )
 
         # Check per frame
         for frame_uid, frame in filtered_scene.frames.items():
