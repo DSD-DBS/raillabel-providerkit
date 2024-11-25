@@ -36,6 +36,8 @@ def _make_errors_readable(errors: ValidationError) -> list[str]:
             readable_errors.append(_convert_false_type_error_to_string(error, "Decimal"))
         elif error["type"] in ["string_type", "string_parsing"]:
             readable_errors.append(_convert_false_type_error_to_string(error, "str"))
+        elif error["type"] in ["float_type", "float_parsing"]:
+            readable_errors.append(_convert_false_type_error_to_string(error, "float"))
         else:
             raise ValueError
 

@@ -101,5 +101,29 @@ def test_wrong_type_string():
     assert "False" in actual[0]
 
 
+def test_wrong_type_float():
+    data = {
+        "openlabel": {
+            "metadata": {"schema_version": "1.0.0"},
+            "coordinate_systems": {
+                "rgb_middle": {
+                    "pose_wrt_parent": {
+                        "translation": (None, 0.0, 0.0),
+                        "quaternion": (0.0, 0.0, 0.0, 0.0),
+                    },
+                    "parent": "",
+                    "type": "sensor",
+                }
+            },
+        }
+    }
+
+    actual = validate_schema(data)
+    assert len(actual) == 1
+    assert "$.openlabel.coordinate_systems.rgb_middle.pose_wrt_parent.translation.0:" in actual[0]
+    assert "float" in actual[0]
+    assert "None" in actual[0]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
