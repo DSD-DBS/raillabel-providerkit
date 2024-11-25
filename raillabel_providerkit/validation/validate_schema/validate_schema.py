@@ -56,17 +56,17 @@ def _build_error_path(loc: list[str]) -> str:
 
 
 def _convert_missing_error_to_string(error: dict) -> str:
-    return f"{_build_error_path(error["loc"][:-1])}: required field '{error["loc"][-1]}' is missing."
+    return f"{_build_error_path(error['loc'][:-1])}: required field '{error['loc'][-1]}' is missing."
 
 
 def _convert_unexpected_field_error_to_string(error: dict) -> str:
-    return f"{_build_error_path(error["loc"][:-1])}: found unexpected field '{error["loc"][-1]}'."
+    return f"{_build_error_path(error['loc'][:-1])}: found unexpected field '{error['loc'][-1]}'."
 
 
 def _convert_literal_error_to_string(error: dict) -> str:
     return (
-        f"{_build_error_path(error["loc"])}: value '{error["input"]}' does not match allowed values "
-        f"({error["ctx"]["expected"]})."
+        f"{_build_error_path(error['loc'])}: value '{error['input']}' does not match allowed values "
+        f"({error['ctx']['expected']})."
     )
 
 
@@ -76,11 +76,11 @@ def _convert_false_type_error_to_string(error: dict, target_type: str) -> str:
     else:
         error_path = _build_error_path(error["loc"])
 
-    return f"{error_path}: value '{error["input"]}' could not be interpreted " f"as {target_type}."
+    return f"{error_path}: value '{error['input']}' could not be interpreted " f"as {target_type}."
 
 
 def _convert_too_long_error_to_string(error: dict) -> str:
     return (
-        f"{_build_error_path(error["loc"])}: should have length of {error["ctx"]["actual_length"]} "
-        f"but  has length of {error["ctx"]["max_length"]}."
+        f"{_build_error_path(error['loc'])}: should have length of {error['ctx']['actual_length']} "
+        f"but has length of {error['ctx']['max_length']}."
     )
