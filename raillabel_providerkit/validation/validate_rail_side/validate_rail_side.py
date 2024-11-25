@@ -32,109 +32,106 @@ def validate_rail_side(scene: raillabel.Scene) -> list[str]:
     """
     errors: list[str] = []
 
-    # Get a list of camera uids
-    cameras = list(scene.filter([IncludeSensorTypeFilter(["camera"])]).sensors.keys())
+    camera_uids = list(scene.filter([IncludeSensorTypeFilter(["camera"])]).sensors.keys())
 
-    # Check per camera
-    for camera in cameras:
-        # Filter scene for track annotations in the selected camera sensor
+    for camera_uid in camera_uids:
         filtered_scene = scene.filter(
             [
                 IncludeObjectTypeFilter(["track"]),
-                IncludeSensorIdFilter([camera]),
+                IncludeSensorIdFilter([camera_uid]),
                 IncludeAnnotationTypeFilter(["poly2d"]),
             ]
         )
 
-        # Check per frame
         for frame_uid, frame in filtered_scene.frames.items():
-            # Count rails per track
             counts_per_track = _count_rails_per_track_in_frame(frame)
 
-            # Add errors if there is more than one left or right rail
             for object_uid, (left_count, right_count) in counts_per_track.items():
-                if left_count > 1 or right_count > 1:
-                    if left_count > 1:
-                        errors.append(
-                            f"In sensor {camera} frame {frame_uid}, the track with"
-                            f" object_uid {object_uid} has more than one ({left_count}) left rail."
-                        )
-                    if right_count > 1:
-                        errors.append(
-                            f"In sensor {camera} frame {frame_uid}, the track with"
-                            f" object_uid {object_uid} has more than one ({right_count}) right rail."
-                        )
+                context = {
+                    "frame_uid": frame_uid,
+                    "object_uid": object_uid,
+                    "camera_uid": camera_uid,
+                }
+
+                count_errors = _check_rail_counts(context, left_count, right_count)
+                exactly_one_left_and_right_rail_exist = count_errors != []
+                if exactly_one_left_and_right_rail_exist:
+                    errors.extend(count_errors)
                     continue
 
-                # If exactly one left and right rail exists, check if the track has its rails swapped
-                # or intersects with itself
-                # Get the two annotations in question
-                left_rail: raillabel.format.Poly2d | None = _get_track_from_frame(
-                    frame, object_uid, "leftRail"
-                )
-                right_rail: raillabel.format.Poly2d | None = _get_track_from_frame(
-                    frame, object_uid, "rightRail"
-                )
+                left_rail = _get_track_from_frame(frame, object_uid, "leftRail")
+                right_rail = _get_track_from_frame(frame, object_uid, "rightRail")
                 if left_rail is None or right_rail is None:
                     continue
 
-                swap_error: str | None = _check_rails_for_swap(left_rail, right_rail, frame_uid)
-                if swap_error is not None:
-                    errors.append(swap_error)
+                errors.extend(
+                    _check_rails_for_swap_or_intersection(left_rail, right_rail, frame_uid)
+                )
 
     return errors
 
 
-def _check_rails_for_swap(
+def _check_rail_counts(context: dict, left_count: int, right_count: int) -> list[str]:
+    errors = []
+    if left_count > 1:
+        errors.append(
+            f"In sensor {context['camera_uid']} frame {context['frame_uid']}, the track with"
+            f" object_uid {context['object_uid']} has more than one ({left_count}) left rail."
+        )
+    if right_count > 1:
+        errors.append(
+            f"In sensor {context['camera_uid']} frame {context['frame_uid']}, the track with"
+            f" object_uid {context['object_uid']} has more than one ({right_count}) right rail."
+        )
+    return errors
+
+
+def _check_rails_for_swap_or_intersection(
     left_rail: raillabel.format.Poly2d,
     right_rail: raillabel.format.Poly2d,
     frame_uid: str | int = "unknown",
-) -> str | None:
-    # Ensure the rails belong to the same track
+) -> list[str]:
     if left_rail.object_id != right_rail.object_id:
-        return None
+        return []
 
     max_common_y = _find_max_common_y(left_rail, right_rail)
     if max_common_y is None:
-        return None
+        return []
 
     left_x = _find_x_by_y(max_common_y, left_rail)
     right_x = _find_x_by_y(max_common_y, right_rail)
     if left_x is None or right_x is None:
-        return None
+        return []
 
     object_uid = left_rail.object_id
     sensor_uid = left_rail.sensor_id if left_rail.sensor_id is not None else "unknown"
 
     if left_x >= right_x:
-        return (
+        return [
             f"In sensor {sensor_uid} frame {frame_uid}, the track with"
             f" object_uid {object_uid} has its rails swapped."
             f" At the maximum common y={max_common_y}, the left rail has x={left_x}"
             f" while the right rail has x={right_x}."
-        )
+        ]
 
     intersect_interval = _find_intersect_interval(left_rail, right_rail)
     if intersect_interval is not None:
-        return (
+        return [
             f"In sensor {sensor_uid} frame {frame_uid}, the track with"
             f" object_uid {object_uid} intersects with itself."
             f" The left and right rail intersect in y interval {intersect_interval}."
-        )
+        ]
 
-    return None
+    return []
 
 
 def _count_rails_per_track_in_frame(frame: raillabel.format.Frame) -> dict[UUID, tuple[int, int]]:
-    # For each track, the left and right rail counts are stored as a list (left, right)
+    """For each track, count the left and right rails."""
     counts: dict[UUID, list[int]] = {}
 
-    # For each track, count the left and right rails
     unfiltered_annotations = list(frame.annotations.values())
-    # Ensure we work only on Poly2d annotations
     poly2ds: list[raillabel.format.Poly2d] = _filter_for_poly2ds(unfiltered_annotations)
 
-    # Count left and right rails
     for poly2d in poly2ds:
         object_id = poly2d.object_id
         if object_id not in counts:
@@ -149,7 +146,6 @@ def _count_rails_per_track_in_frame(frame: raillabel.format.Frame) -> dict[UUID,
             # NOTE: This is ignored because it is covered by validate_onthology
             continue
 
-    # Return results
     return {
         object_id: (object_counts[0], object_counts[1])
         for object_id, object_counts in counts.items()
@@ -169,16 +165,14 @@ def _filter_for_poly2ds(
 def _find_intersect_interval(
     line1: raillabel.format.Poly2d, line2: raillabel.format.Poly2d
 ) -> tuple[float, float] | None:
-    # If the two polylines intersect anywhere, return the y interval where they intersect.
-
-    # Get all y values where either polyline has points
-    y_values: list[float] = sorted(
+    """If the two polylines intersect anywhere, return the y interval where they intersect."""
+    y_values_with_points_in_either_polyline: list[float] = sorted(
         _get_y_of_all_points_of_poly2d(line1).union(_get_y_of_all_points_of_poly2d(line2))
     )
 
     order: bool | None = None
     last_y: float | None = None
-    for y in y_values:
+    for y in y_values_with_points_in_either_polyline:
         x1 = _find_x_by_y(y, line1)
         x2 = _find_x_by_y(y, line2)
 
@@ -191,9 +185,9 @@ def _find_intersect_interval(
 
         new_order = x1 < x2
 
-        if order is not None and new_order != order and last_y is not None:
-            # The order has flipped. There is an intersection between previous and current y
-            return (last_y, y)
+        order_has_flipped = order is not None and new_order != order and last_y is not None
+        if order_has_flipped:
+            return (last_y, y)  # type: ignore  # noqa: PGH003
 
         order = new_order
         last_y = y
@@ -208,21 +202,20 @@ def _find_max_y(poly2d: raillabel.format.Poly2d) -> float:
 def _find_max_common_y(
     line1: raillabel.format.Poly2d, line2: raillabel.format.Poly2d
 ) -> float | None:
-    if len(line1.points) == 0 or len(line2.points) == 0:
-        # One of the lines is empty
+    one_line_is_empty = len(line1.points) == 0 or len(line2.points) == 0
+    if one_line_is_empty:
         return None
 
     max_y_of_line1: float = _find_max_y(line1)
-    if _y_in_poly2d(max_y_of_line1, line2):
-        # The highest y is the bottom of line 1
+    highest_y_is_bottom_of_line1 = _y_in_poly2d(max_y_of_line1, line2)
+    if highest_y_is_bottom_of_line1:
         return max_y_of_line1
 
     max_y_of_line2: float = _find_max_y(line2)
-    if _y_in_poly2d(max_y_of_line2, line1):
-        # The highest y is the bottom of line 2
+    highest_y_is_bottom_of_line2 = _y_in_poly2d(max_y_of_line2, line1)
+    if highest_y_is_bottom_of_line2:
         return max_y_of_line2
 
-    # There is no y overlap
     return None
 
 
