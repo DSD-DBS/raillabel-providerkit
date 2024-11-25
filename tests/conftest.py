@@ -110,3 +110,8 @@ def empty_annotation() -> raillabel.format.Bbox:
         size=raillabel.format.Size2d(0.0, 0.0),
         attributes={},
     )
+
+
+@pytest.fixture
+def ignore_uuid() -> UUID:
+    return UUID("00000000-0000-0000-0000-000000000000")
