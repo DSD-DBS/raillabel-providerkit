@@ -19,7 +19,7 @@ def validate_schema(data: dict) -> list[str]:
         return []
 
 
-def _make_errors_readable(errors: ValidationError) -> list[str]:
+def _make_errors_readable(errors: ValidationError) -> list[str]:  # noqa: C901
     readable_errors = []
     for error in json.loads(errors.json()):
         if error["type"] == "missing":
@@ -38,6 +38,8 @@ def _make_errors_readable(errors: ValidationError) -> list[str]:
             readable_errors.append(_convert_false_type_error_to_string(error, "str"))
         elif error["type"] in ["float_type", "float_parsing"]:
             readable_errors.append(_convert_false_type_error_to_string(error, "float"))
+        elif error["type"] in ["uuid_type", "uuid_parsing"]:
+            readable_errors.append(_convert_false_type_error_to_string(error, "UUID"))
         else:
             raise ValueError
 

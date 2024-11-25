@@ -125,5 +125,25 @@ def test_wrong_type_float():
     assert "None" in actual[0]
 
 
+def test_wrong_type_uuid():
+    data = {
+        "openlabel": {
+            "metadata": {"schema_version": "1.0.0"},
+            "objects": {
+                "NOT A VALID UUID": {
+                    "name": "person_0001",
+                    "type": "person",
+                }
+            },
+        }
+    }
+
+    actual = validate_schema(data)
+    assert len(actual) == 1
+    assert "$.openlabel.objects:" in actual[0]
+    assert "UUID" in actual[0]
+    assert "NOT A VALID UUID" in actual[0]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
