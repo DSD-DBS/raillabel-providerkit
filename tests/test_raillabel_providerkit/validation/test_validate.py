@@ -5,15 +5,17 @@ import pytest
 
 from raillabel_providerkit import validate
 
-# == Tests ============================
+
+def test_no_errors_in_empty_scene():
+    scene_dict = {"openlabel": {"metadata": {"schema_version": "1.0.0"}}}
+    actual = validate(scene_dict)
+    assert len(actual) == 0
 
 
-def test_no_errors(demo_onthology, valid_onthology_scene):
-    assert validate(valid_onthology_scene, demo_onthology) == []
-
-
-def test_onthology_errors(demo_onthology, invalid_onthology_scene):
-    assert len(validate(invalid_onthology_scene, demo_onthology)) == 1
+def test_schema_errors():
+    scene_dict = {"openlabel": {}}
+    actual = validate(scene_dict)
+    assert len(actual) == 1
 
 
 if __name__ == "__main__":

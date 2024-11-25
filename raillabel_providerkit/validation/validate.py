@@ -3,24 +3,16 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
-import raillabel
-
-from . import validate_onthology
+from . import validate_schema
 
 
-def validate(scene: raillabel.Scene, onthology: dict | Path) -> list[str]:
+def validate(scene_dict: dict) -> list[str]:
     """Validate a scene based on the Deutsche Bahn Requirements.
 
     Parameters
     ----------
-    scene : raillabel.Scene
-        The scene containing the annotations.
-    onthology : dict or Path
-        Onthology YAML-data or file containing a information about all classes and their
-        attributes. The onthology must adhere to the onthology_schema. If a path is provided, the
-        file is loaded as a YAML.
+    scene_dict : dict
+        The scene as a dictionary directly from `json.load()` in the raillabel format.
 
     Returns
     -------
@@ -31,6 +23,9 @@ def validate(scene: raillabel.Scene, onthology: dict | Path) -> list[str]:
     """
     errors = []
 
-    errors += validate_onthology(scene, onthology)
+    errors.extend(validate_schema(scene_dict))
+
+    if len(errors) > 0:
+        return errors
 
     return errors
