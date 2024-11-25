@@ -30,6 +30,8 @@ def _make_errors_readable(errors: ValidationError) -> list[str]:
             readable_errors.append(_convert_literal_error_to_string(error))
         elif error["type"] in ["bool_type", "bool_parsing"]:
             readable_errors.append(_convert_false_type_error_to_string(error, "bool"))
+        elif error["type"] in ["int_type", "int_parsing"]:
+            readable_errors.append(_convert_false_type_error_to_string(error, "int"))
         else:
             raise ValueError
 

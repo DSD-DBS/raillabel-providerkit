@@ -81,5 +81,15 @@ def test_wrong_type_bool():
     assert "NOT A BOOLEAN" in actual[0]
 
 
+def test_wrong_type_int():
+    data = {"openlabel": {"metadata": {"schema_version": "1.0.0"}, "frames": {"NOT AN INT": {}}}}
+
+    actual = validate_schema(data)
+    assert len(actual) == 1
+    assert "$.openlabel.frames" in actual[0]
+    assert "int" in actual[0]
+    assert "NOT AN INT" in actual[0]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
