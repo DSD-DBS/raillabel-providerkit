@@ -22,28 +22,39 @@ def validate_schema(data: dict) -> list[str]:
 def _make_errors_readable(errors: ValidationError) -> list[str]:  # noqa: C901
     readable_errors = []
     for error in json.loads(errors.json()):
-        if error["type"] == "missing":
-            readable_errors.append(_convert_missing_error_to_string(error))
-        elif error["type"] == "extra_forbidden":
-            readable_errors.append(_convert_unexpected_field_error_to_string(error))
-        elif error["type"] == "literal_error":
-            readable_errors.append(_convert_literal_error_to_string(error))
-        elif error["type"] in ["bool_type", "bool_parsing"]:
-            readable_errors.append(_convert_false_type_error_to_string(error, "bool"))
-        elif error["type"] in ["int_type", "int_parsing", "int_from_float"]:
-            readable_errors.append(_convert_false_type_error_to_string(error, "int"))
-        elif error["type"] in ["decimal_type", "decimal_parsing"]:
-            readable_errors.append(_convert_false_type_error_to_string(error, "Decimal"))
-        elif error["type"] in ["string_type", "string_parsing"]:
-            readable_errors.append(_convert_false_type_error_to_string(error, "str"))
-        elif error["type"] in ["float_type", "float_parsing"]:
-            readable_errors.append(_convert_false_type_error_to_string(error, "float"))
-        elif error["type"] in ["uuid_type", "uuid_parsing"]:
-            readable_errors.append(_convert_false_type_error_to_string(error, "UUID"))
-        elif error["type"] == "too_long":
-            readable_errors.append(_convert_too_long_error_to_string(error))
-        else:
-            readable_errors.append(str(error))
+        match error["type"]:
+            case "missing":
+                readable_errors.append(_convert_missing_error_to_string(error))
+
+            case "extra_forbidden":
+                readable_errors.append(_convert_unexpected_field_error_to_string(error))
+
+            case "literal_error":
+                readable_errors.append(_convert_literal_error_to_string(error))
+
+            case "bool_type" | "bool_parsing":
+                readable_errors.append(_convert_false_type_error_to_string(error, "bool"))
+
+            case "int_type" | "int_parsing" | "int_from_float":
+                readable_errors.append(_convert_false_type_error_to_string(error, "int"))
+
+            case "decimal_type" | "decimal_parsing":
+                readable_errors.append(_convert_false_type_error_to_string(error, "Decimal"))
+
+            case "string_type" | "string_parsing":
+                readable_errors.append(_convert_false_type_error_to_string(error, "str"))
+
+            case "float_type" | "float_parsing":
+                readable_errors.append(_convert_false_type_error_to_string(error, "float"))
+
+            case "uuid_type" | "uuid_parsing":
+                readable_errors.append(_convert_false_type_error_to_string(error, "UUID"))
+
+            case "too_long":
+                readable_errors.append(_convert_too_long_error_to_string(error))
+
+            case _:
+                readable_errors.append(str(error))
 
     return readable_errors
 
