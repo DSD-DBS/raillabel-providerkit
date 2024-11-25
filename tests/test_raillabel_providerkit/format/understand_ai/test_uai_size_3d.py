@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-import raillabel.format.understand_ai as uai_format
+import raillabel_providerkit.format.understand_ai as uai_format
 
 # == Fixtures =========================
 

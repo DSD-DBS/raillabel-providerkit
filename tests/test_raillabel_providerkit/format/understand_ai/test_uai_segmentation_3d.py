@@ -4,8 +4,8 @@
 from uuid import UUID
 
 import pytest
-import raillabel.format.understand_ai as uai_format
-from raillabel.format.understand_ai._translation import translate_class_id
+import raillabel_providerkit.format.understand_ai as uai_format
+from raillabel_providerkit.format.understand_ai._translation import translate_class_id
 
 # == Fixtures =========================
 
