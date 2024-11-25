@@ -24,6 +24,8 @@ def _make_errors_readable(errors: ValidationError) -> list[str]:
     for error in json.loads(errors.json()):
         if error["type"] == "missing":
             readable_errors.append(_convert_missing_error_to_string(error))
+        elif error["type"] == "extra_forbidden":
+            readable_errors.append(_convert_unexpected_field_error_to_string(error))
         else:
             raise ValueError
 
@@ -32,6 +34,10 @@ def _make_errors_readable(errors: ValidationError) -> list[str]:
 
 def _convert_missing_error_to_string(error: dict) -> str:
     return f"{_build_error_path(error["loc"][:-1])}: required field '{error["loc"][-1]}' is missing."
+
+
+def _convert_unexpected_field_error_to_string(error: dict) -> str:
+    return f"{_build_error_path(error["loc"][:-1])}: found unexpected field '{error["loc"][-1]}'."
 
 
 def _build_error_path(loc: list[str]) -> str:

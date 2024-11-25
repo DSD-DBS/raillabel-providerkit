@@ -24,5 +24,15 @@ def test_required_field_missing():
     assert "missing" in actual[0]
 
 
+def test_unsupported_field():
+    data = {"openlabel": {"metadata": {"schema_version": "1.0.0"}, "UNSUPPORTED_FIELD": {}}}
+
+    actual = validate_schema(data)
+    assert len(actual) == 1
+    assert "$.openlabel" in actual[0]
+    assert "unexpected" in actual[0]
+    assert "UNSUPPORTED_FIELD" in actual[0]
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
