@@ -25,7 +25,4 @@ def validate(scene_dict: dict) -> list[str]:
 
     errors.extend(validate_schema(scene_dict))
 
-    if len(errors) > 0:
-        return errors
-
     return errors
