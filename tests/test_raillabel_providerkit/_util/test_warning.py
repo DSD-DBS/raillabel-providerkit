@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
-from raillabel._util._warning import _warning, _WarningsLogger
+from raillabel_providerkit._util._warning import _warning, _WarningsLogger
 
 
 def test_issue_warning():

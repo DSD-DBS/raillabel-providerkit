@@ -7,9 +7,9 @@ import json
 from pathlib import Path
 
 import jsonschema
-import raillabel
+from raillabel import Scene
+from raillabel.json_format import JSONScene
 
-from raillabel_providerkit._util._warning import _WarningsLogger
 from raillabel_providerkit.format import understand_ai as uai_format
 
 from ._loader_abc import LoaderABC
@@ -52,18 +52,17 @@ class LoaderUnderstandAi(LoaderABC):
             The loaded scene with the data.
 
         """
+        raise NotImplementedError(
+            "We were not sure if this class is even used anymore. If you see this error, contact us "  # noqa: EM101
+            "and we will re-implement the class."
+        )
+
         if validate_schema:
             self.validate_schema(data)
 
-        with _WarningsLogger() as logger:
-            data_converted_to_raillabel = uai_format.Scene.fromdict(data).to_raillabel()
+        data_converted_to_raillabel = uai_format.Scene.fromdict(data).to_raillabel()
 
-        raillabel_loader = raillabel.load_.loader_classes.LoaderRailLabel()
-        raillabel_scene = raillabel_loader.load(data_converted_to_raillabel, validate=False)
-
-        self.warnings = logger.warnings + raillabel_loader.warnings
-
-        return raillabel_scene
+        return Scene.from_json(JSONScene(**data_converted_to_raillabel))
 
     def supports(self, data: dict) -> bool:
         """Determine if the loader is suitable for the data (lightweight).
