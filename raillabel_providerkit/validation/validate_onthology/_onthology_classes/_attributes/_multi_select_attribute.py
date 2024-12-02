@@ -23,19 +23,19 @@ class _MultiSelectAttribute(_Attribute):
         return _MultiSelectAttribute(options=set(data_dict["options"]))
 
     def check(
-        self, attribute_name: str, attribute_values: bool | float | str | list, annotation_id: str
+        self, attribute_name: str, attribute_value: bool | float | str | list, annotation_id: str
     ) -> list[str]:
-        if type(attribute_values) is not list:
+        if type(attribute_value) is not list:
             return [
                 f"Attribute '{attribute_name}' of annotation {annotation_id} is of type "
-                f"'{attribute_values.__class__.__name__}' (should be 'list')."
+                f"'{attribute_value.__class__.__name__}' (should be 'list')."
             ]
 
-        for attribute_value in attribute_values:
-            if attribute_value not in self.options:
+        for single_value in attribute_value:
+            if single_value not in self.options:
                 return [
                     f"Attribute '{attribute_name}' of annotation {annotation_id} has an undefined "
-                    f"value '{attribute_value}' (defined options: {self._stringify_options()})."
+                    f"value '{single_value}' (defined options: {self._stringify_options()})."
                 ]
 
         return []

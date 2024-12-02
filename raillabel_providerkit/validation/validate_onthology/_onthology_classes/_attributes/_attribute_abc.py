@@ -19,7 +19,7 @@ class _Attribute(abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def fromdict(cls, data_dict: dict) -> type[_Attribute]:
+    def fromdict(cls, data_dict: dict) -> _Attribute:
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -48,5 +48,5 @@ def _collect_attribute_classes() -> None:
                 ATTRIBUTE_CLASSES.append(class_)
 
 
-ATTRIBUTE_CLASSES = []
+ATTRIBUTE_CLASSES: list[type[_Attribute]] = []
 _collect_attribute_classes()
