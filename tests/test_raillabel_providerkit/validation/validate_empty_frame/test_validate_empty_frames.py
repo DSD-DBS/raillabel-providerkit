@@ -7,6 +7,7 @@ from raillabel_providerkit.validation.validate_empty_frames.validate_empty_frame
     _is_frame_empty,
     validate_empty_frames,
 )
+from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 
 
 def test_is_frame_empty__true(empty_frame):
@@ -59,10 +60,12 @@ def test_validate_empty_frames__error_message_contains_indentifying_info(empty_f
         0: empty_frame,
     }
 
-    error_message = validate_empty_frames(scene)[0].lower()
-    assert "frame" in error_message
-    assert "0" in error_message
-    assert "empty" in error_message or "no annotations" in error_message
+    actual = validate_empty_frames(scene)[0]
+    assert actual == Issue(
+        type=IssueType.EMPTY_FRAMES,
+        reason="This frame has no annotations.",
+        identifiers=IssueIdentifiers(frame=0),
+    )
 
 
 if __name__ == "__main__":

@@ -3,6 +3,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
+from uuid import UUID
 
 
 class IssueType(Enum):
@@ -17,9 +18,9 @@ class IssueType(Enum):
 class IssueIdentifiers:
     """Information for locating an issue."""
 
-    annotation: str | None = None
-    frame: str | None = None
-    object: str | None = None
+    annotation: UUID | None = None
+    frame: int | None = None
+    object: UUID | None = None
     sensor: str | None = None
 
 
