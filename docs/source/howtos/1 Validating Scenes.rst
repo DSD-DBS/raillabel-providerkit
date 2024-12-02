@@ -3,7 +3,7 @@
    SPDX-License-Identifier: Apache-2.0
 
 ===================
-2 Validating Scenes
+1 Validating Scenes
 ===================
 
 Motivation
