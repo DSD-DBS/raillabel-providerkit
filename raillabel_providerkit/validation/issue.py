@@ -30,4 +30,4 @@ class Issue:
 
     type: IssueType
     reason: str
-    identifiers: IssueIdentifiers
+    identifiers: IssueIdentifiers | list[str | int]
