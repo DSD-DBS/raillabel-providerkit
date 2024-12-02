@@ -12,11 +12,9 @@ The validation of the project requirements should ideally be done as close to th
 
 Usage
 #####
-For the validation you need 2 things: the scene and the project specific onthology.
-
-The onthology should be provided by your project partner. It is a .yaml-file listing all classes and their attributes.
 
 .. code-block:: python
+
     import json
     from pathlib import Path
 
