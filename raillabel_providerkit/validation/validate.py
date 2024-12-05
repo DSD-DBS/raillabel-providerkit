@@ -3,10 +3,12 @@
 
 from __future__ import annotations
 
+from raillabel_providerkit.validation import Issue
+
 from . import validate_schema
 
 
-def validate(scene_dict: dict) -> list[str]:
+def validate(scene_dict: dict) -> list[Issue]:
     """Validate a scene based on the Deutsche Bahn Requirements.
 
     Parameters
@@ -16,7 +18,7 @@ def validate(scene_dict: dict) -> list[str]:
 
     Returns
     -------
-    list[str]
+    list[Issue]
         list of all requirement errors in the scene. If an empty list is returned, then there are
         no errors present and the scene is valid.
 

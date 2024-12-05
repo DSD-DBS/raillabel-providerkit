@@ -61,6 +61,7 @@ test = [
 
 [tool.ruff]
 line-length = 101
+target-version = "py310"
 
 [tool.ruff.lint]
 exclude = ["tests/*", "docs/*"]

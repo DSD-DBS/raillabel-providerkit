@@ -1,6 +1,8 @@
 # Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+from uuid import UUID
+
 import pytest
 from raillabel.format import Poly2d, Point2d
 from raillabel.scene_builder import SceneBuilder
@@ -9,6 +11,7 @@ from raillabel_providerkit.validation.validate_rail_side.validate_rail_side impo
     validate_rail_side,
     _count_rails_per_track_in_frame,
 )
+from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 
 
 def test_count_rails_per_track_in_frame__empty(empty_frame):
@@ -155,6 +158,7 @@ def test_validate_rail_side__no_errors(ignore_uuid):
 
 
 def test_validate_rail_side__rail_sides_switched(ignore_uuid):
+    SENSOR_ID = "rgb_center"
     scene = (
         SceneBuilder.empty()
         .add_annotation(
@@ -169,7 +173,7 @@ def test_validate_rail_side__rail_sides_switched(ignore_uuid):
                 sensor_id="IGNORE_THIS",
             ),
             object_name="track_0001",
-            sensor_id="rgb_center",
+            sensor_id=SENSOR_ID,
         )
         .add_annotation(
             annotation=Poly2d(
@@ -183,16 +187,25 @@ def test_validate_rail_side__rail_sides_switched(ignore_uuid):
                 sensor_id="IGNORE_THIS",
             ),
             object_name="track_0001",
-            sensor_id="rgb_center",
+            sensor_id=SENSOR_ID,
         )
         .result
     )
 
     actual = validate_rail_side(scene)
-    assert len(actual) == 1
+    assert actual == [
+        Issue(
+            type=IssueType.RAIL_SIDE,
+            reason="The left and right rails of this track are swapped.",
+            identifiers=IssueIdentifiers(
+                frame=1, sensor=SENSOR_ID, object=UUID("5c59aad4-0000-4000-0000-000000000000")
+            ),
+        )
+    ]
 
 
 def test_validate_rail_side__rail_sides_intersect_at_top(ignore_uuid):
+    SENSOR_ID = "rgb_center"
     scene = (
         SceneBuilder.empty()
         .add_annotation(
@@ -209,7 +222,7 @@ def test_validate_rail_side__rail_sides_intersect_at_top(ignore_uuid):
                 sensor_id="IGNORE_THIS",
             ),
             object_name="track_0001",
-            sensor_id="rgb_center",
+            sensor_id=SENSOR_ID,
         )
         .add_annotation(
             annotation=Poly2d(
@@ -225,13 +238,21 @@ def test_validate_rail_side__rail_sides_intersect_at_top(ignore_uuid):
                 sensor_id="IGNORE_THIS",
             ),
             object_name="track_0001",
-            sensor_id="rgb_center",
+            sensor_id=SENSOR_ID,
         )
         .result
     )
 
     actual = validate_rail_side(scene)
-    assert len(actual) == 1
+    assert actual == [
+        Issue(
+            type=IssueType.RAIL_SIDE,
+            reason="The left and right rails of this track intersect.",
+            identifiers=IssueIdentifiers(
+                frame=1, sensor=SENSOR_ID, object=UUID("5c59aad4-0000-4000-0000-000000000000")
+            ),
+        )
+    ]
 
 
 def test_validate_rail_side__rail_sides_correct_with_early_end_of_one_side(ignore_uuid):
@@ -276,6 +297,7 @@ def test_validate_rail_side__rail_sides_correct_with_early_end_of_one_side(ignor
 
 
 def test_validate_rail_side__two_left_rails(ignore_uuid):
+    SENSOR_ID = "rgb_center"
     scene = (
         SceneBuilder.empty()
         .add_annotation(
@@ -290,7 +312,7 @@ def test_validate_rail_side__two_left_rails(ignore_uuid):
                 sensor_id="IGNORE_THIS",
             ),
             object_name="track_0001",
-            sensor_id="rgb_center",
+            sensor_id=SENSOR_ID,
         )
         .add_annotation(
             annotation=Poly2d(
@@ -304,16 +326,25 @@ def test_validate_rail_side__two_left_rails(ignore_uuid):
                 sensor_id="IGNORE_THIS",
             ),
             object_name="track_0001",
-            sensor_id="rgb_center",
+            sensor_id=SENSOR_ID,
         )
         .result
     )
 
     actual = validate_rail_side(scene)
-    assert len(actual) == 1
+    assert actual == [
+        Issue(
+            type=IssueType.RAIL_SIDE,
+            reason="This track has 2 left rails.",
+            identifiers=IssueIdentifiers(
+                frame=1, sensor=SENSOR_ID, object=UUID("5c59aad4-0000-4000-0000-000000000000")
+            ),
+        )
+    ]
 
 
 def test_validate_rail_side__two_right_rails(ignore_uuid):
+    SENSOR_ID = "rgb_center"
     scene = (
         SceneBuilder.empty()
         .add_annotation(
@@ -325,10 +356,10 @@ def test_validate_rail_side__two_right_rails(ignore_uuid):
                 closed=False,
                 attributes={"railSide": "rightRail"},
                 object_id=ignore_uuid,
-                sensor_id="IGNORE_THIS",
+                sensor_id=SENSOR_ID,
             ),
             object_name="track_0001",
-            sensor_id="rgb_center",
+            sensor_id=SENSOR_ID,
         )
         .add_annotation(
             annotation=Poly2d(
@@ -339,16 +370,24 @@ def test_validate_rail_side__two_right_rails(ignore_uuid):
                 closed=False,
                 attributes={"railSide": "rightRail"},
                 object_id=ignore_uuid,
-                sensor_id="IGNORE_THIS",
+                sensor_id=SENSOR_ID,
             ),
             object_name="track_0001",
-            sensor_id="rgb_center",
+            sensor_id=SENSOR_ID,
         )
         .result
     )
 
     actual = validate_rail_side(scene)
-    assert len(actual) == 1
+    assert actual == [
+        Issue(
+            type=IssueType.RAIL_SIDE,
+            reason="This track has 2 right rails.",
+            identifiers=IssueIdentifiers(
+                frame=1, sensor=SENSOR_ID, object=UUID("5c59aad4-0000-4000-0000-000000000000")
+            ),
+        )
+    ]
 
 
 def test_validate_rail_side__two_sensors_with_two_right_rails_each(ignore_uuid):
@@ -460,4 +499,4 @@ def test_validate_rail_side__two_sensors_with_one_right_rail_each(ignore_uuid):
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear", "-v"])
+    pytest.main([__file__, "-vv"])
