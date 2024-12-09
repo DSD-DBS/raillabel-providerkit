@@ -1,7 +1,10 @@
 # Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+import json
 import pytest
+
+from raillabel.scene_builder import SceneBuilder
 
 from raillabel_providerkit import validate
 
@@ -16,6 +19,14 @@ def test_schema_errors():
     scene_dict = {"openlabel": {}}
     actual = validate(scene_dict)
     assert len(actual) == 1
+
+
+def test_empty_frame_errors():
+    scene_dict = json.loads(SceneBuilder.empty().add_frame().result.to_json().model_dump_json())
+
+    actual = validate(scene_dict)
+    assert len(actual) == 1
+
 
 
 if __name__ == "__main__":

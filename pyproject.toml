@@ -73,6 +73,7 @@ ignore = [
     "D107",    # __init__ docstrings are not necessary
     "D203",    # incompatible with D211
     "D213",    # incompatible with D212
+    "D413",    # not relevant when using google or numpy docstring style
 
     "FBT001",  # flags in functions are not bad practice
     "FBT002",  # flags in functions are not bad practice

@@ -3,6 +3,7 @@
 """Package for validating raillabel data regarding the format requirements."""
 
 from .issue import Issue, IssueIdentifiers, IssueType
+from .validate_empty_frames.validate_empty_frames import validate_empty_frames
 from .validate_onthology.validate_onthology import validate_onthology
 from .validate_schema import validate_schema
 
