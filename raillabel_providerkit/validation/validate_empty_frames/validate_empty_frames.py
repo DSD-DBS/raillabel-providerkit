@@ -5,27 +5,25 @@ from __future__ import annotations
 
 import raillabel
 
+from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 
-def validate_empty_frames(scene: raillabel.Scene) -> list[str]:
+
+def validate_empty_frames(scene: raillabel.Scene) -> list[Issue]:
     """Validate whether all frames of a scene have at least one annotation.
 
-    Parameters
-    ----------
-    scene : raillabel.Scene
-        Scene, that should be validated.
-
-    Returns
-    -------
-    list[str]
-        list of all empty frame errors in the scene. If an empty list is returned, then there are no
-        errors present.
-
+    If an empty list is returned, then there are no errors present.
     """
-    errors: list[str] = []
+    errors = []
 
     for frame_uid, frame in scene.frames.items():
         if _is_frame_empty(frame):
-            errors.append("Frame " + str(frame_uid) + " has no annotations!")
+            errors.append(
+                Issue(
+                    type=IssueType.EMPTY_FRAMES,
+                    reason="This frame has no annotations.",
+                    identifiers=IssueIdentifiers(frame=frame_uid),
+                )
+            )
 
     return errors
 

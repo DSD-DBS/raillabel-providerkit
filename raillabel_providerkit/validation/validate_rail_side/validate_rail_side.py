@@ -14,8 +14,10 @@ from raillabel.filter import (
     IncludeSensorTypeFilter,
 )
 
+from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 
-def validate_rail_side(scene: raillabel.Scene) -> list[str]:
+
+def validate_rail_side(scene: raillabel.Scene) -> list[Issue]:
     """Validate whether all tracks have <= one left and right rail, and that they have correct order.
 
     Parameters
@@ -30,7 +32,7 @@ def validate_rail_side(scene: raillabel.Scene) -> list[str]:
         errors present.
 
     """
-    errors: list[str] = []
+    errors = []
 
     camera_uids = list(scene.filter([IncludeSensorTypeFilter(["camera"])]).sensors.keys())
 
@@ -47,11 +49,11 @@ def validate_rail_side(scene: raillabel.Scene) -> list[str]:
             counts_per_track = _count_rails_per_track_in_frame(frame)
 
             for object_uid, (left_count, right_count) in counts_per_track.items():
-                context = {
-                    "frame_uid": frame_uid,
-                    "object_uid": object_uid,
-                    "camera_uid": camera_uid,
-                }
+                context = IssueIdentifiers(
+                    frame=frame_uid,
+                    sensor=camera_uid,
+                    object=object_uid,
+                )
 
                 count_errors = _check_rail_counts(context, left_count, right_count)
                 exactly_one_left_and_right_rail_exist = count_errors != []
@@ -64,24 +66,28 @@ def validate_rail_side(scene: raillabel.Scene) -> list[str]:
                 if left_rail is None or right_rail is None:
                     continue
 
-                errors.extend(
-                    _check_rails_for_swap_or_intersection(left_rail, right_rail, frame_uid)
-                )
+                errors.extend(_check_rails_for_swap_or_intersection(left_rail, right_rail, context))
 
     return errors
 
 
-def _check_rail_counts(context: dict, left_count: int, right_count: int) -> list[str]:
+def _check_rail_counts(context: IssueIdentifiers, left_count: int, right_count: int) -> list[Issue]:
     errors = []
     if left_count > 1:
         errors.append(
-            f"In sensor {context['camera_uid']} frame {context['frame_uid']}, the track with"
-            f" object_uid {context['object_uid']} has more than one ({left_count}) left rail."
+            Issue(
+                type=IssueType.RAIL_SIDE,
+                reason=f"This track has {left_count} left rails.",
+                identifiers=context,
+            )
         )
     if right_count > 1:
         errors.append(
-            f"In sensor {context['camera_uid']} frame {context['frame_uid']}, the track with"
-            f" object_uid {context['object_uid']} has more than one ({right_count}) right rail."
+            Issue(
+                type=IssueType.RAIL_SIDE,
+                reason=f"This track has {right_count} right rails.",
+                identifiers=context,
+            )
         )
     return errors
 
@@ -89,8 +95,8 @@ def _check_rail_counts(context: dict, left_count: int, right_count: int) -> list
 def _check_rails_for_swap_or_intersection(
     left_rail: raillabel.format.Poly2d,
     right_rail: raillabel.format.Poly2d,
-    frame_uid: str | int = "unknown",
-) -> list[str]:
+    context: IssueIdentifiers,
+) -> list[Issue]:
     if left_rail.object_id != right_rail.object_id:
         return []
 
@@ -103,23 +109,22 @@ def _check_rails_for_swap_or_intersection(
     if left_x is None or right_x is None:
         return []
 
-    object_uid = left_rail.object_id
-    sensor_uid = left_rail.sensor_id if left_rail.sensor_id is not None else "unknown"
-
     if left_x >= right_x:
         return [
-            f"In sensor {sensor_uid} frame {frame_uid}, the track with"
-            f" object_uid {object_uid} has its rails swapped."
-            f" At the maximum common y={max_common_y}, the left rail has x={left_x}"
-            f" while the right rail has x={right_x}."
+            Issue(
+                type=IssueType.RAIL_SIDE,
+                reason="The left and right rails of this track are swapped.",
+                identifiers=context,
+            )
         ]
 
-    intersect_interval = _find_intersect_interval(left_rail, right_rail)
-    if intersect_interval is not None:
+    if _polylines_are_intersecting(left_rail, right_rail):
         return [
-            f"In sensor {sensor_uid} frame {frame_uid}, the track with"
-            f" object_uid {object_uid} intersects with itself."
-            f" The left and right rail intersect in y interval {intersect_interval}."
+            Issue(
+                type=IssueType.RAIL_SIDE,
+                reason="The left and right rails of this track intersect.",
+                identifiers=context,
+            )
         ]
 
     return []
@@ -162,9 +167,9 @@ def _filter_for_poly2ds(
     ]
 
 
-def _find_intersect_interval(
+def _polylines_are_intersecting(
     line1: raillabel.format.Poly2d, line2: raillabel.format.Poly2d
-) -> tuple[float, float] | None:
+) -> bool:
     """If the two polylines intersect anywhere, return the y interval where they intersect."""
     y_values_with_points_in_either_polyline: list[float] = sorted(
         _get_y_of_all_points_of_poly2d(line1).union(_get_y_of_all_points_of_poly2d(line2))
@@ -181,18 +186,18 @@ def _find_intersect_interval(
             continue
 
         if x1 == x2:
-            return (y, y)
+            return True
 
         new_order = x1 < x2
 
         order_has_flipped = order is not None and new_order != order and last_y is not None
         if order_has_flipped:
-            return (last_y, y)  # type: ignore  # noqa: PGH003
+            return True
 
         order = new_order
         last_y = y
 
-    return None
+    return False
 
 
 def _find_max_y(poly2d: raillabel.format.Poly2d) -> float:
