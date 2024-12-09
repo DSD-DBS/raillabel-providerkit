@@ -35,37 +35,26 @@ def test_empty_frame_issues():
     assert len(actual) == 1
 
 
-def test_rail_side_issues(ignore_uuid):
-    SENSOR_ID = "rgb_center"
+def test_rail_side_issues():
     scene = (
         SceneBuilder.empty()
-        .add_annotation(
-            annotation=Poly2d(
-                points=[
-                    Point2d(0, 0),
-                    Point2d(0, 1),
-                ],
-                closed=False,
-                attributes={"railSide": "rightRail"},
-                object_id=ignore_uuid,
-                sensor_id="IGNORE_THIS",
-            ),
+        .add_poly2d(
+            points=[
+                Point2d(0, 0),
+                Point2d(0, 1),
+            ],
+            attributes={"railSide": "rightRail"},
             object_name="track_0001",
-            sensor_id=SENSOR_ID,
+            sensor_id="rgb_center",
         )
-        .add_annotation(
-            annotation=Poly2d(
-                points=[
-                    Point2d(1, 0),
-                    Point2d(1, 1),
-                ],
-                closed=False,
-                attributes={"railSide": "leftRail"},
-                object_id=ignore_uuid,
-                sensor_id="IGNORE_THIS",
-            ),
+        .add_poly2d(
+            points=[
+                Point2d(1, 0),
+                Point2d(1, 1),
+            ],
+            attributes={"railSide": "leftRail"},
             object_name="track_0001",
-            sensor_id=SENSOR_ID,
+            sensor_id="rgb_center",
         )
         .result
     )
