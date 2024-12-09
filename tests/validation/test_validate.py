@@ -10,9 +10,15 @@ from raillabel.format import Poly2d, Point2d
 from raillabel_providerkit import validate
 
 
-def test_no_issues_in_empty_scene():
+def test_no_issues_in_empty_scene_dict():
     scene_dict = {"openlabel": {"metadata": {"schema_version": "1.0.0"}}}
     actual = validate(scene_dict)
+    assert len(actual) == 0
+
+
+def test_no_issues_in_empty_scene_path(json_paths):
+    scene_path = json_paths["openlabel_v1_short"]
+    actual = validate(scene_path)
     assert len(actual) == 0
 
 

@@ -20,9 +20,8 @@ Usage
 
     from raillabel_providerkit import validate
 
-    with Path("path/to/scene.json").open() as scene_file:
-        scene_dict = json.load(scene_file)
-
-    assert validate(scene_dict) == []
+    scene_path = Path("path/to/scene.json")
+    issues_in_scene = validate(scene_path)
+    assert issues_in_scene == []
 
 If this code does not raise any errors, you are good to go. If it does, read the content of the list `validate` returns carefully. It should tell you where the errors are. If you are unsure, contact your project partner or raise an issue on GitHub.
