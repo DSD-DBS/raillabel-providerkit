@@ -28,6 +28,5 @@ def test_empty_frame_errors():
     assert len(actual) == 1
 
 
-
 if __name__ == "__main__":
     pytest.main([__file__, "--disable-pytest-warnings", "--cache-clear", "-v"])

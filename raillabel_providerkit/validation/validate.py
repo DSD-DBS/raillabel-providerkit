@@ -8,8 +8,7 @@ from raillabel.json_format import JSONScene
 
 from raillabel_providerkit.validation import Issue
 
-from . import validate_schema
-from . import validate_empty_frames
+from . import validate_empty_frames, validate_schema
 
 
 def validate(scene_dict: dict, validate_for_empty_frames: bool = True) -> list[Issue]:
