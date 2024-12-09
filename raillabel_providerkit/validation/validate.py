@@ -8,15 +8,22 @@ from raillabel.json_format import JSONScene
 
 from raillabel_providerkit.validation import Issue
 
-from . import validate_empty_frames, validate_schema
+from . import validate_empty_frames, validate_rail_side, validate_schema
 
 
-def validate(scene_dict: dict, validate_for_empty_frames: bool = True) -> list[Issue]:
+def validate(
+    scene_dict: dict,
+    validate_for_empty_frames: bool = True,
+    validate_for_rail_side_order: bool = True,
+) -> list[Issue]:
     """Validate a scene based on the Deutsche Bahn Requirements.
 
     Args:
         scene_dict: The scene as a dictionary directly from `json.load()` in the raillabel format.
-        validate_for_empty_frames (optional): If True, the scene is validated for empty frames.
+        validate_for_empty_frames (optional): If True, issues are returned if the scene contains
+            frames without annotations. Default is True.
+        validate_for_rail_side_order: If True, issues are returned if the scene contains track with
+            a mismatching rail side order. Default is True.
 
     Returns:
         List of all requirement errors in the scene. If an empty list is returned, then there are no
@@ -31,5 +38,8 @@ def validate(scene_dict: dict, validate_for_empty_frames: bool = True) -> list[I
 
     if validate_for_empty_frames:
         errors.extend(validate_empty_frames(scene))
+
+    if validate_for_rail_side_order:
+        errors.extend(validate_rail_side(scene))
 
     return errors
