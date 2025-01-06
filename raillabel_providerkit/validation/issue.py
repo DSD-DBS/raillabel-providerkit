@@ -29,5 +29,5 @@ class Issue:
     """An error that was found inside the scene."""
 
     type: IssueType
-    reason: str
     identifiers: IssueIdentifiers | list[str | int]
+    reason: str | None = None
