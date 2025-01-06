@@ -12,6 +12,7 @@ class IssueType(Enum):
     SCHEMA = "SchemaIssue"
     EMPTY_FRAMES = "EmptyFramesIssue"
     RAIL_SIDE = "RailSide"
+    MISSING_EGO_TRACK = "MissingEgoTrackIssue"
 
 
 @dataclass
