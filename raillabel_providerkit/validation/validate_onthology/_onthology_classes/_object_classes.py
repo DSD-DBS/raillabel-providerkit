@@ -13,7 +13,7 @@ from ._sensor_type import _SensorType
 
 @dataclass
 class _ObjectClass:
-    attributes: dict[str, type[_Attribute]]
+    attributes: dict[str, _Attribute]
     sensor_types: dict[raillabel.format.SensorType, _SensorType]
 
     @classmethod
@@ -42,7 +42,7 @@ class _ObjectClass:
         return errors
 
     @classmethod
-    def _attribute_fromdict(cls, attribute: dict or str) -> type[_Attribute]:
+    def _attribute_fromdict(cls, attribute: dict | str) -> _Attribute:
         for attribute_class in attribute_classes():
             if attribute_class.supports(attribute):
                 return attribute_class.fromdict(attribute)
@@ -92,7 +92,7 @@ class _ObjectClass:
 
     def _compile_applicable_attributes(
         self, annotation: type[raillabel.format._ObjectAnnotation]
-    ) -> dict[str, type[_Attribute]]:
+    ) -> dict[str, _Attribute]:
         applicable_attributes = self.attributes
 
         if annotation.sensor.type in self.sensor_types:

@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import typing as t
 from dataclasses import dataclass
 
 import raillabel
@@ -14,7 +13,7 @@ from ._object_classes import _ObjectClass
 @dataclass
 class _Onthology:
     classes: dict[str, _ObjectClass]
-    errors: t.ClassVar = []
+    errors: list[str]
 
     @classmethod
     def fromdict(cls, data_dict: dict) -> _Onthology:
@@ -32,7 +31,7 @@ class _Onthology:
 
         return self.errors
 
-    def _check_class_validity(self, scene: raillabel.Scene) -> list[str]:
+    def _check_class_validity(self, scene: raillabel.Scene) -> None:
         object_classes_in_scene = [obj.type for obj in scene.objects.values()]
 
         for object_class in object_classes_in_scene:

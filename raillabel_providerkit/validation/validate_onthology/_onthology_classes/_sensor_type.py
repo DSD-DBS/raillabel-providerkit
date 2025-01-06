@@ -10,7 +10,7 @@ from ._attributes._attribute_abc import _Attribute, attribute_classes
 
 @dataclass
 class _SensorType:
-    attributes: dict[str, type[_Attribute]]
+    attributes: dict[str, _Attribute]
 
     @classmethod
     def fromdict(cls, data_dict: dict) -> _SensorType:
@@ -25,7 +25,7 @@ class _SensorType:
         )
 
     @classmethod
-    def _attribute_fromdict(cls, attribute: dict | str) -> type[_Attribute]:
+    def _attribute_fromdict(cls, attribute: dict | str) -> _Attribute:
         for attribute_class in attribute_classes():
             if attribute_class.supports(attribute):
                 return attribute_class.fromdict(attribute)

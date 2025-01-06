@@ -11,11 +11,11 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _BooleanAttribute(_Attribute):
     @classmethod
-    def supports(cls, data_dict: dict) -> bool:
-        return data_dict == "boolean"
+    def supports(cls, data: dict | str) -> bool:
+        return data == "boolean"
 
     @classmethod
-    def fromdict(cls, _: dict) -> _BooleanAttribute:
+    def fromdict(cls, _: dict | str) -> _BooleanAttribute:
         return _BooleanAttribute()
 
     def check(

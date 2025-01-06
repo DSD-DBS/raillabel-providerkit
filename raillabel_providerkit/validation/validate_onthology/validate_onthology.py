@@ -14,14 +14,14 @@ from raillabel_providerkit.exceptions import OnthologySchemaError
 from ._onthology_classes._onthology import _Onthology
 
 
-def validate_onthology(scene: raillabel.Scene, onthology: dict | Path) -> list[str]:
+def validate_onthology(scene: raillabel.Scene, onthology_input: dict | Path) -> list[str]:
     """Validate a scene based on the classes and attributes.
 
     Parameters
     ----------
     scene : raillabel.Scene
         The scene containing the annotations.
-    onthology : dict or Path
+    onthology_input : dict or Path
         Onthology YAML-data or file containing a information about all classes and their
         attributes. The onthology must adhere to the onthology_schema. If a path is provided, the
         file is loaded as a YAML.
@@ -33,12 +33,12 @@ def validate_onthology(scene: raillabel.Scene, onthology: dict | Path) -> list[s
         errors present.
 
     """
-    if isinstance(onthology, Path):
-        onthology = _load_onthology(Path(onthology))
+    if isinstance(onthology_input, Path):
+        onthology_input = _load_onthology(Path(onthology_input))
 
-    _validate_onthology_schema(onthology)
+    _validate_onthology_schema(onthology_input)
 
-    onthology = _Onthology.fromdict(onthology)
+    onthology = _Onthology.fromdict(onthology_input)
 
     return onthology.check(scene)
 

@@ -11,11 +11,11 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _IntegerAttribute(_Attribute):
     @classmethod
-    def supports(cls, data_dict: dict) -> bool:
-        return data_dict == "integer"
+    def supports(cls, data: dict | str) -> bool:
+        return data == "integer"
 
     @classmethod
-    def fromdict(cls, _: dict) -> _IntegerAttribute:
+    def fromdict(cls, _: dict | str) -> _IntegerAttribute:
         return _IntegerAttribute()
 
     def check(

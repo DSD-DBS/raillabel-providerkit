@@ -11,15 +11,15 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _VectorAttribute(_Attribute):
     @classmethod
-    def supports(cls, data_dict: dict) -> bool:
-        return data_dict == "vector"
+    def supports(cls, data: dict | str) -> bool:
+        return data == "vector"
 
     @classmethod
-    def fromdict(cls, _: dict) -> _VectorAttribute:
+    def fromdict(cls, _: dict | str) -> _VectorAttribute:
         return _VectorAttribute()
 
     def check(
-        self, attribute_name: str, attribute_value: list | int | str | bool, annotation_id: str
+        self, attribute_name: str, attribute_value: list | float | str | bool, annotation_id: str
     ) -> list[str]:
         errors = []
 

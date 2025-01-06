@@ -13,14 +13,15 @@ class _SingleSelectAttribute(_Attribute):
     options: set[str]
 
     @classmethod
-    def supports(cls, data_dict: dict) -> bool:
-        return (
-            type(data_dict) is dict and "type" in data_dict and data_dict["type"] == "single-select"
-        )
+    def supports(cls, data: dict | str) -> bool:
+        return type(data) is dict and "type" in data and data["type"] == "single-select"
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> _SingleSelectAttribute:
-        return _SingleSelectAttribute(options=set(data_dict["options"]))
+    def fromdict(cls, data: dict | str) -> _SingleSelectAttribute:
+        if isinstance(data, str):
+            raise TypeError
+
+        return _SingleSelectAttribute(options=set(data["options"]))
 
     def check(
         self, attribute_name: str, attribute_value: bool | float | str | list, annotation_id: str

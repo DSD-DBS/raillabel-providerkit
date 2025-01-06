@@ -11,11 +11,11 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _StringAttribute(_Attribute):
     @classmethod
-    def supports(cls, data_dict: dict) -> bool:
-        return data_dict == "string"
+    def supports(cls, data: dict | str) -> bool:
+        return data == "string"
 
     @classmethod
-    def fromdict(cls, _: dict) -> _StringAttribute:
+    def fromdict(cls, _: dict | str) -> _StringAttribute:
         return _StringAttribute()
 
     def check(
