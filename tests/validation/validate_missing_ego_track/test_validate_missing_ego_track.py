@@ -55,6 +55,41 @@ def test_osdar_schema__missing():
     ]
 
 
+def test_open_dataset_schema__not_missing():
+    scene = (
+        SceneBuilder.empty()
+        .add_sensor("rgb_middle")
+        .add_object(object_type="track")
+        .add_poly2d(
+            object_name="track_0000", sensor_id="rgb_middle", attributes={"isEgoTrack": True}
+        )
+        .result
+    )
+
+    actual = validate_missing_ego_track(scene)
+    assert actual == []
+
+
+def test_open_dataset_schema__missing():
+    scene = (
+        SceneBuilder.empty()
+        .add_sensor("rgb_middle")
+        .add_object(object_type="track")
+        .add_poly2d(
+            object_name="track_0000", sensor_id="rgb_middle", attributes={"isEgoTrack": False}
+        )
+        .result
+    )
+
+    actual = validate_missing_ego_track(scene)
+    assert actual == [
+        Issue(
+            type=IssueType.MISSING_EGO_TRACK,
+            identifiers=IssueIdentifiers(frame=1, sensor="rgb_middle"),
+        )
+    ]
+
+
 def test_missing_in_two_sensors():
     scene = (
         SceneBuilder.empty()

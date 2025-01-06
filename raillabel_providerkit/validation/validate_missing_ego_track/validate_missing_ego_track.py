@@ -72,7 +72,9 @@ def _validate_for_sensor_frame(
         if annotation.sensor_id != sensor_id:
             continue
 
-        if _annotation_is_ego_track_osdar23(annotation):
+        if _annotation_is_ego_track_osdar23(annotation) or _annotation_is_ego_track_open_data(
+            annotation
+        ):
             ego_track_is_in_sensor_frame = True
             break
 
@@ -92,3 +94,7 @@ def _validate_for_sensor_frame(
 
 def _annotation_is_ego_track_osdar23(annotation: Bbox | Cuboid | Poly2d | Poly3d | Seg3d) -> bool:
     return "trackId" in annotation.attributes and annotation.attributes["trackId"] == 0
+
+
+def _annotation_is_ego_track_open_data(annotation: Bbox | Cuboid | Poly2d | Poly3d | Seg3d) -> bool:
+    return "isEgoTrack" in annotation.attributes and annotation.attributes["isEgoTrack"] is True
