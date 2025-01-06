@@ -1,0 +1,14 @@
+# Copyright DB InfraGO AG and contributors
+# SPDX-License-Identifier: Apache-2.0
+
+catenary_pole:
+    attributes:
+        foo:
+            attribute_type: string
+            scope: annotation
+    sensor_types:
+        camera:
+            attributes:
+                irrelevant:
+                    attribute_type: string
+                    scope: annotation

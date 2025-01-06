@@ -7,6 +7,15 @@ version: 1.0.0
 definitions:
 
     attribute:
+        additionalProperties: false
+        properties:
+            attribute_type:
+                "$ref": "#/definitions/attribute_type"
+            scope:
+                enum: [annotation, frame, object]
+        type: object
+
+    attribute_type:
         oneOf:
             [
                 "$ref": "#/definitions/boolean_attribute",

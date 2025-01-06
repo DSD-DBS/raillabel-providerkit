@@ -48,7 +48,7 @@ def _load_onthology(path: Path) -> dict:
         return yaml.safe_load(f)
 
 
-def _validate_onthology_schema(onthology: dict) -> None:
+def _validate_onthology_schema(onthology: dict | None) -> None:
     schema_path = Path(__file__).parent / "onthology_schema_v1.yaml"
 
     with schema_path.open() as f:
