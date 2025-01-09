@@ -23,7 +23,7 @@ class _MultiSelectAttribute(_Attribute):
 
         return _MultiSelectAttribute(options=set(data["options"]))
 
-    def check(
+    def check_type_and_value(
         self, attribute_name: str, attribute_values: bool | float | str | list, annotation_id: str
     ) -> list[str]:
         if type(attribute_values) is not list:

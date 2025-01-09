@@ -18,7 +18,7 @@ class _IntegerAttribute(_Attribute):
     def fromdict(cls, _: dict | str) -> _IntegerAttribute:
         return _IntegerAttribute()
 
-    def check(
+    def check_type_and_value(
         self, attribute_name: str, attribute_value: bool | float | str | list, annotation_id: str
     ) -> list[str]:
         errors = []

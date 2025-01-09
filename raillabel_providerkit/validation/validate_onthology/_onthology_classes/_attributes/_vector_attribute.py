@@ -18,7 +18,7 @@ class _VectorAttribute(_Attribute):
     def fromdict(cls, _: dict | str) -> _VectorAttribute:
         return _VectorAttribute()
 
-    def check(
+    def check_type_and_value(
         self, attribute_name: str, attribute_value: list | float | str | bool, annotation_id: str
     ) -> list[str]:
         errors = []

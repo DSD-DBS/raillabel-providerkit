@@ -9,23 +9,33 @@ from inspect import isclass
 from pathlib import Path
 from pkgutil import iter_modules
 
+from raillabel_providerkit.validation import Issue, IssueIdentifiers
+from raillabel_providerkit.validation.validate_onthology._onthology_classes._scope import _Scope
+
 
 @dataclass
 class _Attribute(abc.ABC):
+    optional: bool
+    scope: _Scope
+    sensor_types: list[str] | None
+
     @classmethod
     @abc.abstractmethod
-    def supports(cls, data: dict | str) -> bool:
+    def supports(cls, data: dict) -> bool:
         raise NotImplementedError
 
     @classmethod
     @abc.abstractmethod
-    def fromdict(cls, data: dict | str) -> _Attribute:
+    def fromdict(cls, data: dict) -> _Attribute:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def check(
-        self, attribute_name: str, attribute_value: bool | float | str | list, annotation_id: str
-    ) -> list[str]:
+    def check_type_and_value(
+        self,
+        attribute_name: str,
+        attribute_value: bool | float | str | list,
+        identifiers: IssueIdentifiers,
+    ) -> list[Issue]:
         raise NotImplementedError
 
 

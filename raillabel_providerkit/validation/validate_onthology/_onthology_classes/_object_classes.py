@@ -21,9 +21,6 @@ class _ObjectClass:
         if "attributes" not in data_dict:
             data_dict["attributes"] = {}
 
-        if "sensor_types" not in data_dict:
-            data_dict["sensor_types"] = {}
-
         return _ObjectClass(
             attributes={
                 attr_name: cls._attribute_fromdict(attr)
@@ -85,7 +82,9 @@ class _ObjectClass:
                 continue
 
             errors.extend(
-                applicable_attributes[attr_name].check(attr_name, attr_value, annotation.uid)
+                applicable_attributes[attr_name].check_type_and_value(
+                    attr_name, attr_value, annotation.uid
+                )
             )
 
         return errors
@@ -93,9 +92,8 @@ class _ObjectClass:
     def _compile_applicable_attributes(
         self, annotation: type[raillabel.format._ObjectAnnotation]
     ) -> dict[str, _Attribute]:
-        applicable_attributes = self.attributes
-
-        if annotation.sensor.type in self.sensor_types:
-            applicable_attributes.update(self.sensor_types[annotation.sensor.type].attributes)
-
-        return applicable_attributes
+        return {
+            attr_name: attr
+            for attr_name, attr in self.attributes.items()
+            if annotation.sensor.type in attr.sensor_types
+        }
