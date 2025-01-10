@@ -11,6 +11,7 @@ class IssueType(Enum):
 
     SCHEMA = "SchemaIssue"
     ATTRIBUTE_TYPE = "AttributeTypeIssue"
+    ATTRIBUTE_VALUE = "AttributeValueIssue"
     EMPTY_FRAMES = "EmptyFramesIssue"
     RAIL_SIDE = "RailSide"
 
