@@ -11,7 +11,7 @@ from raillabel.json_format import JSONScene
 
 from raillabel_providerkit.validation import Issue
 
-from . import validate_empty_frames, validate_onthology, validate_rail_side, validate_schema
+from . import validate_empty_frames, validate_missing_ego_track, validate_onthology, validate_rail_side, validate_schema
 
 
 def validate(
@@ -19,6 +19,7 @@ def validate(
     onthology_source: dict | Path | None = None,
     validate_for_empty_frames: bool = True,
     validate_for_rail_side_order: bool = True,
+    validate_for_missing_ego_track: bool = True,
 ) -> list[Issue]:
     """Validate a scene based on the Deutsche Bahn Requirements.
 
@@ -31,6 +32,9 @@ def validate(
             frames without annotations. Default is True.
         validate_for_rail_side_order: If True, issues are returned if the scene contains track with
             a mismatching rail side order. Default is True.
+        validate_for_missing_ego_track: If True, issues are returned if the scene contains frames
+            where the ego track (the track the recording train is driving on) is missing. Default is
+            True.
 
     Returns:
         List of all requirement errors in the scene. If an empty list is returned, then there are no
@@ -55,5 +59,8 @@ def validate(
 
     if validate_for_rail_side_order:
         errors.extend(validate_rail_side(scene))
+
+    if validate_for_missing_ego_track:
+        errors.extend(validate_missing_ego_track(scene))
 
     return errors

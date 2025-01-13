@@ -1,13 +1,19 @@
 # Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+from pathlib import Path
 import json
 import pytest
 
 from raillabel.scene_builder import SceneBuilder
-from raillabel.format import Poly2d, Point2d
+from raillabel.format import Point2d
 
 from raillabel_providerkit import validate
+
+
+def write_to_json(content: dict, path: Path):
+    with path.open("w") as f:
+        json.dump(content, f)
 
 
 def test_no_issues_in_empty_scene_dict():
@@ -16,8 +22,11 @@ def test_no_issues_in_empty_scene_dict():
     assert len(actual) == 0
 
 
-def test_no_issues_in_empty_scene_path(json_paths):
-    scene_path = json_paths["openlabel_v1_short"]
+def test_no_issues_in_empty_scene_path(tmp_path):
+    scene_dict = {"openlabel": {"metadata": {"schema_version": "1.0.0"}}}
+    scene_path = tmp_path / "empty_scene.json"
+    write_to_json(scene_dict, scene_path)
+
     actual = validate(scene_path)
     assert len(actual) == 0
 
@@ -59,6 +68,20 @@ def test_rail_side_issues():
         .result
     )
     scene_dict = json.loads(scene.to_json().model_dump_json())
+
+    actual = validate(scene_dict, validate_for_missing_ego_track=False)
+    assert len(actual) == 1
+
+
+def test_missing_ego_track_issue():
+    scene_dict = json.loads(
+        SceneBuilder.empty()
+        .add_sensor("rgb_middle")
+        .add_frame()
+        .add_bbox()
+        .result.to_json()
+        .model_dump_json()
+    )
 
     actual = validate(scene_dict)
     assert len(actual) == 1

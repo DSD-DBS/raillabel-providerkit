@@ -20,7 +20,6 @@ def validate_empty_frames(scene: raillabel.Scene) -> list[Issue]:
             errors.append(
                 Issue(
                     type=IssueType.EMPTY_FRAMES,
-                    reason="This frame has no annotations.",
                     identifiers=IssueIdentifiers(frame=frame_uid),
                 )
             )
