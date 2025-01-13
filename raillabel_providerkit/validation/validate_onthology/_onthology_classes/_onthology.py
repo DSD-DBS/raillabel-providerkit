@@ -24,7 +24,7 @@ class _Onthology:
     @classmethod
     def fromdict(cls, data: dict) -> _Onthology:
         return _Onthology(
-            {class_id: _ObjectClass.fromdict(class_) for class_id, class_ in data.items()}
+            {class_id: _ObjectClass.fromdict(class_) for class_id, class_ in data.items()}, []
         )
 
     def check(self, scene: raillabel.Scene) -> list[Issue]:
