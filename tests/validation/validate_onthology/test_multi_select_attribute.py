@@ -10,27 +10,6 @@ from raillabel_providerkit.validation.validate_onthology._onthology_classes._att
 from raillabel_providerkit.validation import IssueIdentifiers, IssueType
 
 
-@pytest.fixture
-def example_string_attribute_dict():
-    return {"attribute_type": "string", "scope": "annotation"}
-
-
-@pytest.fixture
-def example_multi_select_attribute_dict():
-    return {
-        "attribute_type": {"type": "multi-select", "options": ["foo", "bar"]},
-        "scope": "annotation",
-    }
-
-
-@pytest.fixture
-def example_single_select_attribute_dict():
-    return {
-        "attribute_type": {"type": "single-select", "options": ["foo", "bar"]},
-        "scope": "annotation",
-    }
-
-
 def test_supports__empty_dict():
     assert not _MultiSelectAttribute.supports({})
 
