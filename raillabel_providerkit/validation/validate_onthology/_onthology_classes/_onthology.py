@@ -31,7 +31,7 @@ class _Onthology:
         self.errors = []
 
         self._check_class_validity(scene)
-        annotations = self._compile_annotations(scene)
+        annotations = _Onthology._compile_annotations(scene)
         for annotation_uid, annotation, sensor_type, frame_id in annotations:
             self.errors.extend(
                 self.classes[scene.objects.get(annotation.object_id).type].check(
@@ -53,8 +53,9 @@ class _Onthology:
                     )
                 )
 
+    @classmethod
     def _compile_annotations(
-        self, scene: raillabel.Scene
+        cls, scene: raillabel.Scene
     ) -> list[
         tuple[
             UUID,
