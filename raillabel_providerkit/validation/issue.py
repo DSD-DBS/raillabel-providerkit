@@ -10,7 +10,9 @@ class IssueType(Enum):
     """General classification of the issue."""
 
     SCHEMA = "SchemaIssue"
+    ATTRIBUTE_MISSING = "AttributeMissing"
     ATTRIBUTE_TYPE = "AttributeTypeIssue"
+    ATTRIBUTE_UNDEFINED = "AttributeUndefined"
     ATTRIBUTE_VALUE = "AttributeValueIssue"
     EMPTY_FRAMES = "EmptyFramesIssue"
     RAIL_SIDE = "RailSide"

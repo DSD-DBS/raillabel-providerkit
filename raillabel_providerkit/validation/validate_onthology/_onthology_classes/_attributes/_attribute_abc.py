@@ -17,7 +17,7 @@ from raillabel_providerkit.validation.validate_onthology._onthology_classes._sco
 class _Attribute(abc.ABC):
     optional: bool
     scope: _Scope
-    sensor_types: list[str] | None
+    sensor_types: list[str]
 
     @classmethod
     @abc.abstractmethod
