@@ -107,8 +107,8 @@ class _ObjectClass:
                     sensor=annotation.sensor_id,
                 ),
             )
-            for attr_name in self._compile_applicable_attributes(sensor_type)
-            if attr_name not in annotation.attributes
+            for attr_name, attr in self._compile_applicable_attributes(sensor_type).items()
+            if attr_name not in annotation.attributes and not attr.optional
         ]
 
     def _check_false_attribute_type(
