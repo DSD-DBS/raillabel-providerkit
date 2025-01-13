@@ -11,7 +11,13 @@ from raillabel.json_format import JSONScene
 
 from raillabel_providerkit.validation import Issue
 
-from . import validate_empty_frames, validate_missing_ego_track, validate_onthology, validate_rail_side, validate_schema
+from . import (
+    validate_empty_frames,
+    validate_missing_ego_track,
+    validate_onthology,
+    validate_rail_side,
+    validate_schema,
+)
 
 
 def validate(
