@@ -63,7 +63,6 @@ def test_validate_empty_frames__error_message_contains_indentifying_info(empty_f
     actual = validate_empty_frames(scene)[0]
     assert actual == Issue(
         type=IssueType.EMPTY_FRAMES,
-        reason="This frame has no annotations.",
         identifiers=IssueIdentifiers(frame=0),
     )
 

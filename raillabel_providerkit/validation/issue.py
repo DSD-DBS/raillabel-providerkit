@@ -12,6 +12,7 @@ class IssueType(Enum):
     SCHEMA = "SchemaIssue"
     EMPTY_FRAMES = "EmptyFramesIssue"
     RAIL_SIDE = "RailSide"
+    MISSING_EGO_TRACK = "MissingEgoTrackIssue"
 
 
 @dataclass
@@ -29,5 +30,5 @@ class Issue:
     """An error that was found inside the scene."""
 
     type: IssueType
-    reason: str
     identifiers: IssueIdentifiers | list[str | int]
+    reason: str | None = None

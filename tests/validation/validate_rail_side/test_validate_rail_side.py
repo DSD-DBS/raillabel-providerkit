@@ -4,7 +4,7 @@
 from uuid import UUID
 
 import pytest
-from raillabel.format import Poly2d, Point2d, Scene
+from raillabel.format import Point2d, Scene
 from raillabel.scene_builder import SceneBuilder
 
 from raillabel_providerkit.validation.validate_rail_side.validate_rail_side import (
