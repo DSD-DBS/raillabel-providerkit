@@ -27,7 +27,7 @@ def test_osdar_schema__not_missing():
         SceneBuilder.empty()
         .add_sensor("rgb_middle")
         .add_object(object_type="track")
-        .add_poly2d(object_name="track_0000", sensor_id="rgb_middle", attributes={"trackId": 0})
+        .add_poly2d(object_name="track_0000", sensor_id="rgb_middle", attributes={"trackID": 0})
         .result
     )
 
@@ -41,7 +41,7 @@ def test_osdar_schema__missing():
         .add_sensor("rgb_middle")
         .add_object(object_type="track")
         .add_poly2d(
-            frame_id=1, object_name="track_0000", sensor_id="rgb_middle", attributes={"trackId": 1}
+            frame_id=1, object_name="track_0000", sensor_id="rgb_middle", attributes={"trackID": 1}
         )
         .result
     )

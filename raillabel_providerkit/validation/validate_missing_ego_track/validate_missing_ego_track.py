@@ -93,7 +93,7 @@ def _validate_for_sensor_frame(
 
 
 def _annotation_is_ego_track_osdar23(annotation: Bbox | Cuboid | Poly2d | Poly3d | Seg3d) -> bool:
-    return "trackId" in annotation.attributes and annotation.attributes["trackId"] == 0
+    return "trackID" in annotation.attributes and annotation.attributes["trackID"] == 0
 
 
 def _annotation_is_ego_track_open_data(annotation: Bbox | Cuboid | Poly2d | Poly3d | Seg3d) -> bool:
