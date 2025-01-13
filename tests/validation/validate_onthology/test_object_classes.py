@@ -19,14 +19,9 @@ def test_fromdict__empty():
     assert len(object_class.attributes) == 0
 
 
-def test_fromdict__no_attributes():
-    object_class = _ObjectClass.fromdict({"attributes": {}})
-    assert len(object_class.attributes) == 0
-
-
 def test_fromdict__simple():
     object_class = _ObjectClass.fromdict(
-        {"attributes": {"isSomething": {"attribute_type": "boolean", "scope": "annotation"}}}
+        {"isSomething": {"attribute_type": "boolean", "scope": "annotation"}}
     )
     assert len(object_class.attributes) == 1
     assert "isSomething" in object_class.attributes

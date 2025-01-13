@@ -23,10 +23,7 @@ class _ObjectClass:
     @classmethod
     def fromdict(cls, data: dict) -> _ObjectClass:
         return _ObjectClass(
-            attributes={
-                attr_name: cls._attribute_fromdict(attr)
-                for attr_name, attr in data.get("attributes", {}).items()
-            }
+            attributes={attr_name: cls._attribute_fromdict(attr) for attr_name, attr in data.items()}
         )
 
     def check(
