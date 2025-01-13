@@ -10,11 +10,12 @@ import raillabel
 import yaml
 
 from raillabel_providerkit.exceptions import OnthologySchemaError
+from raillabel_providerkit.validation import Issue
 
 from ._onthology_classes._onthology import _Onthology
 
 
-def validate_onthology(scene: raillabel.Scene, onthology_input: dict | Path) -> list[str]:
+def validate_onthology(scene: raillabel.Scene, onthology_input: dict | Path) -> list[Issue]:
     """Validate a scene based on the classes and attributes.
 
     Parameters
@@ -28,7 +29,7 @@ def validate_onthology(scene: raillabel.Scene, onthology_input: dict | Path) -> 
 
     Returns
     -------
-    list[str]
+    list[Issue]
         list of all onthology errors in the scene. If an empty list is returned, then there are no
         errors present.
 

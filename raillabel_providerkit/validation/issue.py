@@ -15,6 +15,7 @@ class IssueType(Enum):
     ATTRIBUTE_UNDEFINED = "AttributeUndefined"
     ATTRIBUTE_VALUE = "AttributeValueIssue"
     EMPTY_FRAMES = "EmptyFramesIssue"
+    OBJECT_TYPE_UNDEFINED = "ObjectTypeUndefined"
     RAIL_SIDE = "RailSide"
 
 
