@@ -30,7 +30,7 @@ from raillabel_providerkit.validation.validate_onthology._onthology_classes._att
 from raillabel_providerkit.validation.validate_onthology._onthology_classes._sensor_type import (
     _SensorType,
 )
-from raillabel_providerkit.validation import IssueIdentifiers, IssueType
+from raillabel_providerkit.validation import IssueType
 from raillabel.format import Bbox, Point2d, Size2d
 
 

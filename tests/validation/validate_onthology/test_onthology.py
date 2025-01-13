@@ -1,17 +1,13 @@
 # Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import pytest
 from uuid import UUID
 
 from raillabel_providerkit.validation.validate_onthology._onthology_classes._onthology import (
     _Onthology,
 )
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._sensor_type import (
-    _SensorType,
-)
-from raillabel_providerkit.validation import IssueIdentifiers, IssueType
-from raillabel.format import Bbox, Point2d, Size2d
+from raillabel_providerkit.validation import IssueType
+from raillabel.format import Point2d, Size2d
 from raillabel.scene_builder import SceneBuilder
 
 
