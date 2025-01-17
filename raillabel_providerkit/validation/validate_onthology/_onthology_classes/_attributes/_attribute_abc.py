@@ -15,6 +15,19 @@ from raillabel_providerkit.validation.validate_onthology._onthology_classes._sco
 
 @dataclass
 class _Attribute(abc.ABC):
+    """Attribute definition of an object class.
+
+    Parameters
+    ----------
+    optional: bool
+        Whether the attribute is required to exist in every annotation of the object class.
+    scope: _Scope
+        The scope all attributes following this definition have to adhere to.
+    sensor_types: list[str]
+        The sensors for which annotations are allowed to have this attribute.
+
+    """
+
     optional: bool
     scope: _Scope
     sensor_types: list[str]
