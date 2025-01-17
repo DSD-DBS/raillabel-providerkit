@@ -21,12 +21,12 @@ class _Attribute(abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def supports(cls, data: dict) -> bool:
+    def supports(cls, attribute_dict: dict) -> bool:
         raise NotImplementedError
 
     @classmethod
     @abc.abstractmethod
-    def fromdict(cls, data: dict) -> _Attribute:
+    def fromdict(cls, attribute_dict: dict) -> _Attribute:
         raise NotImplementedError
 
     @abc.abstractmethod

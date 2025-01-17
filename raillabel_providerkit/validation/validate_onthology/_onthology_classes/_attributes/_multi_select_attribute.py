@@ -18,24 +18,24 @@ class _MultiSelectAttribute(_Attribute):
     options: set[str]
 
     @classmethod
-    def supports(cls, data: dict) -> bool:
+    def supports(cls, attribute_dict: dict) -> bool:
         return (
-            "attribute_type" in data
-            and type(data["attribute_type"]) is dict
-            and "type" in data["attribute_type"]
-            and data["attribute_type"]["type"] == "multi-select"
+            "attribute_type" in attribute_dict
+            and type(attribute_dict["attribute_type"]) is dict
+            and "type" in attribute_dict["attribute_type"]
+            and attribute_dict["attribute_type"]["type"] == "multi-select"
         )
 
     @classmethod
-    def fromdict(cls, data: dict) -> _MultiSelectAttribute:
-        if not cls.supports(data):
+    def fromdict(cls, attribute_dict: dict) -> _MultiSelectAttribute:
+        if not cls.supports(attribute_dict):
             raise ValueError
 
         return _MultiSelectAttribute(
-            optional=data.get("optional", False),
-            scope=_Scope(data["scope"]),
-            sensor_types=data.get("sensor_types", ["camera", "lidar", "radar"]),
-            options=set(data["attribute_type"]["options"]),
+            optional=attribute_dict.get("optional", False),
+            scope=_Scope(attribute_dict["scope"]),
+            sensor_types=attribute_dict.get("sensor_types", ["camera", "lidar", "radar"]),
+            options=set(attribute_dict["attribute_type"]["options"]),
         )
 
     def check_type_and_value(

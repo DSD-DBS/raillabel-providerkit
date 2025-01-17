@@ -33,7 +33,7 @@ def validate(
         scene_source: The scene either as a dictionary or as a Path to the scene source file.
         onthology_source: The dataset onthology as a dictionary or as a Path to the onthology YAML
             file. If not None, issues are returned if the scene contains annotations with invalid
-            attributes or object types. Default is True.
+            attributes or object types. Default is None.
         validate_for_empty_frames (optional): If True, issues are returned if the scene contains
             frames without annotations. Default is True.
         validate_for_rail_side_order: If True, issues are returned if the scene contains track with

@@ -16,18 +16,18 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _StringAttribute(_Attribute):
     @classmethod
-    def supports(cls, data: dict) -> bool:
-        return "attribute_type" in data and data["attribute_type"] == "string"
+    def supports(cls, attribute_dict: dict) -> bool:
+        return "attribute_type" in attribute_dict and attribute_dict["attribute_type"] == "string"
 
     @classmethod
-    def fromdict(cls, data: dict) -> _StringAttribute:
-        if not cls.supports(data):
+    def fromdict(cls, attribute_dict: dict) -> _StringAttribute:
+        if not cls.supports(attribute_dict):
             raise ValueError
 
         return _StringAttribute(
-            optional=data.get("optional", False),
-            scope=_Scope(data["scope"]),
-            sensor_types=data.get("sensor_types", ["camera", "lidar", "radar"]),
+            optional=attribute_dict.get("optional", False),
+            scope=_Scope(attribute_dict["scope"]),
+            sensor_types=attribute_dict.get("sensor_types", ["camera", "lidar", "radar"]),
         )
 
     def check_type_and_value(
