@@ -73,9 +73,9 @@ class _ObjectClass:
         return [
             Issue(
                 type=IssueType.ATTRIBUTE_UNDEFINED,
-                reason=f"Undefined attribute '{attr_name}'",
                 identifiers=IssueIdentifiers(
                     annotation=annotation_uid,
+                    attribute=attr_name,
                     frame=frame_id,
                     object=annotation.object_id,
                     sensor=annotation.sensor_id,
@@ -99,9 +99,9 @@ class _ObjectClass:
         return [
             Issue(
                 type=IssueType.ATTRIBUTE_MISSING,
-                reason=f"Missing attribute '{attr_name}'",
                 identifiers=IssueIdentifiers(
                     annotation=annotation_uid,
+                    attribute=attr_name,
                     frame=frame_id,
                     object=annotation.object_id,
                     sensor=annotation.sensor_id,
@@ -135,6 +135,7 @@ class _ObjectClass:
                     attr_value,
                     identifiers=IssueIdentifiers(
                         annotation=annotation_uid,
+                        attribute=attr_name,
                         frame=frame_id,
                         object=annotation.object_id,
                         sensor=annotation.sensor_id,

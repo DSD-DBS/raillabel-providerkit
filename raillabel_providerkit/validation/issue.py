@@ -25,6 +25,7 @@ class IssueIdentifiers:
     """Information for locating an issue."""
 
     annotation: UUID | None = None
+    attribute: str | None = None
     frame: int | None = None
     object: UUID | None = None
     sensor: str | None = None
