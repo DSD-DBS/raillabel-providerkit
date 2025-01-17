@@ -70,16 +70,23 @@ class _Onthology:
     ]:
         annotations = []
         for frame_id, frame in scene.frames.items():
-            annotations.extend(
-                [
+            for annotation_uid, annotation in frame.annotations.items():
+                sensor_type_str = scene.sensors.get(annotation.sensor_id).TYPE
+
+                sensor_type = None
+                try:
+                    sensor_type = _SensorType(sensor_type_str)
+                except ValueError:
+                    # NOTE: This would be detected by validate_schema
+                    continue
+
+                annotations.append(
                     (
                         annotation_uid,
                         annotation,
-                        _SensorType(scene.sensors.get(annotation.sensor_id).TYPE),
+                        sensor_type,
                         frame_id,
                     )
-                    for annotation_uid, annotation in frame.annotations.items()
-                ]
-            )
+                )
 
         return annotations
