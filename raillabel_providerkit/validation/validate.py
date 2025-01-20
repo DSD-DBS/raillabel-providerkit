@@ -11,11 +11,18 @@ from raillabel.json_format import JSONScene
 
 from raillabel_providerkit.validation import Issue
 
-from . import validate_empty_frames, validate_missing_ego_track, validate_rail_side, validate_schema
+from . import (
+    validate_empty_frames,
+    validate_missing_ego_track,
+    validate_onthology,
+    validate_rail_side,
+    validate_schema,
+)
 
 
 def validate(
     scene_source: dict | Path,
+    onthology_source: dict | Path | None = None,
     validate_for_empty_frames: bool = True,
     validate_for_rail_side_order: bool = True,
     validate_for_missing_ego_track: bool = True,
@@ -24,6 +31,9 @@ def validate(
 
     Args:
         scene_source: The scene either as a dictionary or as a Path to the scene source file.
+        onthology_source: The dataset onthology as a dictionary or as a Path to the onthology YAML
+            file. If not None, issues are returned if the scene contains annotations with invalid
+            attributes or object types. Default is None.
         validate_for_empty_frames (optional): If True, issues are returned if the scene contains
             frames without annotations. Default is True.
         validate_for_rail_side_order: If True, issues are returned if the scene contains track with
@@ -46,6 +56,9 @@ def validate(
 
     scene = Scene.from_json(JSONScene(**scene_source))
     errors = []
+
+    if onthology_source is not None:
+        errors.extend(validate_onthology(scene, onthology_source))
 
     if validate_for_empty_frames:
         errors.extend(validate_empty_frames(scene))

@@ -10,7 +10,12 @@ class IssueType(Enum):
     """General classification of the issue."""
 
     SCHEMA = "SchemaIssue"
+    ATTRIBUTE_MISSING = "AttributeMissing"
+    ATTRIBUTE_TYPE = "AttributeTypeIssue"
+    ATTRIBUTE_UNDEFINED = "AttributeUndefined"
+    ATTRIBUTE_VALUE = "AttributeValueIssue"
     EMPTY_FRAMES = "EmptyFramesIssue"
+    OBJECT_TYPE_UNDEFINED = "ObjectTypeUndefined"
     RAIL_SIDE = "RailSide"
     MISSING_EGO_TRACK = "MissingEgoTrackIssue"
 
@@ -20,6 +25,7 @@ class IssueIdentifiers:
     """Information for locating an issue."""
 
     annotation: UUID | None = None
+    attribute: str | None = None
     frame: int | None = None
     object: UUID | None = None
     sensor: str | None = None

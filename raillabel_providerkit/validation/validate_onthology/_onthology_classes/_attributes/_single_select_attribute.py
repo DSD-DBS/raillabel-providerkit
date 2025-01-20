@@ -5,6 +5,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
+from raillabel_providerkit.validation.validate_onthology._onthology_classes._scope import (
+    _Scope,
+)
+
 from ._attribute_abc import _Attribute
 
 
@@ -13,28 +18,54 @@ class _SingleSelectAttribute(_Attribute):
     options: set[str]
 
     @classmethod
-    def supports(cls, data_dict: dict) -> bool:
+    def supports(cls, attribute_dict: dict) -> bool:
         return (
-            type(data_dict) is dict and "type" in data_dict and data_dict["type"] == "single-select"
+            "attribute_type" in attribute_dict
+            and type(attribute_dict["attribute_type"]) is dict
+            and "type" in attribute_dict["attribute_type"]
+            and attribute_dict["attribute_type"]["type"] == "single-select"
         )
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> _SingleSelectAttribute:
-        return _SingleSelectAttribute(options=set(data_dict["options"]))
+    def fromdict(cls, attribute_dict: dict) -> _SingleSelectAttribute:
+        if not cls.supports(attribute_dict):
+            raise ValueError
 
-    def check(
-        self, attribute_name: str, attribute_value: bool | float | str | list, annotation_id: str
-    ) -> list[str]:
+        return _SingleSelectAttribute(
+            optional=attribute_dict.get("optional", False),
+            scope=_Scope(attribute_dict["scope"]),
+            sensor_types=attribute_dict.get("sensor_types", ["camera", "lidar", "radar"]),
+            options=set(attribute_dict["attribute_type"]["options"]),
+        )
+
+    def check_type_and_value(
+        self,
+        attribute_name: str,
+        attribute_value: bool | float | str | list,
+        identifiers: IssueIdentifiers,
+    ) -> list[Issue]:
         if type(attribute_value) is not str:
             return [
-                f"Attribute '{attribute_name}' of annotation {annotation_id} is of type "
-                f"'{attribute_value.__class__.__name__}' (should be 'str')."
+                Issue(
+                    type=IssueType.ATTRIBUTE_TYPE,
+                    reason=(
+                        f"Attribute '{attribute_name}' is of type"
+                        f" {attribute_value.__class__.__name__} (should be 'str')."
+                    ),
+                    identifiers=identifiers,
+                )
             ]
 
         if attribute_value not in self.options:
             return [
-                f"Attribute '{attribute_name}' of annotation {annotation_id} has an undefined "
-                f"value '{attribute_value}' (defined options: {self._stringify_options()})."
+                Issue(
+                    type=IssueType.ATTRIBUTE_VALUE,
+                    reason=(
+                        f"Attribute '{attribute_name}' has an undefined value"
+                        f" '{attribute_value}' (defined options: {self._stringify_options()})."
+                    ),
+                    identifiers=identifiers,
+                )
             ]
 
         return []

@@ -3,10 +3,15 @@
 
 from __future__ import annotations
 
-import typing as t
 from dataclasses import dataclass
+from uuid import UUID
 
 import raillabel
+
+from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
+from raillabel_providerkit.validation.validate_onthology._onthology_classes._sensor_type import (
+    _SensorType,
+)
 
 from ._object_classes import _ObjectClass
 
@@ -14,36 +19,74 @@ from ._object_classes import _ObjectClass
 @dataclass
 class _Onthology:
     classes: dict[str, _ObjectClass]
-    errors: t.ClassVar = []
+    errors: list[Issue]
 
     @classmethod
-    def fromdict(cls, data_dict: dict) -> _Onthology:
+    def fromdict(cls, data: dict) -> _Onthology:
         return _Onthology(
-            {class_id: _ObjectClass.fromdict(class_) for class_id, class_ in data_dict.items()}
+            {class_id: _ObjectClass.fromdict(class_) for class_id, class_ in data.items()}, []
         )
 
-    def check(self, scene: raillabel.Scene) -> list[str]:
+    def check(self, scene: raillabel.Scene) -> list[Issue]:
         self.errors = []
 
         self._check_class_validity(scene)
-        annotations = self._compile_annotations(scene)
-        for annotation in annotations:
-            self.errors.extend(self.classes[annotation.object.type].check(annotation))
+        annotations = _Onthology._compile_annotations(scene)
+        for annotation_uid, annotation, sensor_type, frame_id in annotations:
+            self.errors.extend(
+                self.classes[scene.objects.get(annotation.object_id).type].check(
+                    annotation_uid, annotation, sensor_type, frame_id
+                )
+            )
 
         return self.errors
 
-    def _check_class_validity(self, scene: raillabel.Scene) -> list[str]:
-        object_classes_in_scene = [obj.type for obj in scene.objects.values()]
-
-        for object_class in object_classes_in_scene:
+    def _check_class_validity(self, scene: raillabel.Scene) -> None:
+        for obj_uid, obj in scene.objects.items():
+            object_class = obj.type
             if object_class not in self.classes:
-                self.errors.append(f"Object type '{object_class}' is not defined.")
+                self.errors.append(
+                    Issue(
+                        type=IssueType.OBJECT_TYPE_UNDEFINED,
+                        reason=f"Undefined object type '{object_class}'",
+                        identifiers=IssueIdentifiers(object=obj_uid),
+                    )
+                )
 
+    @classmethod
     def _compile_annotations(
-        self, scene: raillabel.Scene
-    ) -> list[type[raillabel.format._ObjectAnnotation]]:
+        cls, scene: raillabel.Scene
+    ) -> list[
+        tuple[
+            UUID,
+            raillabel.format.Bbox
+            | raillabel.format.Cuboid
+            | raillabel.format.Poly2d
+            | raillabel.format.Poly3d
+            | raillabel.format.Seg3d,
+            _SensorType,
+            int,
+        ]
+    ]:
         annotations = []
-        for frame in scene.frames.values():
-            annotations.extend(list(frame.annotations.values()))
+        for frame_id, frame in scene.frames.items():
+            for annotation_uid, annotation in frame.annotations.items():
+                sensor_type_str = scene.sensors.get(annotation.sensor_id).TYPE
+
+                sensor_type = None
+                try:
+                    sensor_type = _SensorType(sensor_type_str)
+                except ValueError:
+                    # NOTE: This would be detected by validate_schema
+                    continue
+
+                annotations.append(
+                    (
+                        annotation_uid,
+                        annotation,
+                        sensor_type,
+                        frame_id,
+                    )
+                )
 
         return annotations

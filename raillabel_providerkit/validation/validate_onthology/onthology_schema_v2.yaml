@@ -2,15 +2,32 @@
 # SPDX-License-Identifier: Apache-2.0
 
 "$schema": http://json-schema.org/draft-07/schema#
-version: 1.0.0
+version: 2.0.0
 
 definitions:
 
     attribute:
+        additionalProperties: false
+        properties:
+            attribute_type:
+                "$ref": "#/definitions/attribute_type"
+            optional:
+                type: boolean
+            scope:
+                enum: [annotation, frame, object]
+            sensor_types:
+                items:
+                    enum: [camera, lidar, radar]
+                type: array
+        required: [attribute_type, scope]
+        type: object
+
+    attribute_type:
         oneOf:
             [
                 "$ref": "#/definitions/boolean_attribute",
                 "$ref": "#/definitions/integer_attribute",
+                "$ref": "#/definitions/multi_reference_attribute",
                 "$ref": "#/definitions/multi_select_attribute",
                 "$ref": "#/definitions/single_select_attribute",
                 "$ref": "#/definitions/string_attribute",
@@ -21,20 +38,8 @@ definitions:
         const: boolean
 
     class:
-        additionalProperties: false
-        properties:
-            attributes:
-                additionalProperties: false
-                patternProperties:
-                    "^":
-                        "$ref": "#/definitions/attribute"
-                type: object
-            sensor_types:
-                additionalProperties: false
-                patternProperties:
-                    "^(camera|lidar|radar)$":
-                        "$ref": "#/definitions/sensor_type"
-                type: object
+        additionalProperties:
+            "$ref": "#/definitions/attribute"
         type: object
 
     integer_attribute:
@@ -51,6 +56,9 @@ definitions:
                     type: string
         type: object
 
+    multi_reference_attribute:
+        const: multi-reference
+
     multi_select_attribute:
         additionalProperties: false
         properties:
@@ -62,26 +70,13 @@ definitions:
                     type: string
         type: object
 
-    sensor_type:
-        additionalProperties: false
-        properties:
-            attributes:
-                additionalProperties: false
-                patternProperties:
-                    "^":
-                        "$ref": "#/definitions/attribute"
-                type: object
-        type: object
-
     string_attribute:
         const: string
 
     vector_attribute:
         const: vector
 
-additionalProperties: false
-patternProperties:
-    "^":
-        "$ref": "#/definitions/class"
+additionalProperties:
+    "$ref": "#/definitions/class"
 
 type: object

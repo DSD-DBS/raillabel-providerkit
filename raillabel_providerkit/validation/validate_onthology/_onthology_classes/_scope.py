@@ -4,7 +4,7 @@
 from enum import Enum
 
 
-class _SensorType(Enum):
-    CAMERA = "camera"
-    LIDAR = "lidar"
-    RADAR = "radar"
+class _Scope(Enum):
+    ANNOTATION = "annotation"
+    FRAME = "frame"
+    OBJECT = "object"
