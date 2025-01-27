@@ -145,15 +145,7 @@ def test_check_class_validity__incorrect():
     onthology = _Onthology.fromdict(
         {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "annotation"}}}
     )
-    scene = (
-        SceneBuilder.empty()
-        .add_object(
-            object_id=UUID("ba73e75d-b996-4f6e-bdad-39c465420a33"),
-            object_type="apple",
-            object_name="apple_0001",
-        )
-        .result
-    )
+    scene = SceneBuilder.empty().add_bbox(object_name="apple_0000").result
     onthology._check_class_validity(scene)
     assert len(onthology.errors) == 1
     assert onthology.errors[0].type == IssueType.OBJECT_TYPE_UNDEFINED
