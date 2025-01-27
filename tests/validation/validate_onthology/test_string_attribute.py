@@ -43,6 +43,11 @@ def test_fromdict__scope_invalid(example_string_attribute_dict):
         _StringAttribute.fromdict(example_string_attribute_dict)
 
 
+def test_fromdict__scope_empty(example_string_attribute_dict):
+    del example_string_attribute_dict["scope"]
+    assert _StringAttribute.fromdict(example_string_attribute_dict).scope == _Scope.ANNOTATION
+
+
 def test_fromdict__scope_annotation(example_string_attribute_dict):
     example_string_attribute_dict["scope"] = "annotation"
     assert _StringAttribute.fromdict(example_string_attribute_dict).scope == _Scope.ANNOTATION

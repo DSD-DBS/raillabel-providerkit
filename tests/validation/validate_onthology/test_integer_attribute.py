@@ -43,6 +43,11 @@ def test_fromdict__scope_invalid(example_integer_attribute_dict):
         _IntegerAttribute.fromdict(example_integer_attribute_dict)
 
 
+def test_fromdict__scope_empty(example_integer_attribute_dict):
+    del example_integer_attribute_dict["scope"]
+    assert _IntegerAttribute.fromdict(example_integer_attribute_dict).scope == _Scope.ANNOTATION
+
+
 def test_fromdict__scope_annotation(example_integer_attribute_dict):
     example_integer_attribute_dict["scope"] = "annotation"
     assert _IntegerAttribute.fromdict(example_integer_attribute_dict).scope == _Scope.ANNOTATION

@@ -43,6 +43,11 @@ def test_fromdict__scope_invalid(example_vector_attribute_dict):
         _VectorAttribute.fromdict(example_vector_attribute_dict)
 
 
+def test_fromdict__scope_empty(example_vector_attribute_dict):
+    del example_vector_attribute_dict["scope"]
+    assert _VectorAttribute.fromdict(example_vector_attribute_dict).scope == _Scope.ANNOTATION
+
+
 def test_fromdict__scope_annotation(example_vector_attribute_dict):
     example_vector_attribute_dict["scope"] = "annotation"
     assert _VectorAttribute.fromdict(example_vector_attribute_dict).scope == _Scope.ANNOTATION
