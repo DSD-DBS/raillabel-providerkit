@@ -45,6 +45,14 @@ def test_fromdict__scope_invalid(example_multi_reference_attribute_dict):
         _MultiReferenceAttribute.fromdict(example_multi_reference_attribute_dict)
 
 
+def test_fromdict__scope_empty(example_multi_reference_attribute_dict):
+    del example_multi_reference_attribute_dict["scope"]
+    assert (
+        _MultiReferenceAttribute.fromdict(example_multi_reference_attribute_dict).scope
+        == _Scope.ANNOTATION
+    )
+
+
 def test_fromdict__scope_annotation(example_multi_reference_attribute_dict):
     example_multi_reference_attribute_dict["scope"] = "annotation"
     assert (

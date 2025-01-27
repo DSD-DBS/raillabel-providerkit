@@ -43,6 +43,14 @@ def test_fromdict__scope_invalid(example_multi_select_attribute_dict):
         _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
 
 
+def test_fromdict__scope_empty(example_multi_select_attribute_dict):
+    del example_multi_select_attribute_dict["scope"]
+    assert (
+        _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict).scope
+        == _Scope.ANNOTATION
+    )
+
+
 def test_fromdict__scope_annotation(example_multi_select_attribute_dict):
     example_multi_select_attribute_dict["scope"] = "annotation"
     assert (

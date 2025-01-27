@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 "$schema": http://json-schema.org/draft-07/schema#
-version: 2.0.0
+version: 2.1.0
 
 definitions:
 
@@ -19,7 +19,7 @@ definitions:
                 items:
                     enum: [camera, lidar, radar]
                 type: array
-        required: [attribute_type, scope]
+        required: [attribute_type]
         type: object
 
     attribute_type:

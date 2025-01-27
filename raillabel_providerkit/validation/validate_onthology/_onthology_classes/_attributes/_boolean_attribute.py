@@ -26,7 +26,7 @@ class _BooleanAttribute(_Attribute):
 
         return _BooleanAttribute(
             optional=attribute_dict.get("optional", False),
-            scope=_Scope(attribute_dict["scope"]),
+            scope=_Scope(attribute_dict.get("scope", "annotation")),
             sensor_types=attribute_dict.get("sensor_types", ["camera", "lidar", "radar"]),
         )
 

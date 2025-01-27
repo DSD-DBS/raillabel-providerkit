@@ -43,6 +43,11 @@ def test_fromdict__scope_invalid(example_boolean_attribute_dict):
         _BooleanAttribute.fromdict(example_boolean_attribute_dict)
 
 
+def test_fromdict__scope_empty(example_boolean_attribute_dict):
+    del example_boolean_attribute_dict["scope"]
+    assert _BooleanAttribute.fromdict(example_boolean_attribute_dict).scope == _Scope.ANNOTATION
+
+
 def test_fromdict__scope_annotation(example_boolean_attribute_dict):
     example_boolean_attribute_dict["scope"] = "annotation"
     assert _BooleanAttribute.fromdict(example_boolean_attribute_dict).scope == _Scope.ANNOTATION
