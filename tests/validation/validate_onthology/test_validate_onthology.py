@@ -104,3 +104,13 @@ def test_validate_onthology_schema__invalid():
 
 def test_validate_onthology_schema__valid(example_onthology_dict):
     _validate_onthology_schema(example_onthology_dict)
+
+
+def test_unexpected_class(example_onthology_dict):
+    scene = SceneBuilder.empty().add_bbox(object_name="apple_0001").result
+
+    validate_onthology(scene, example_onthology_dict)
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-vv"])

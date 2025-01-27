@@ -33,8 +33,12 @@ class _Onthology:
         self._check_class_validity(scene)
         annotations = _Onthology._compile_annotations(scene)
         for annotation_uid, annotation, sensor_type, frame_id in annotations:
+            annotation_class = scene.objects.get(annotation.object_id).type
+            if annotation_class not in self.classes:
+                continue
+
             self.errors.extend(
-                self.classes[scene.objects.get(annotation.object_id).type].check(
+                self.classes[annotation_class].check(
                     annotation_uid, annotation, sensor_type, frame_id
                 )
             )

@@ -15,9 +15,10 @@ class IssueType(Enum):
     ATTRIBUTE_UNDEFINED = "AttributeUndefined"
     ATTRIBUTE_VALUE = "AttributeValueIssue"
     EMPTY_FRAMES = "EmptyFramesIssue"
+    MISSING_EGO_TRACK = "MissingEgoTrackIssue"
     OBJECT_TYPE_UNDEFINED = "ObjectTypeUndefined"
     RAIL_SIDE = "RailSide"
-    MISSING_EGO_TRACK = "MissingEgoTrackIssue"
+    UNEXPECTED_CLASS = "UnexpectedClassIssue"
 
 
 @dataclass
