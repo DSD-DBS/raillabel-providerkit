@@ -37,9 +37,11 @@ class _Onthology:
             if annotation_class not in self.classes:
                 continue
 
+            object_type = scene.objects[annotation.object_id].type
+
             self.errors.extend(
                 self.classes[annotation_class].check(
-                    annotation_uid, annotation, sensor_type, frame_id
+                    annotation_uid, annotation, sensor_type, frame_id, object_type
                 )
             )
 
@@ -52,8 +54,7 @@ class _Onthology:
                 self.errors.append(
                     Issue(
                         type=IssueType.OBJECT_TYPE_UNDEFINED,
-                        reason=f"Undefined object type '{object_class}'",
-                        identifiers=IssueIdentifiers(object=obj_uid),
+                        identifiers=IssueIdentifiers(object=obj_uid, object_type=object_class),
                     )
                 )
 

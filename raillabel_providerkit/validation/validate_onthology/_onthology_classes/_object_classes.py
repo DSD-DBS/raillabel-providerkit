@@ -36,17 +36,24 @@ class _ObjectClass:
         | raillabel.format.Seg3d,
         sensor_type: _SensorType,
         frame_id: int,
+        object_type: str,
     ) -> list[Issue]:
         errors = []
 
         errors.extend(
-            self._check_undefined_attributes(annotation_uid, annotation, sensor_type, frame_id)
+            self._check_undefined_attributes(
+                annotation_uid, annotation, sensor_type, frame_id, object_type
+            )
         )
         errors.extend(
-            self._check_missing_attributes(annotation_uid, annotation, sensor_type, frame_id)
+            self._check_missing_attributes(
+                annotation_uid, annotation, sensor_type, frame_id, object_type
+            )
         )
         errors.extend(
-            self._check_false_attribute_type(annotation_uid, annotation, sensor_type, frame_id)
+            self._check_false_attribute_type(
+                annotation_uid, annotation, sensor_type, frame_id, object_type
+            )
         )
 
         return errors
@@ -69,6 +76,7 @@ class _ObjectClass:
         | raillabel.format.Seg3d,
         sensor_type: _SensorType,
         frame_id: int,
+        object_type: str,
     ) -> list[Issue]:
         return [
             Issue(
@@ -78,6 +86,7 @@ class _ObjectClass:
                     attribute=attr_name,
                     frame=frame_id,
                     object=annotation.object_id,
+                    object_type=object_type,
                     sensor=annotation.sensor_id,
                 ),
             )
@@ -95,6 +104,7 @@ class _ObjectClass:
         | raillabel.format.Seg3d,
         sensor_type: _SensorType,
         frame_id: int,
+        object_type: str,
     ) -> list[Issue]:
         return [
             Issue(
@@ -104,6 +114,7 @@ class _ObjectClass:
                     attribute=attr_name,
                     frame=frame_id,
                     object=annotation.object_id,
+                    object_type=object_type,
                     sensor=annotation.sensor_id,
                 ),
             )
@@ -121,6 +132,7 @@ class _ObjectClass:
         | raillabel.format.Seg3d,
         sensor_type: _SensorType,
         frame_id: int,
+        object_type: str,
     ) -> list[Issue]:
         errors = []
 
@@ -138,6 +150,7 @@ class _ObjectClass:
                         attribute=attr_name,
                         frame=frame_id,
                         object=annotation.object_id,
+                        object_type=object_type,
                         sensor=annotation.sensor_id,
                     ),
                 )
