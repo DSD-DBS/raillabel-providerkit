@@ -9,7 +9,7 @@ from uuid import UUID
 import raillabel
 
 from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._sensor_type import (
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._sensor_type import (
     _SensorType,
 )
 

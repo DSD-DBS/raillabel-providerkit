@@ -6,7 +6,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._scope import (
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._scope import (
     _Scope,
 )
 

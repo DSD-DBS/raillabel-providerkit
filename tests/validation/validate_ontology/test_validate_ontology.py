@@ -5,31 +5,31 @@ import pytest
 from pathlib import Path
 from uuid import UUID
 
-from raillabel_providerkit.validation.validate_onthology.validate_onthology import (
-    validate_onthology,
-    _validate_onthology_schema,
-    _load_onthology,
-    OnthologySchemaError,
+from raillabel_providerkit.validation.validate_ontology.validate_ontology import (
+    validate_ontology,
+    _validate_ontology_schema,
+    _load_ontology,
+    OntologySchemaError,
 )
 from raillabel_providerkit.validation import IssueType
 from raillabel.scene_builder import SceneBuilder
 from raillabel.format import Point2d, Size2d
 
-ONTHOLOGY_PATH = Path(__file__).parent.parent.parent / "__assets__/osdar23_onthology.yaml"
+ONTOLOGY_PATH = Path(__file__).parent.parent.parent / "__assets__/osdar23_ontology.yaml"
 
 
 @pytest.fixture
-def example_onthology_dict() -> dict:
+def example_ontology_dict() -> dict:
     return {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "annotation"}}}
 
 
-def test_validate_onthology__empty_scene(example_onthology_dict):
+def test_validate_ontology__empty_scene(example_ontology_dict):
     scene = SceneBuilder.empty().result
-    issues = validate_onthology(scene, example_onthology_dict)
+    issues = validate_ontology(scene, example_ontology_dict)
     assert issues == []
 
 
-def test_validate_onthology__correct(example_onthology_dict):
+def test_validate_ontology__correct(example_ontology_dict):
     scene = (
         SceneBuilder.empty()
         .add_object(
@@ -48,11 +48,11 @@ def test_validate_onthology__correct(example_onthology_dict):
         )
         .result
     )
-    issues = validate_onthology(scene, example_onthology_dict)
+    issues = validate_ontology(scene, example_ontology_dict)
     assert issues == []
 
 
-def test_validate_onthology__invalid_attribute_type(example_onthology_dict):
+def test_validate_ontology__invalid_attribute_type(example_ontology_dict):
     scene = (
         SceneBuilder.empty()
         .add_object(
@@ -71,45 +71,45 @@ def test_validate_onthology__invalid_attribute_type(example_onthology_dict):
         )
         .result
     )
-    issues = validate_onthology(scene, example_onthology_dict)
+    issues = validate_ontology(scene, example_ontology_dict)
     assert len(issues) == 1
     assert issues[0].type == IssueType.ATTRIBUTE_TYPE
 
 
-def test_load_onthology__invalid_path():
+def test_load_ontology__invalid_path():
     invalid_path = Path("/this/should/point/nowhere")
     with pytest.raises(FileNotFoundError):
-        _load_onthology(invalid_path)
+        _load_ontology(invalid_path)
 
 
-def test_load_onthology__osdar23():
-    onthology_dict = _load_onthology(ONTHOLOGY_PATH)
-    assert isinstance(onthology_dict, dict)
+def test_load_ontology__osdar23():
+    ontology_dict = _load_ontology(ONTOLOGY_PATH)
+    assert isinstance(ontology_dict, dict)
 
 
-def test_validate_onthology_schema__none():
-    with pytest.raises(OnthologySchemaError):
-        _validate_onthology_schema(None)
+def test_validate_ontology_schema__none():
+    with pytest.raises(OntologySchemaError):
+        _validate_ontology_schema(None)
 
 
-def test_validate_onthology_schema__empty():
-    _validate_onthology_schema({})
+def test_validate_ontology_schema__empty():
+    _validate_ontology_schema({})
 
 
-def test_validate_onthology_schema__invalid():
+def test_validate_ontology_schema__invalid():
     invalid_dict = {"foo": "bar"}
-    with pytest.raises(OnthologySchemaError):
-        _validate_onthology_schema(invalid_dict)
+    with pytest.raises(OntologySchemaError):
+        _validate_ontology_schema(invalid_dict)
 
 
-def test_validate_onthology_schema__valid(example_onthology_dict):
-    _validate_onthology_schema(example_onthology_dict)
+def test_validate_ontology_schema__valid(example_ontology_dict):
+    _validate_ontology_schema(example_ontology_dict)
 
 
-def test_unexpected_class(example_onthology_dict):
+def test_unexpected_class(example_ontology_dict):
     scene = SceneBuilder.empty().add_bbox(object_name="apple_0001").result
 
-    validate_onthology(scene, example_onthology_dict)
+    validate_ontology(scene, example_ontology_dict)
 
 
 if __name__ == "__main__":
