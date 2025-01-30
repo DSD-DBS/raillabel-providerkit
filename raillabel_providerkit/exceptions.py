@@ -29,7 +29,7 @@ class SchemaError(Exception):
     __module__ = "raillabel_providerkit"
 
 
-class OnthologySchemaError(Exception):
+class OntologySchemaError(Exception):
     """Raised when the .yaml-file provided is not valid against the schema."""
 
     __module__ = "raillabel_providerkit"

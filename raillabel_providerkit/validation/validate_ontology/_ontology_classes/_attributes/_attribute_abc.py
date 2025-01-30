@@ -10,7 +10,7 @@ from pathlib import Path
 from pkgutil import iter_modules
 
 from raillabel_providerkit.validation import Issue, IssueIdentifiers
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._scope import _Scope
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._scope import _Scope
 
 
 @dataclass
@@ -62,7 +62,7 @@ def _collect_attribute_classes() -> None:
     package_dir = str(Path(__file__).resolve().parent)
     for _, module_name, _ in iter_modules([package_dir]):
         module = import_module(
-            f"raillabel_providerkit.validation.validate_onthology._onthology_classes._attributes.{module_name}"
+            f"raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes.{module_name}"
         )
         for class_name in dir(module):
             class_ = getattr(module, class_name)

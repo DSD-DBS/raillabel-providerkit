@@ -3,8 +3,8 @@
 
 import pytest
 
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._scope import _Scope
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._attributes._vector_attribute import (
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._scope import _Scope
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._vector_attribute import (
     _VectorAttribute,
 )
 from raillabel_providerkit.validation import IssueIdentifiers, IssueType

@@ -148,7 +148,7 @@ def _count_rails_per_track_in_frame(frame: raillabel.format.Frame) -> dict[UUID,
         elif rail_side == "rightRail":
             counts[object_id][1] += 1
         else:
-            # NOTE: This is ignored because it is covered by validate_onthology
+            # NOTE: This is ignored because it is covered by validate_ontology
             continue
 
     return {

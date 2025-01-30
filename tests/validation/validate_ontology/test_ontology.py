@@ -3,8 +3,8 @@
 
 from uuid import UUID
 
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._onthology import (
-    _Onthology,
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._ontology import (
+    _Ontology,
 )
 from raillabel_providerkit.validation import IssueType
 from raillabel.format import Point2d, Size2d
@@ -12,30 +12,30 @@ from raillabel.scene_builder import SceneBuilder
 
 
 def test_fromdict__empty():
-    onthology = _Onthology.fromdict({})
-    assert len(onthology.classes) == 0
-    assert len(onthology.errors) == 0
+    ontology = _Ontology.fromdict({})
+    assert len(ontology.classes) == 0
+    assert len(ontology.errors) == 0
 
 
 def test_fromdict__simple():
-    onthology = _Onthology.fromdict(
+    ontology = _Ontology.fromdict(
         {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "annotation"}}}
     )
-    assert len(onthology.classes) == 1
-    assert "banana" in onthology.classes
-    assert len(onthology.errors) == 0
+    assert len(ontology.classes) == 1
+    assert "banana" in ontology.classes
+    assert len(ontology.errors) == 0
 
 
 def test_check__empty_scene():
-    onthology = _Onthology.fromdict({})
+    ontology = _Ontology.fromdict({})
     scene = SceneBuilder.empty().result
-    issues = onthology.check(scene)
+    issues = ontology.check(scene)
     assert len(issues) == 0
-    assert issues == onthology.errors
+    assert issues == ontology.errors
 
 
 def test_check__correct():
-    onthology = _Onthology.fromdict(
+    ontology = _Ontology.fromdict(
         {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "annotation"}}}
     )
     scene = (
@@ -56,13 +56,13 @@ def test_check__correct():
         )
         .result
     )
-    issues = onthology.check(scene)
+    issues = ontology.check(scene)
     assert len(issues) == 0
-    assert issues == onthology.errors
+    assert issues == ontology.errors
 
 
 def test_check__undefined_object_type():
-    onthology = _Onthology.fromdict(
+    ontology = _Ontology.fromdict(
         {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "annotation"}}}
     )
     scene = (
@@ -83,14 +83,14 @@ def test_check__undefined_object_type():
         )
         .result
     )
-    issues = onthology.check(scene)
+    issues = ontology.check(scene)
     assert len(issues) == 1
-    assert issues == onthology.errors
+    assert issues == ontology.errors
     assert issues[0].type == IssueType.OBJECT_TYPE_UNDEFINED
 
 
 def test_check__invalid_attribute_type():
-    onthology = _Onthology.fromdict(
+    ontology = _Ontology.fromdict(
         {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "annotation"}}}
     )
     scene = (
@@ -111,21 +111,21 @@ def test_check__invalid_attribute_type():
         )
         .result
     )
-    issues = onthology.check(scene)
+    issues = ontology.check(scene)
     assert len(issues) == 1
-    assert issues == onthology.errors
+    assert issues == ontology.errors
     assert issues[0].type == IssueType.ATTRIBUTE_TYPE
 
 
 def test_check_class_validity__empty_scene():
-    onthology = _Onthology.fromdict({})
+    ontology = _Ontology.fromdict({})
     scene = SceneBuilder.empty().result
-    onthology._check_class_validity(scene)
-    assert len(onthology.errors) == 0
+    ontology._check_class_validity(scene)
+    assert len(ontology.errors) == 0
 
 
 def test_check_class_validity__correct():
-    onthology = _Onthology.fromdict(
+    ontology = _Ontology.fromdict(
         {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "annotation"}}}
     )
     scene = (
@@ -137,23 +137,23 @@ def test_check_class_validity__correct():
         )
         .result
     )
-    onthology._check_class_validity(scene)
-    assert len(onthology.errors) == 0
+    ontology._check_class_validity(scene)
+    assert len(ontology.errors) == 0
 
 
 def test_check_class_validity__incorrect():
-    onthology = _Onthology.fromdict(
+    ontology = _Ontology.fromdict(
         {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "annotation"}}}
     )
     scene = SceneBuilder.empty().add_bbox(object_name="apple_0000").result
-    onthology._check_class_validity(scene)
-    assert len(onthology.errors) == 1
-    assert onthology.errors[0].type == IssueType.OBJECT_TYPE_UNDEFINED
+    ontology._check_class_validity(scene)
+    assert len(ontology.errors) == 1
+    assert ontology.errors[0].type == IssueType.OBJECT_TYPE_UNDEFINED
 
 
 def test_compile_annotations__empty_scene():
     scene = SceneBuilder.empty().result
-    annotations = _Onthology._compile_annotations(scene)
+    annotations = _Ontology._compile_annotations(scene)
     assert len(annotations) == 0
 
 
@@ -189,5 +189,5 @@ def test_compile_annotations__three_annotations_in_two_frames():
         )
         .result
     )
-    annotations = _Onthology._compile_annotations(scene)
+    annotations = _Ontology._compile_annotations(scene)
     assert len(annotations) == 3
