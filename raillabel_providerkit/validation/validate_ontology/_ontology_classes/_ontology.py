@@ -9,7 +9,7 @@ from uuid import UUID
 import raillabel
 
 from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._sensor_type import (
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._sensor_type import (
     _SensorType,
 )
 
@@ -17,13 +17,13 @@ from ._object_classes import _ObjectClass
 
 
 @dataclass
-class _Onthology:
+class _Ontology:
     classes: dict[str, _ObjectClass]
     errors: list[Issue]
 
     @classmethod
-    def fromdict(cls, data: dict) -> _Onthology:
-        return _Onthology(
+    def fromdict(cls, data: dict) -> _Ontology:
+        return _Ontology(
             {class_id: _ObjectClass.fromdict(class_) for class_id, class_ in data.items()}, []
         )
 
@@ -31,7 +31,7 @@ class _Onthology:
         self.errors = []
 
         self._check_class_validity(scene)
-        annotations = _Onthology._compile_annotations(scene)
+        annotations = _Ontology._compile_annotations(scene)
         for annotation_uid, annotation, sensor_type, frame_id in annotations:
             annotation_class = scene.objects.get(annotation.object_id).type
             if annotation_class not in self.classes:

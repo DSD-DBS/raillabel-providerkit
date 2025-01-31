@@ -3,8 +3,8 @@
 
 import pytest
 
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._scope import _Scope
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._attributes._boolean_attribute import (
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._scope import _Scope
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._boolean_attribute import (
     _BooleanAttribute,
 )
 from raillabel_providerkit.validation import IssueIdentifiers, IssueType
