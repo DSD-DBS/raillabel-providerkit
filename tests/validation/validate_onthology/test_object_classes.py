@@ -54,7 +54,7 @@ def test_check__correct(example_boolean_attribute_dict, ignore_uuid):
         sensor_id="some_sensor_id",
         attributes={"test_attribute": True},
     )
-    issues = object_class.check(ignore_uuid, annotation, _SensorType.CAMERA, 0)
+    issues = object_class.check(ignore_uuid, annotation, _SensorType.CAMERA, 0, "")
     assert issues == []
 
 
@@ -72,7 +72,7 @@ def test_check__all_error_types(example_boolean_attribute_dict, ignore_uuid):
         sensor_id="some_sensor_id",
         attributes={"test_attribute_1": "not-a-boolean", "unknown-attribute": False},
     )
-    issues = object_class.check(ignore_uuid, annotation, _SensorType.CAMERA, 0)
+    issues = object_class.check(ignore_uuid, annotation, _SensorType.CAMERA, 0, "")
     assert len(issues) == 3
     issue_types_found = [issue.type for issue in issues]
     assert IssueType.ATTRIBUTE_UNDEFINED in issue_types_found
@@ -136,7 +136,9 @@ def test_check_undefined_attributes__correct(example_boolean_attribute_dict, ign
         sensor_id="some_sensor_id",
         attributes={"test_attribute": True},
     )
-    issues = object_class._check_undefined_attributes(ignore_uuid, annotation, _SensorType.CAMERA, 0)
+    issues = object_class._check_undefined_attributes(
+        ignore_uuid, annotation, _SensorType.CAMERA, 0, ""
+    )
     assert issues == []
 
 
@@ -149,7 +151,9 @@ def test_check_undefined_attributes__two_undefined(example_boolean_attribute_dic
         sensor_id="some_sensor_id",
         attributes={"test_attribute": True, "color": "yellow", "is_a_banana": False},
     )
-    issues = object_class._check_undefined_attributes(ignore_uuid, annotation, _SensorType.CAMERA, 0)
+    issues = object_class._check_undefined_attributes(
+        ignore_uuid, annotation, _SensorType.CAMERA, 0, ""
+    )
     assert len(issues) == 2
     for issue in issues:
         assert issue.type == IssueType.ATTRIBUTE_UNDEFINED
@@ -169,7 +173,9 @@ def test_check_missing_attributes__correct(example_boolean_attribute_dict, ignor
         sensor_id="some_sensor_id",
         attributes={"test_attribute_1": True, "test_attribute_2": True},
     )
-    issues = object_class._check_missing_attributes(ignore_uuid, annotation, _SensorType.CAMERA, 0)
+    issues = object_class._check_missing_attributes(
+        ignore_uuid, annotation, _SensorType.CAMERA, 0, ""
+    )
     assert issues == []
 
 
@@ -187,7 +193,9 @@ def test_check_missing_attributes__one_missing(example_boolean_attribute_dict, i
         sensor_id="some_sensor_id",
         attributes={"test_attribute_2": True},
     )
-    issues = object_class._check_missing_attributes(ignore_uuid, annotation, _SensorType.CAMERA, 0)
+    issues = object_class._check_missing_attributes(
+        ignore_uuid, annotation, _SensorType.CAMERA, 0, ""
+    )
     assert len(issues) == 1
     assert issues[0].type == IssueType.ATTRIBUTE_MISSING
 
@@ -201,7 +209,9 @@ def test_check_false_attribute_type__correct(example_boolean_attribute_dict, ign
         sensor_id="some_sensor_id",
         attributes={"test_attribute": True},
     )
-    issues = object_class._check_false_attribute_type(ignore_uuid, annotation, _SensorType.CAMERA, 0)
+    issues = object_class._check_false_attribute_type(
+        ignore_uuid, annotation, _SensorType.CAMERA, 0, ""
+    )
     assert issues == []
 
 
@@ -214,7 +224,9 @@ def test_check_false_attribute_type__incorrect(example_boolean_attribute_dict, i
         sensor_id="some_sensor_id",
         attributes={"test_attribute": "i-like-trains"},
     )
-    issues = object_class._check_false_attribute_type(ignore_uuid, annotation, _SensorType.CAMERA, 0)
+    issues = object_class._check_false_attribute_type(
+        ignore_uuid, annotation, _SensorType.CAMERA, 0, ""
+    )
     assert len(issues) == 1
     assert issues[0].type == IssueType.ATTRIBUTE_TYPE
 
