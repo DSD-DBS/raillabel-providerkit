@@ -5,8 +5,8 @@ from uuid import UUID
 
 import pytest
 
-from raillabel_providerkit.validation.validate_onthology._onthology_classes._onthology import (
-    _Onthology,
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._ontology import (
+    _Ontology,
     Issue,
     IssueType,
     IssueIdentifiers,
@@ -35,7 +35,7 @@ def test_check__empty_scene():
     ontology = _Ontology.fromdict({})
     scene = SceneBuilder.empty().result
 
-    issues = onthology.check(scene)
+    issues = ontology.check(scene)
     assert issues == []
 
 
@@ -53,7 +53,7 @@ def test_check__correct():
         .result
     )
 
-    issues = onthology.check(scene)
+    issues = ontology.check(scene)
     assert issues == []
 
 
@@ -75,7 +75,7 @@ def test_check__undefined_object_type():
         .result
     )
 
-    issues = onthology.check(scene)
+    issues = ontology.check(scene)
     assert issues == [
         Issue(
             IssueType.OBJECT_TYPE_UNDEFINED,
@@ -122,8 +122,8 @@ def test_check__invalid_attribute_type():
 def test_check_class_validity__empty_scene():
     ontology = _Ontology.fromdict({})
     scene = SceneBuilder.empty().result
-    onthology._check_class_validity(scene)
-    assert onthology.errors == []
+    ontology._check_class_validity(scene)
+    assert ontology.errors == []
 
 
 def test_check_class_validity__correct():
@@ -131,8 +131,8 @@ def test_check_class_validity__correct():
         {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "annotation"}}}
     )
     scene = SceneBuilder.empty().add_object(object_type="banana").result
-    onthology._check_class_validity(scene)
-    assert onthology.errors == []
+    ontology._check_class_validity(scene)
+    assert ontology.errors == []
 
 
 def test_check_class_validity__incorrect():
@@ -147,10 +147,10 @@ def test_check_class_validity__incorrect():
         )
         .result
     )
-    onthology._check_class_validity(scene)
-    assert len(onthology.errors) == 1
-    assert onthology.errors[0].type == IssueType.OBJECT_TYPE_UNDEFINED
-    assert onthology.errors[0].identifiers == IssueIdentifiers(
+    ontology._check_class_validity(scene)
+    assert len(ontology.errors) == 1
+    assert ontology.errors[0].type == IssueType.OBJECT_TYPE_UNDEFINED
+    assert ontology.errors[0].identifiers == IssueIdentifiers(
         object=UUID("ba73e75d-b996-4f6e-bdad-39c465420a33"), object_type="apple"
     )
 
