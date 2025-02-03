@@ -29,6 +29,7 @@ class IssueIdentifiers:
     attribute: str | None = None
     frame: int | None = None
     object: UUID | None = None
+    object_type: str | None = None
     sensor: str | None = None
 
 
