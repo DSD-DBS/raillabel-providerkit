@@ -5,6 +5,11 @@ import pytest
 
 
 @pytest.fixture
+def example_any_attribute_dict():
+    return {"attribute_type": "any", "scope": "annotation"}
+
+
+@pytest.fixture
 def example_boolean_attribute_dict():
     return {"attribute_type": "boolean", "scope": "annotation"}
 

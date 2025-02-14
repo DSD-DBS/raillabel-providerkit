@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 "$schema": http://json-schema.org/draft-07/schema#
-version: 2.1.0
+version: 2.2.0
 
 definitions:
 
@@ -25,6 +25,7 @@ definitions:
     attribute_type:
         oneOf:
             [
+                "$ref": "#/definitions/any_attribute",
                 "$ref": "#/definitions/boolean_attribute",
                 "$ref": "#/definitions/integer_attribute",
                 "$ref": "#/definitions/multi_reference_attribute",
@@ -33,6 +34,9 @@ definitions:
                 "$ref": "#/definitions/string_attribute",
                 "$ref": "#/definitions/vector_attribute",
             ]
+
+    any_attribute:
+        const: any
 
     boolean_attribute:
         const: boolean
