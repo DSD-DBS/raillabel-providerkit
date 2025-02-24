@@ -18,6 +18,7 @@ class IssueType(Enum):
     MISSING_EGO_TRACK = "MissingEgoTrackIssue"
     OBJECT_TYPE_UNDEFINED = "ObjectTypeUndefined"
     RAIL_SIDE = "RailSide"
+    SENSOR_ID_UNKNOWN = "SensorIdUnknown"
     UNEXPECTED_CLASS = "UnexpectedClassIssue"
 
 

@@ -1,0 +1,30 @@
+# Copyright DB InfraGO AG and contributors
+# SPDX-License-Identifier: Apache-2.0
+
+import pytest
+from raillabel.scene_builder import SceneBuilder
+
+from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType, validate_sensors
+from raillabel_providerkit.validation.validate_sensors.validate_sensors import SENSOR_TYPE_MAPPING
+
+
+def test_all_sensors_valid():
+    scene = SceneBuilder.empty().result
+    for sensor_id, sensor_type in SENSOR_TYPE_MAPPING.items():
+        scene.sensors[sensor_id] = sensor_type
+
+    actual = validate_sensors(scene)
+    assert actual == []
+
+
+def test_sensor_id_unknown():
+    scene = SceneBuilder.empty().add_sensor("rgb_unknown").result
+
+    actual = validate_sensors(scene)
+    assert len(actual) == 1
+    assert actual[0].type == IssueType.SENSOR_ID_UNKNOWN
+    assert actual[0].identifiers == IssueIdentifiers(sensor="rgb_unknown")
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-vv"])
