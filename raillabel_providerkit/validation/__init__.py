@@ -7,7 +7,8 @@ from .validate_empty_frames.validate_empty_frames import validate_empty_frames
 from .validate_missing_ego_track.validate_missing_ego_track import validate_missing_ego_track
 from .validate_ontology.validate_ontology import validate_ontology
 from .validate_rail_side.validate_rail_side import validate_rail_side
-from .validate_schema import validate_schema
+from .validate_schema.validate_schema import validate_schema
+from .validate_sensors.validate_sensors import validate_sensors
 
 __all__ = [
     "Issue",
@@ -18,4 +19,5 @@ __all__ = [
     "validate_ontology",
     "validate_rail_side",
     "validate_schema",
+    "validate_sensors",
 ]
