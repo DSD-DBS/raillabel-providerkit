@@ -19,6 +19,7 @@ class IssueType(Enum):
     OBJECT_TYPE_UNDEFINED = "ObjectTypeUndefined"
     RAIL_SIDE = "RailSide"
     SENSOR_ID_UNKNOWN = "SensorIdUnknown"
+    SENSOR_TYPE_WRONG = "SensorTypeWrong"
     UNEXPECTED_CLASS = "UnexpectedClassIssue"
 
 

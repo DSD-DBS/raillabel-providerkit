@@ -27,6 +27,12 @@ SENSOR_TYPE_MAPPING = {
 
 def validate_sensors(scene: raillabel.Scene) -> list[Issue]:
     """Validate whether whether all sensors have supported names and have the correct type."""
+    issues = _validate_sensor_ids(scene)
+    issues.extend(_validate_sensor_types(scene))
+    return issues
+
+
+def _validate_sensor_ids(scene: raillabel.Scene) -> list[Issue]:
     issues = []
 
     for sensor_id in scene.sensors:
@@ -37,6 +43,31 @@ def validate_sensors(scene: raillabel.Scene) -> list[Issue]:
                 type=IssueType.SENSOR_ID_UNKNOWN,
                 identifiers=IssueIdentifiers(sensor=sensor_id),
                 reason=f"Supported sensor ids: {list(SENSOR_TYPE_MAPPING.keys())}",
+            )
+        )
+
+    return issues
+
+
+def _validate_sensor_types(scene: raillabel.Scene) -> list[Issue]:
+    issues = []
+
+    for sensor_id, sensor in scene.sensors.items():
+        if sensor_id not in SENSOR_TYPE_MAPPING:
+            continue
+
+        expected_type = SENSOR_TYPE_MAPPING[sensor_id]
+        if isinstance(sensor, expected_type | type):
+            continue
+
+        issues.append(
+            Issue(
+                type=IssueType.SENSOR_TYPE_WRONG,
+                identifiers=IssueIdentifiers(sensor=sensor_id),
+                reason=(
+                    f"The sensor is of type {sensor.__class__.__name__} "
+                    f"(should be {expected_type.__name__})"
+                ),
             )
         )
 
