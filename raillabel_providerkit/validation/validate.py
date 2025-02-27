@@ -43,7 +43,7 @@ def validate(  # noqa: PLR0913
         validate_for_missing_ego_track: If True, issues are returned if the scene contains frames
             where the ego track (the track the recording train is driving on) is missing. Default is
             True.
-        validate_for_sensors: If True, issues are returned if the scene contains sensors that do are
+        validate_for_sensors: If True, issues are returned if the scene contains sensors that are
             not supported or have the wrong sensor type.
 
     Returns:

@@ -5,14 +5,16 @@ import pytest
 from raillabel.scene_builder import SceneBuilder
 from raillabel.format import Lidar
 
-from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType, validate_sensors
+from raillabel_providerkit.validation import IssueIdentifiers, IssueType, validate_sensors
 from raillabel_providerkit.validation.validate_sensors.validate_sensors import SENSOR_TYPE_MAPPING
 
 
 def test_all_sensors_valid():
-    scene = SceneBuilder.empty().result
+    scene_builder = SceneBuilder.empty()
     for sensor_id, sensor_type in SENSOR_TYPE_MAPPING.items():
-        scene.sensors[sensor_id] = sensor_type
+        scene_builder.add_sensor(sensor_id)
+
+    scene = scene_builder.result
 
     actual = validate_sensors(scene)
     assert actual == []
@@ -35,6 +37,7 @@ def test_wrong_sensor_type():
     assert len(actual) == 1
     assert actual[0].type == IssueType.SENSOR_TYPE_WRONG
     assert actual[0].identifiers == IssueIdentifiers(sensor="rgb_middle")
+    assert actual[0].reason is not None
     assert "lidar" in actual[0].reason.lower()
     assert "camera" in actual[0].reason.lower()
 

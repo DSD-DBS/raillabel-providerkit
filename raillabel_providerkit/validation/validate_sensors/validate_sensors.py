@@ -57,7 +57,7 @@ def _validate_sensor_types(scene: raillabel.Scene) -> list[Issue]:
             continue
 
         expected_type = SENSOR_TYPE_MAPPING[sensor_id]
-        if isinstance(sensor, expected_type | type):
+        if isinstance(sensor, expected_type):
             continue
 
         issues.append(
