@@ -8,6 +8,10 @@ from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 
 def validate_uris(scene: Scene) -> list[Issue]:
     """Validate wether all uri fields in a scene comply with the schema."""
+    return _validate_sensor_reference_uris(scene)
+
+
+def _validate_sensor_reference_uris(scene: Scene) -> list[Issue]:
     issues = []
     for frame_id, frame in scene.frames.items():
         for sensor_id, sensor_reference in frame.sensors.items():
