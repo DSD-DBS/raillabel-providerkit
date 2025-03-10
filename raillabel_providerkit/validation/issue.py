@@ -21,6 +21,7 @@ class IssueType(Enum):
     SENSOR_ID_UNKNOWN = "SensorIdUnknown"
     SENSOR_TYPE_WRONG = "SensorTypeWrong"
     UNEXPECTED_CLASS = "UnexpectedClassIssue"
+    URI_FORMAT = "UriFormatIssue"
 
 
 @dataclass
