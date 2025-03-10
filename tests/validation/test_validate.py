@@ -1,12 +1,13 @@
 # Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+from decimal import Decimal
 from pathlib import Path
 import json
 import pytest
 
 from raillabel.scene_builder import SceneBuilder
-from raillabel.format import Point2d
+from raillabel.format import Point2d, SensorReference, Scene
 
 from raillabel_providerkit import validate
 
@@ -14,6 +15,10 @@ from raillabel_providerkit import validate
 def write_to_json(content: dict, path: Path):
     with path.open("w") as f:
         json.dump(content, f)
+
+
+def scene_to_dict(scene: Scene) -> dict:
+    return json.loads(scene.to_json().model_dump_json())
 
 
 def test_no_issues_in_empty_scene_dict():
@@ -94,6 +99,14 @@ def test_wrong_sensor_name_issue():
 
     actual = validate(scene_dict)
     assert len(actual) == 1
+
+
+def test_validate_uris():
+    scene = SceneBuilder.empty().add_sensor("lidar").add_frame(1).add_poly3d().result
+    scene.frames[1].sensors["lidar"] = SensorReference(timestamp=Decimal(0), uri="/INVALID/0.pcd")
+
+    assert len(validate(scene_to_dict(scene), validate_for_uris=False)) == 0
+    assert len(validate(scene_to_dict(scene), validate_for_uris=True)) == 1
 
 
 if __name__ == "__main__":

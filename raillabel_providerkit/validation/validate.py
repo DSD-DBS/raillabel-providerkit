@@ -18,6 +18,7 @@ from . import (
     validate_rail_side,
     validate_schema,
     validate_sensors,
+    validate_uris,
 )
 
 
@@ -28,6 +29,7 @@ def validate(  # noqa: PLR0913
     validate_for_rail_side_order: bool = True,
     validate_for_missing_ego_track: bool = True,
     validate_for_sensors: bool = True,
+    validate_for_uris: bool = True,
 ) -> list[Issue]:
     """Validate a scene based on the Deutsche Bahn Requirements.
 
@@ -45,6 +47,8 @@ def validate(  # noqa: PLR0913
             True.
         validate_for_sensors: If True, issues are returned if the scene contains sensors that are
             not supported or have the wrong sensor type.
+        validate_for_uris: If True, issues are returned if the uri fields in the scene contain
+            unsupported values.
 
     Returns:
         List of all requirement errors in the scene. If an empty list is returned, then there are no
@@ -75,5 +79,8 @@ def validate(  # noqa: PLR0913
 
     if validate_for_sensors:
         errors.extend(validate_sensors(scene))
+
+    if validate_for_uris:
+        errors.extend(validate_uris(scene))
 
     return errors
