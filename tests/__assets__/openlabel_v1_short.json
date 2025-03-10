@@ -9,7 +9,7 @@
             "tagged_file": "test_folder"
         },
         "streams": {
-            "rgb_middle": {
+            "rgb_center": {
                 "type": "camera",
                 "uri": "/S1206063/image",
                 "stream_properties": {
@@ -40,7 +40,7 @@
                     }
                 }
             },
-            "ir_middle": {
+            "ir_center": {
                 "type": "camera",
                 "uri": "/A0001781/image",
                 "stream_properties": {
@@ -88,7 +88,7 @@
             }
         },
         "coordinate_systems": {
-            "rgb_middle": {
+            "rgb_center": {
                 "type": "sensor",
                 "parent": "base",
                 "pose_wrt_parent": {
@@ -105,7 +105,7 @@
                     ]
                 }
             },
-            "ir_middle": {
+            "ir_center": {
                 "type": "sensor",
                 "parent": "base",
                 "pose_wrt_parent": {
@@ -160,8 +160,8 @@
                 "type": "local",
                 "parent": "",
                 "children": [
-                    "rgb_middle",
-                    "ir_middle",
+                    "rgb_center",
+                    "ir_center",
                     "lidar",
                     "radar"
                 ]
@@ -178,7 +178,7 @@
                     }
                 ],
                 "object_data_pointers": {
-                    "rgb_middle__bbox__person": {
+                    "rgb_center__bbox__person": {
                         "type": "bbox",
                         "frame_intervals": [
                             {
@@ -197,7 +197,7 @@
                             "test_vec_attr2": "vec"
                         }
                     },
-                    "ir_middle__bbox__person": {
+                    "ir_center__bbox__person": {
                         "type": "bbox",
                         "frame_intervals": [
                             {
@@ -209,7 +209,7 @@
                             "test_bool_attr0": "boolean"
                         }
                     },
-                    "rgb_middle__poly2d__person": {
+                    "rgb_center__poly2d__person": {
                         "type": "poly2d",
                         "frame_intervals": [
                             {
@@ -228,7 +228,7 @@
                             "test_vec_attr2": "vec"
                         }
                     },
-                    "ir_middle__poly2d__person": {
+                    "ir_center__poly2d__person": {
                         "type": "poly2d",
                         "frame_intervals": [
                             {
@@ -290,7 +290,7 @@
                     }
                 ],
                 "object_data_pointers": {
-                    "rgb_middle__bbox__person": {
+                    "rgb_center__bbox__person": {
                         "type": "bbox",
                         "frame_intervals": [
                             {
@@ -309,7 +309,7 @@
                             "test_vec_attr2": "vec"
                         }
                     },
-                    "ir_middle__bbox__person": {
+                    "ir_center__bbox__person": {
                         "type": "bbox",
                         "frame_intervals": [
                             {
@@ -321,7 +321,7 @@
                             "test_bool_attr0": "boolean"
                         }
                     },
-                    "rgb_middle__poly2d__person": {
+                    "rgb_center__poly2d__person": {
                         "type": "poly2d",
                         "frame_intervals": [
                             {
@@ -408,7 +408,7 @@
                 "frame_properties": {
                     "timestamp": "1632321743.134149",
                     "streams": {
-                        "rgb_middle": {
+                        "rgb_center": {
                             "stream_properties": {
                                 "sync": {
                                     "timestamp": "1632321743.100000072"
@@ -416,7 +416,7 @@
                             },
                             "uri": "rgb_test0.png"
                         },
-                        "ir_middle": {
+                        "ir_center": {
                             "stream_properties": {
                                 "sync": {
                                     "timestamp": "1632321743.106000004"
@@ -439,7 +439,7 @@
                                 "uid": "a06fe567-29c7-475b-92a4-fbca64e671a7",
                                 "name": "test_frame_data0",
                                 "val": 53.1,
-                                "coordinate_system": "rgb_middle"
+                                "coordinate_system": "rgb_center"
                             },
                             {
                                 "uid": "4bb95df7-a051-48a9-b77e-72f27ca43f64",
@@ -456,14 +456,14 @@
                             "bbox": [
                                 {
                                     "uid": "78f0ad89-2750-4a30-9d66-44c9da73a714",
-                                    "name": "rgb_middle__bbox__person",
+                                    "name": "rgb_center__bbox__person",
                                     "val": [
                                         0.0,
                                         1.0,
                                         2.0,
                                         3.0
                                     ],
-                                    "coordinate_system": "rgb_middle",
+                                    "coordinate_system": "rgb_center",
                                     "attributes": {
                                         "text": [
                                             {
@@ -520,14 +520,14 @@
                                 },
                                 {
                                     "uid": "68b4e02c-40c8-4de0-89ad-bc00ed05a043",
-                                    "name": "ir_middle__bbox__person",
+                                    "name": "ir_center__bbox__person",
                                     "val": [
                                         3.0,
                                         2.0,
                                         1.0,
                                         0.0
                                     ],
-                                    "coordinate_system": "ir_middle",
+                                    "coordinate_system": "ir_center",
                                     "attributes": {
                                         "boolean": [
                                             {
@@ -541,7 +541,7 @@
                             "poly2d": [
                                 {
                                     "uid": "bebfbae4-61a2-4758-993c-efa846b050a5",
-                                    "name": "rgb_middle__poly2d__person",
+                                    "name": "rgb_center__poly2d__person",
                                     "closed": false,
                                     "val": [
                                         1.0,
@@ -550,7 +550,7 @@
                                         4.0
                                     ],
                                     "mode": "MODE_POLY2D_ABSOLUTE",
-                                    "coordinate_system": "rgb_middle",
+                                    "coordinate_system": "rgb_center",
                                     "attributes": {
                                         "text": [
                                             {
@@ -607,7 +607,7 @@
                                 },
                                 {
                                     "uid": "3f63201c-fb33-4487-aff6-ae0aa5fa976c",
-                                    "name": "ir_middle__poly2d__person",
+                                    "name": "ir_center__poly2d__person",
                                     "closed": true,
                                     "val": [
                                         7.0,
@@ -620,7 +620,7 @@
                                         0.0
                                     ],
                                     "mode": "MODE_POLY2D_ABSOLUTE",
-                                    "coordinate_system": "ir_middle",
+                                    "coordinate_system": "ir_center",
                                     "attributes": {
                                         "boolean": [
                                             {
@@ -856,7 +856,7 @@
                 "frame_properties": {
                     "timestamp": "1632321743.233263",
                     "streams": {
-                        "rgb_middle": {
+                        "rgb_center": {
                             "stream_properties": {
                                 "sync": {
                                     "timestamp": "1632321743.2"
@@ -864,7 +864,7 @@
                             },
                             "uri": "rgb_test1.png"
                         },
-                        "ir_middle": {
+                        "ir_center": {
                             "stream_properties": {
                                 "sync": {
                                     "timestamp": "1632321743.208000004"
@@ -887,7 +887,7 @@
                                 "uid": "558697df-61f5-41b0-b112-3d6fcbd7d6c9",
                                 "name": "test_frame_data0",
                                 "val": 53,
-                                "coordinate_system": "rgb_middle"
+                                "coordinate_system": "rgb_center"
                             },
                             {
                                 "uid": "843e07a0-aac5-4f62-8200-1468dbd3055d",
@@ -904,14 +904,14 @@
                             "bbox": [
                                 {
                                     "uid": "6ba42cbc-484e-4b8d-a022-b23c2bb6643c",
-                                    "name": "rgb_middle__bbox__person",
+                                    "name": "rgb_center__bbox__person",
                                     "val": [
                                         0.0,
                                         1.0,
                                         2.0,
                                         3.0
                                     ],
-                                    "coordinate_system": "rgb_middle",
+                                    "coordinate_system": "rgb_center",
                                     "attributes": {
                                         "text": [
                                             {
@@ -968,14 +968,14 @@
                                 },
                                 {
                                     "uid": "5f28fa18-8f2a-4a40-a0b6-c0bbedc00f2e",
-                                    "name": "ir_middle__bbox__person",
+                                    "name": "ir_center__bbox__person",
                                     "val": [
                                         3.0,
                                         2.0,
                                         1.0,
                                         0.0
                                     ],
-                                    "coordinate_system": "ir_middle",
+                                    "coordinate_system": "ir_center",
                                     "attributes": {
                                         "boolean": [
                                             {
@@ -989,7 +989,7 @@
                             "poly2d": [
                                 {
                                     "uid": "e2503c5d-9fe4-4666-b510-ef644c5a766b",
-                                    "name": "rgb_middle__poly2d__person",
+                                    "name": "rgb_center__poly2d__person",
                                     "closed": false,
                                     "val": [
                                         1.0,
@@ -998,7 +998,7 @@
                                         4.0
                                     ],
                                     "mode": "MODE_POLY2D_ABSOLUTE",
-                                    "coordinate_system": "rgb_middle",
+                                    "coordinate_system": "rgb_center",
                                     "attributes": {
                                         "text": [
                                             {

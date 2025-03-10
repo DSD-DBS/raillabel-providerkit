@@ -136,7 +136,7 @@ def test_wrong_type_float():
         "openlabel": {
             "metadata": {"schema_version": "1.0.0"},
             "coordinate_systems": {
-                "rgb_middle": {
+                "rgb_center": {
                     "pose_wrt_parent": {
                         "translation": (None, 0.0, 0.0),
                         "quaternion": (0.0, 0.0, 0.0, 0.0),
@@ -155,7 +155,7 @@ def test_wrong_type_float():
             identifiers=[
                 "openlabel",
                 "coordinate_systems",
-                "rgb_middle",
+                "rgb_center",
                 "pose_wrt_parent",
                 "translation",
                 0,
@@ -196,7 +196,7 @@ def test_tuple_too_long():
         "openlabel": {
             "metadata": {"schema_version": "1.0.0"},
             "coordinate_systems": {
-                "rgb_middle": {
+                "rgb_center": {
                     "pose_wrt_parent": {
                         "translation": (0.0, 0.0, 0.0, 0.0),  # should have length of 3
                         "quaternion": (0.0, 0.0, 0.0, 0.0),
@@ -215,7 +215,7 @@ def test_tuple_too_long():
             identifiers=[
                 "openlabel",
                 "coordinate_systems",
-                "rgb_middle",
+                "rgb_center",
                 "pose_wrt_parent",
                 "translation",
             ],

@@ -7,16 +7,16 @@ from raillabel.format import Camera, GpsImu, Lidar, Radar
 from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 
 SENSOR_TYPE_MAPPING = {
-    "rgb_middle": Camera,
+    "rgb_center": Camera,
     "rgb_left": Camera,
     "rgb_right": Camera,
-    "rgb_highres_middle": Camera,
+    "rgb_highres_center": Camera,
     "rgb_highres_left": Camera,
     "rgb_highres_right": Camera,
-    "rgb_longrange_middle": Camera,
+    "rgb_longrange_center": Camera,
     "rgb_longrange_left": Camera,
     "rgb_longrange_right": Camera,
-    "ir_middle": Camera,
+    "ir_center": Camera,
     "ir_left": Camera,
     "ir_right": Camera,
     "lidar": Lidar,

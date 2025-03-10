@@ -99,7 +99,7 @@ def coordinate_system_camera_raillabel_dict(point_3d_vec, quaternion_vec) -> dic
 
 @pytest.fixture
 def coordinate_system_camera_translated_uid() -> dict:
-    return "ir_middle"
+    return "ir_center"
 
 
 @pytest.fixture

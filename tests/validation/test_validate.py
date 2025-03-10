@@ -54,7 +54,7 @@ def test_rail_side_issues():
             ],
             attributes={"railSide": "rightRail"},
             object_name="track_0001",
-            sensor_id="rgb_middle",
+            sensor_id="rgb_center",
         )
         .add_poly2d(
             points=[
@@ -63,7 +63,7 @@ def test_rail_side_issues():
             ],
             attributes={"railSide": "leftRail"},
             object_name="track_0001",
-            sensor_id="rgb_middle",
+            sensor_id="rgb_center",
         )
         .result
     )
@@ -76,9 +76,9 @@ def test_rail_side_issues():
 def test_missing_ego_track_issue():
     scene_dict = json.loads(
         SceneBuilder.empty()
-        .add_sensor("rgb_middle")
+        .add_sensor("rgb_center")
         .add_frame()
-        .add_bbox()
+        .add_bbox(sensor_id="rgb_center")
         .result.to_json()
         .model_dump_json()
     )
