@@ -31,12 +31,12 @@ def test_sensor_id_unknown():
 
 def test_wrong_sensor_type():
     scene = SceneBuilder.empty().result
-    scene.sensors["rgb_middle"] = Lidar()
+    scene.sensors["rgb_center"] = Lidar()
 
     actual = validate_sensors(scene)
     assert len(actual) == 1
     assert actual[0].type == IssueType.SENSOR_TYPE_WRONG
-    assert actual[0].identifiers == IssueIdentifiers(sensor="rgb_middle")
+    assert actual[0].identifiers == IssueIdentifiers(sensor="rgb_center")
     assert actual[0].reason is not None
     assert "lidar" in actual[0].reason.lower()
     assert "camera" in actual[0].reason.lower()

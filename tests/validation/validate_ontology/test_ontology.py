@@ -101,7 +101,7 @@ def test_check__invalid_attribute_type():
             UUID("f54d41d6-5e36-490b-9efc-05a6deb7549a"),
             frame_id=0,
             object_name="banana_0001",
-            sensor_id="rgb_middle",
+            sensor_id="rgb_center",
             attributes={"is_peelable": "i-like-trains"},
         )
         .result
@@ -115,7 +115,7 @@ def test_check__invalid_attribute_type():
         frame=0,
         object=UUID("ba73e75d-b996-4f6e-bdad-39c465420a33"),
         object_type="banana",
-        sensor="rgb_middle",
+        sensor="rgb_center",
     )
 
 

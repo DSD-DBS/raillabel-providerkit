@@ -182,7 +182,8 @@ def test_to_raillabel__frames(
         frames={frame_uai.id: frame_uai},
     )
 
-    assert scene.to_raillabel()["openlabel"]["frames"] == {str(frame_uai.id): frame_raillabel_dict}
+    actual = scene.to_raillabel()["openlabel"]["frames"]
+    assert actual == {str(frame_uai.id): frame_raillabel_dict}
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ from .validate_ontology.validate_ontology import validate_ontology
 from .validate_rail_side.validate_rail_side import validate_rail_side
 from .validate_schema.validate_schema import validate_schema
 from .validate_sensors.validate_sensors import validate_sensors
+from .validate_uris.validate_uris import validate_uris
 
 __all__ = [
     "Issue",
@@ -20,4 +21,5 @@ __all__ = [
     "validate_rail_side",
     "validate_schema",
     "validate_sensors",
+    "validate_uris",
 ]

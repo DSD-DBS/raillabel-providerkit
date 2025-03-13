@@ -8,7 +8,7 @@ from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 from raillabel_providerkit.validation import validate_missing_ego_track
 
 
-def test_no_middle_sensors():
+def test_no_center_sensors():
     scene = SceneBuilder.empty().add_sensor("rgb_left").add_frame().result
 
     actual = validate_missing_ego_track(scene)
@@ -16,7 +16,7 @@ def test_no_middle_sensors():
 
 
 def test_no_frames():
-    scene = SceneBuilder.empty().add_sensor("rgb_middle").result
+    scene = SceneBuilder.empty().add_sensor("rgb_center").result
 
     actual = validate_missing_ego_track(scene)
     assert actual == []
@@ -25,9 +25,9 @@ def test_no_frames():
 def test_osdar_schema__not_missing():
     scene = (
         SceneBuilder.empty()
-        .add_sensor("rgb_middle")
+        .add_sensor("rgb_center")
         .add_object(object_type="track")
-        .add_poly2d(object_name="track_0000", sensor_id="rgb_middle", attributes={"trackID": 0})
+        .add_poly2d(object_name="track_0000", sensor_id="rgb_center", attributes={"trackID": 0})
         .result
     )
 
@@ -38,10 +38,10 @@ def test_osdar_schema__not_missing():
 def test_osdar_schema__missing():
     scene = (
         SceneBuilder.empty()
-        .add_sensor("rgb_middle")
+        .add_sensor("rgb_center")
         .add_object(object_type="track")
         .add_poly2d(
-            frame_id=1, object_name="track_0000", sensor_id="rgb_middle", attributes={"trackID": 1}
+            frame_id=1, object_name="track_0000", sensor_id="rgb_center", attributes={"trackID": 1}
         )
         .result
     )
@@ -50,7 +50,7 @@ def test_osdar_schema__missing():
     assert actual == [
         Issue(
             type=IssueType.MISSING_EGO_TRACK,
-            identifiers=IssueIdentifiers(frame=1, sensor="rgb_middle"),
+            identifiers=IssueIdentifiers(frame=1, sensor="rgb_center"),
         )
     ]
 
@@ -58,10 +58,10 @@ def test_osdar_schema__missing():
 def test_open_dataset_schema__not_missing():
     scene = (
         SceneBuilder.empty()
-        .add_sensor("rgb_middle")
+        .add_sensor("rgb_center")
         .add_object(object_type="track")
         .add_poly2d(
-            object_name="track_0000", sensor_id="rgb_middle", attributes={"isEgoTrack": True}
+            object_name="track_0000", sensor_id="rgb_center", attributes={"isEgoTrack": True}
         )
         .result
     )
@@ -73,10 +73,10 @@ def test_open_dataset_schema__not_missing():
 def test_open_dataset_schema__missing():
     scene = (
         SceneBuilder.empty()
-        .add_sensor("rgb_middle")
+        .add_sensor("rgb_center")
         .add_object(object_type="track")
         .add_poly2d(
-            object_name="track_0000", sensor_id="rgb_middle", attributes={"isEgoTrack": False}
+            object_name="track_0000", sensor_id="rgb_center", attributes={"isEgoTrack": False}
         )
         .result
     )
@@ -85,7 +85,7 @@ def test_open_dataset_schema__missing():
     assert actual == [
         Issue(
             type=IssueType.MISSING_EGO_TRACK,
-            identifiers=IssueIdentifiers(frame=1, sensor="rgb_middle"),
+            identifiers=IssueIdentifiers(frame=1, sensor="rgb_center"),
         )
     ]
 
@@ -93,7 +93,7 @@ def test_open_dataset_schema__missing():
 def test_missing_in_two_sensors():
     scene = (
         SceneBuilder.empty()
-        .add_sensor("rgb_middle")
+        .add_sensor("rgb_center")
         .add_sensor("ir_center")
         .add_object(object_type="track")
         .add_frame(frame_id=1)
@@ -104,7 +104,7 @@ def test_missing_in_two_sensors():
     assert actual == [
         Issue(
             type=IssueType.MISSING_EGO_TRACK,
-            identifiers=IssueIdentifiers(frame=1, sensor="rgb_middle"),
+            identifiers=IssueIdentifiers(frame=1, sensor="rgb_center"),
         ),
         Issue(
             type=IssueType.MISSING_EGO_TRACK,
@@ -116,7 +116,7 @@ def test_missing_in_two_sensors():
 def test_missing_in_two_frames():
     scene = (
         SceneBuilder.empty()
-        .add_sensor("rgb_middle")
+        .add_sensor("rgb_center")
         .add_object(object_type="track")
         .add_frame(frame_id=1)
         .add_frame(frame_id=2)
@@ -127,11 +127,11 @@ def test_missing_in_two_frames():
     assert actual == [
         Issue(
             type=IssueType.MISSING_EGO_TRACK,
-            identifiers=IssueIdentifiers(frame=1, sensor="rgb_middle"),
+            identifiers=IssueIdentifiers(frame=1, sensor="rgb_center"),
         ),
         Issue(
             type=IssueType.MISSING_EGO_TRACK,
-            identifiers=IssueIdentifiers(frame=2, sensor="rgb_middle"),
+            identifiers=IssueIdentifiers(frame=2, sensor="rgb_center"),
         ),
     ]
 
