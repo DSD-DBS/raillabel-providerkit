@@ -122,13 +122,16 @@ def test_check__all_error_types():
     assert IssueType.ATTRIBUTE_TYPE in issue_types_found
 
 
-def test_check__undefined_attributes():
+def test_check__undefined_attribute():
     object_class = _ObjectClass.fromdict({"isPeelable": {"attribute_type": "boolean"}})
     annotation_metadata = build_bbox_with_attributes({"isPeelable": True, "isBanana": False})
 
     issues = object_class.check(annotation_metadata)
     assert issues == [
-        Issue(type=IssueType.ATTRIBUTE_UNDEFINED, identifiers=annotation_metadata.to_identifiers())
+        Issue(
+            type=IssueType.ATTRIBUTE_UNDEFINED,
+            identifiers=annotation_metadata.to_identifiers("isBanana"),
+        )
     ]
 
 
@@ -140,7 +143,10 @@ def test_check__missing_attribute():
 
     issues = object_class.check(annotation_metadata)
     assert issues == [
-        Issue(type=IssueType.ATTRIBUTE_MISSING, identifiers=annotation_metadata.to_identifiers())
+        Issue(
+            type=IssueType.ATTRIBUTE_MISSING,
+            identifiers=annotation_metadata.to_identifiers("isPeelable"),
+        )
     ]
 
 

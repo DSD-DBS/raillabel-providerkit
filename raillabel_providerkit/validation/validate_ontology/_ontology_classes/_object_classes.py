@@ -46,7 +46,7 @@ class _ObjectClass:
         return [
             Issue(
                 type=IssueType.ATTRIBUTE_UNDEFINED,
-                identifiers=annotation_metadata.to_identifiers(),
+                identifiers=annotation_metadata.to_identifiers(attr_name),
             )
             for attr_name in annotation_metadata.annotation.attributes
             if attr_name not in self._compile_applicable_attributes(annotation_metadata.sensor_type)
@@ -56,7 +56,7 @@ class _ObjectClass:
         return [
             Issue(
                 type=IssueType.ATTRIBUTE_MISSING,
-                identifiers=annotation_metadata.to_identifiers(),
+                identifiers=annotation_metadata.to_identifiers(attr_name),
             )
             for attr_name, attr in self._compile_applicable_attributes(
                 annotation_metadata.sensor_type
@@ -74,13 +74,11 @@ class _ObjectClass:
             if attr_name not in applicable_attributes:
                 continue
 
-            identifiers = annotation_metadata.to_identifiers()
-            identifiers.attribute = attr_name
             errors.extend(
                 applicable_attributes[attr_name].check_type_and_value(
                     attr_name,
                     attr_value,
-                    identifiers,
+                    annotation_metadata.to_identifiers(attr_name),
                 )
             )
 
