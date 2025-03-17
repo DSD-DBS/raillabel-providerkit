@@ -37,12 +37,10 @@ class _Ontology:
             if annotation_class not in self.classes:
                 continue
 
-            object_type = scene.objects[annotation.object_id].type
-
             identifiers = IssueIdentifiers(
                 annotation=annotation_uid,
                 frame=frame_id,
-                object_type=object_type,
+                object_type=scene.objects[annotation.object_id].type,
                 object=annotation.object_id,
                 sensor=annotation.sensor_id,
             )
