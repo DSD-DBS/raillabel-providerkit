@@ -169,7 +169,7 @@ def test_check__false_attribute_type():
         Issue(
             type=IssueType.ATTRIBUTE_TYPE,
             identifiers=annotation_metadata.to_identifiers(attribute="likesTrains"),
-            reason="Attribute 'likesTrains' is of type str (should be 'bool').",
+            reason="Attribute 'likesTrains' is of type str (should be bool).",
         )
     ]
 

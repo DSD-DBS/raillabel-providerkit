@@ -9,7 +9,7 @@ from inspect import isclass
 from pathlib import Path
 from pkgutil import iter_modules
 
-from raillabel_providerkit.validation import Issue, IssueIdentifiers
+from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 from raillabel_providerkit.validation.validate_ontology._ontology_classes._scope import _Scope
 
 
@@ -33,14 +33,19 @@ class _Attribute(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def TYPE_IDENTIFYER(self) -> str:  # noqa: N802
+    def ATTRIBUTE_TYPE_IDENTIFYER(self) -> str:  # noqa: N802
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def PYTHON_TYPE(self) -> type:  # noqa: N802
         raise NotImplementedError
 
     @classmethod
     def supports(cls, attribute_dict: dict) -> bool:
         return (
             "attribute_type" in attribute_dict
-            and attribute_dict["attribute_type"] == cls.TYPE_IDENTIFYER
+            and attribute_dict["attribute_type"] == cls.ATTRIBUTE_TYPE_IDENTIFYER
         )
 
     @classmethod
@@ -54,14 +59,25 @@ class _Attribute(abc.ABC):
             sensor_types=attribute_dict.get("sensor_types", ["camera", "lidar", "radar"]),
         )
 
-    @abc.abstractmethod
     def check_type_and_value(
         self,
         attribute_name: str,
         attribute_value: bool | float | str | list,
         identifiers: IssueIdentifiers,
     ) -> list[Issue]:
-        raise NotImplementedError
+        if isinstance(attribute_value, self.PYTHON_TYPE):
+            return []
+
+        return [
+            Issue(
+                type=IssueType.ATTRIBUTE_TYPE,
+                identifiers=identifiers,
+                reason=(
+                    f"Attribute '{attribute_name}' is of type "
+                    f"{attribute_value.__class__.__name__} (should be {self.PYTHON_TYPE.__name__})."
+                ),
+            )
+        ]
 
 
 def attribute_classes() -> list[type[_Attribute]]:

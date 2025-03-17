@@ -16,7 +16,8 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _MultiSelectAttribute(_Attribute):
     options: set[str]
-    TYPE_IDENTIFYER = "multi-select"
+    ATTRIBUTE_TYPE_IDENTIFYER = "multi-select"
+    PYTHON_TYPE = list
 
     @classmethod
     def supports(cls, attribute_dict: dict) -> bool:
@@ -24,7 +25,7 @@ class _MultiSelectAttribute(_Attribute):
             "attribute_type" in attribute_dict
             and type(attribute_dict["attribute_type"]) is dict
             and "type" in attribute_dict["attribute_type"]
-            and attribute_dict["attribute_type"]["type"] == cls.TYPE_IDENTIFYER
+            and attribute_dict["attribute_type"]["type"] == cls.ATTRIBUTE_TYPE_IDENTIFYER
         )
 
     @classmethod
@@ -45,17 +46,9 @@ class _MultiSelectAttribute(_Attribute):
         attribute_values: bool | float | str | list,
         identifiers: IssueIdentifiers,
     ) -> list[Issue]:
-        if type(attribute_values) is not list:
-            return [
-                Issue(
-                    type=IssueType.ATTRIBUTE_TYPE,
-                    reason=(
-                        f"Attribute '{attribute_name}' is of type"
-                        f" {attribute_values.__class__.__name__} (should be 'list')."
-                    ),
-                    identifiers=identifiers,
-                )
-            ]
+        type_issues = super().check_type_and_value(attribute_name, attribute_values, identifiers)
+        if len(type_issues) > 0:
+            return type_issues
 
         for attribute_value in attribute_values:
             if attribute_value not in self.options:

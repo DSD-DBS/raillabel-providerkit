@@ -14,7 +14,8 @@ from ._attribute_abc import _Attribute
 
 @dataclass
 class _MultiReferenceAttribute(_Attribute):
-    TYPE_IDENTIFYER = "multi-reference"
+    ATTRIBUTE_TYPE_IDENTIFYER = "multi-reference"
+    PYTHON_TYPE = list
 
     def check_type_and_value(
         self,
@@ -22,17 +23,9 @@ class _MultiReferenceAttribute(_Attribute):
         attribute_values: bool | float | str | list,
         identifiers: IssueIdentifiers,
     ) -> list[Issue]:
-        if type(attribute_values) is not list:
-            return [
-                Issue(
-                    type=IssueType.ATTRIBUTE_TYPE,
-                    reason=(
-                        f"Attribute '{attribute_name}' is of type"
-                        f" {attribute_values.__class__.__name__} (should be 'list')."
-                    ),
-                    identifiers=identifiers,
-                )
-            ]
+        type_issues = super().check_type_and_value(attribute_name, attribute_values, identifiers)
+        if len(type_issues) > 0:
+            return type_issues
 
         attribute_value: t.Any
         try:
@@ -42,10 +35,10 @@ class _MultiReferenceAttribute(_Attribute):
             return [
                 Issue(
                     type=IssueType.ATTRIBUTE_VALUE,
+                    identifiers=identifiers,
                     reason=(
                         f"Attribute '{attribute_name}' has a non-UUID value '{attribute_value}'."
                     ),
-                    identifiers=identifiers,
                 )
             ]
 

@@ -12,7 +12,8 @@ from ._attribute_abc import _Attribute
 
 @dataclass
 class _AnyAttribute(_Attribute):
-    TYPE_IDENTIFYER = "any"
+    ATTRIBUTE_TYPE_IDENTIFYER = "any"
+    PYTHON_TYPE = None
 
     def check_type_and_value(
         self,
