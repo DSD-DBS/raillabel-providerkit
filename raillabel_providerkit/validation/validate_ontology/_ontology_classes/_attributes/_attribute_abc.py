@@ -21,11 +21,10 @@ class _Attribute(abc.ABC):
     ----------
     optional: bool
         Whether the attribute is required to exist in every annotation of the object class.
-    scope: _Scope
-        The scope all attributes following this definition have to adhere to.
     sensor_types: list[str]
         The sensors for which annotations are allowed to have this attribute.
-
+    scope: _Scope
+        The scope all attributes following this definition have to adhere to.
     """
 
     optional: bool
@@ -38,9 +37,15 @@ class _Attribute(abc.ABC):
         raise NotImplementedError
 
     @classmethod
-    @abc.abstractmethod
     def fromdict(cls, attribute_dict: dict) -> _Attribute:
-        raise NotImplementedError
+        if not cls.supports(attribute_dict):
+            raise ValueError
+
+        return cls(
+            optional=attribute_dict.get("optional", False),
+            scope=_Scope(attribute_dict.get("scope", "annotation")),
+            sensor_types=attribute_dict.get("sensor_types", ["camera", "lidar", "radar"]),
+        )
 
     @abc.abstractmethod
     def check_type_and_value(
