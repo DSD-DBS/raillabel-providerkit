@@ -47,11 +47,12 @@ class _AnnotationWithMetadata:
             return _SensorType.RADAR
         return None
 
-    def to_identifiers(self) -> IssueIdentifiers:
+    def to_identifiers(self, attribute: str | None = None) -> IssueIdentifiers:
         return IssueIdentifiers(
             annotation=self.annotation_id,
             frame=self.frame_id,
             sensor=self.annotation.sensor_id,
             object=self.annotation.object_id,
             object_type=self.object_type,
+            attribute=attribute,
         )

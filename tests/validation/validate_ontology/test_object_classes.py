@@ -16,8 +16,7 @@ from raillabel_providerkit.validation.validate_ontology._ontology_classes import
     _SensorType,
     _AnnotationWithMetadata,
 )
-from raillabel_providerkit.validation import IssueType, IssueIdentifiers
-from raillabel.format import Bbox, Point2d, Size2d
+from raillabel_providerkit.validation import Issue, IssueType
 from raillabel.scene_builder import SceneBuilder
 
 
@@ -36,153 +35,137 @@ def build_bbox_with_attributes(attributes: dict) -> _AnnotationWithMetadata:
 
 def test_fromdict__empty():
     object_class = _ObjectClass.fromdict({})
-    assert len(object_class.attributes) == 0
+    assert object_class.attributes == {}
 
 
-def test_fromdict__simple(example_boolean_attribute_dict):
-    object_class = _ObjectClass.fromdict({"isSomething": example_boolean_attribute_dict})
-    assert len(object_class.attributes) == 1
-    assert "isSomething" in object_class.attributes
+def test_fromdict__boolean_attributes():
+    object_class = _ObjectClass.fromdict({"isPeelable": {"attribute_type": "boolean"}})
+    assert object_class.attributes == {
+        "isPeelable": _BooleanAttribute.fromdict({"attribute_type": "boolean"})
+    }
 
 
-def test_attribute_fromdict__boolean(example_boolean_attribute_dict):
-    result = _ObjectClass._attribute_fromdict(example_boolean_attribute_dict)
-    assert isinstance(result, _BooleanAttribute)
+def test_fromdict__integer_attributes():
+    object_class = _ObjectClass.fromdict({"numberOfFingers": {"attribute_type": "integer"}})
+    assert object_class.attributes == {
+        "numberOfFingers": _IntegerAttribute.fromdict({"attribute_type": "integer"})
+    }
 
 
-def test_attribute_fromdict__integer(example_integer_attribute_dict):
-    result = _ObjectClass._attribute_fromdict(example_integer_attribute_dict)
-    assert isinstance(result, _IntegerAttribute)
+def test_fromdict__multi_reference_attributes():
+    object_class = _ObjectClass.fromdict({"connectedTo": {"attribute_type": "multi-reference"}})
+    assert object_class.attributes == {
+        "connectedTo": _MultiReferenceAttribute.fromdict({"attribute_type": "multi-reference"})
+    }
 
 
-def test_attribute_fromdict__multi_reference(example_multi_reference_attribute_dict):
-    result = _ObjectClass._attribute_fromdict(example_multi_reference_attribute_dict)
-    assert isinstance(result, _MultiReferenceAttribute)
-
-
-def test_attribute_fromdict__multi_select(example_multi_select_attribute_dict):
-    result = _ObjectClass._attribute_fromdict(example_multi_select_attribute_dict)
-    assert isinstance(result, _MultiSelectAttribute)
-
-
-def test_attribute_fromdict__single_select(example_single_select_attribute_dict):
-    result = _ObjectClass._attribute_fromdict(example_single_select_attribute_dict)
-    assert isinstance(result, _SingleSelectAttribute)
-
-
-def test_attribute_fromdict__string(example_string_attribute_dict):
-    result = _ObjectClass._attribute_fromdict(example_string_attribute_dict)
-    assert isinstance(result, _StringAttribute)
-
-
-def test_attribute_fromdict__vector(example_vector_attribute_dict):
-    result = _ObjectClass._attribute_fromdict(example_vector_attribute_dict)
-    assert isinstance(result, _VectorAttribute)
-
-
-def test_attribute_fromdict__empty():
-    with pytest.raises(ValueError):
-        _ObjectClass._attribute_fromdict({})
-
-
-def test_attribute_fromdict__invalid_attribute_type():
-    with pytest.raises(ValueError):
-        _ObjectClass._attribute_fromdict(
-            {"attribute_type": "some-invalid-attribute-type", "scope": "annotation"}
+def test_fromdict__multi_select_attributes():
+    object_class = _ObjectClass.fromdict(
+        {"carries": {"attribute_type": {"type": "multi-select", "options": ["foo", "bar"]}}}
+    )
+    assert object_class.attributes == {
+        "carries": _MultiSelectAttribute.fromdict(
+            {"attribute_type": {"type": "multi-select", "options": ["foo", "bar"]}}
         )
+    }
 
 
-def test_check__correct(example_boolean_attribute_dict):
-    object_class = _ObjectClass.fromdict({"test_attribute": example_boolean_attribute_dict})
-    annotation_metadata = build_bbox_with_attributes({"test_attribute": True})
+def test_fromdict__single_select_attributes():
+    object_class = _ObjectClass.fromdict(
+        {"carries": {"attribute_type": {"type": "single-select", "options": ["foo", "bar"]}}}
+    )
+    assert object_class.attributes == {
+        "carries": _SingleSelectAttribute.fromdict(
+            {"attribute_type": {"type": "single-select", "options": ["foo", "bar"]}}
+        )
+    }
+
+
+def test_fromdict__string_attributes():
+    object_class = _ObjectClass.fromdict({"name": {"attribute_type": "string"}})
+    assert object_class.attributes == {
+        "name": _StringAttribute.fromdict({"attribute_type": "string"})
+    }
+
+
+def test_fromdict__vector_attributes():
+    object_class = _ObjectClass.fromdict({"carries": {"attribute_type": "vector"}})
+    assert object_class.attributes == {
+        "carries": _VectorAttribute.fromdict({"attribute_type": "vector"})
+    }
+
+
+def test_check__correct():
+    object_class = _ObjectClass.fromdict({"isPeelable": {"attribute_type": "boolean"}})
+    annotation_metadata = build_bbox_with_attributes({"isPeelable": True})
 
     issues = object_class.check(annotation_metadata)
     assert issues == []
 
 
-def test_check__all_error_types(example_boolean_attribute_dict):
+def test_check__all_error_types():
     object_class = _ObjectClass.fromdict(
         {
-            "test_attribute_1": example_boolean_attribute_dict,
-            "test_attribute_2": example_boolean_attribute_dict,
+            "isPeelable": {"attribute_type": "boolean"},
+            "isStillGreen": {"attribute_type": "boolean"},
         }
     )
     annotation_metadata = build_bbox_with_attributes(
-        {"test_attribute_1": "not-a-boolean", "unknown-attribute": False},
+        {"isPeelable": "not-a-boolean", "unknown-attribute": False},
     )
 
     issues = object_class.check(annotation_metadata)
-    assert len(issues) == 3
     issue_types_found = [issue.type for issue in issues]
+    assert len(issues) == 3
     assert IssueType.ATTRIBUTE_UNDEFINED in issue_types_found
     assert IssueType.ATTRIBUTE_MISSING in issue_types_found
     assert IssueType.ATTRIBUTE_TYPE in issue_types_found
 
 
-def test_check_undefined_attributes__correct(example_boolean_attribute_dict):
-    object_class = _ObjectClass.fromdict({"test_attribute": example_boolean_attribute_dict})
-    annotation_metadata = build_bbox_with_attributes({"test_attribute": True})
+def test_check__undefined_attributes():
+    object_class = _ObjectClass.fromdict({"isPeelable": {"attribute_type": "boolean"}})
+    annotation_metadata = build_bbox_with_attributes({"isPeelable": True, "isBanana": False})
 
-    issues = object_class._check_undefined_attributes(annotation_metadata)
-    assert issues == []
-
-
-def test_check_undefined_attributes__two_undefined(example_boolean_attribute_dict):
-    object_class = _ObjectClass.fromdict({"test_attribute": example_boolean_attribute_dict})
-    annotation_metadata = build_bbox_with_attributes(
-        {"test_attribute": True, "color": "yellow", "is_a_banana": False}
-    )
-
-    issues = object_class._check_undefined_attributes(annotation_metadata)
-    assert len(issues) == 2
-    for issue in issues:
-        assert issue.type == IssueType.ATTRIBUTE_UNDEFINED
+    issues = object_class.check(annotation_metadata)
+    assert issues == [
+        Issue(type=IssueType.ATTRIBUTE_UNDEFINED, identifiers=annotation_metadata.to_identifiers())
+    ]
 
 
-def test_check_missing_attributes__correct(example_boolean_attribute_dict):
+def test_check__missing_attribute():
     object_class = _ObjectClass.fromdict(
-        {
-            "test_attribute_1": example_boolean_attribute_dict,
-            "test_attribute_2": example_boolean_attribute_dict,
-        }
+        {"isPeelable": {"attribute_type": "boolean", "optional": False}}
     )
-    annotation_metadata = build_bbox_with_attributes(
-        {"test_attribute_1": True, "test_attribute_2": True}
-    )
+    annotation_metadata = build_bbox_with_attributes({})
 
-    issues = object_class._check_missing_attributes(annotation_metadata)
-    assert issues == []
+    issues = object_class.check(annotation_metadata)
+    assert issues == [
+        Issue(type=IssueType.ATTRIBUTE_MISSING, identifiers=annotation_metadata.to_identifiers())
+    ]
 
 
-def test_check_missing_attributes__one_missing(example_boolean_attribute_dict):
+def test_check__missing_attribute_optional():
     object_class = _ObjectClass.fromdict(
-        {
-            "test_attribute_1": example_boolean_attribute_dict,
-            "test_attribute_2": example_boolean_attribute_dict,
-        }
+        {"isPeelable": {"attribute_type": "boolean", "optional": True}}
     )
-    annotation_metadata = build_bbox_with_attributes({"test_attribute_2": True})
+    annotation_metadata = build_bbox_with_attributes({})
 
-    issues = object_class._check_missing_attributes(annotation_metadata)
-    assert len(issues) == 1
-    assert issues[0].type == IssueType.ATTRIBUTE_MISSING
-
-
-def test_check_false_attribute_type__correct(example_boolean_attribute_dict):
-    object_class = _ObjectClass.fromdict({"test_attribute": example_boolean_attribute_dict})
-    annotation_metadata = build_bbox_with_attributes({"test_attribute": True})
-
-    issues = object_class._check_false_attribute_type(annotation_metadata)
+    issues = object_class.check(annotation_metadata)
     assert issues == []
 
 
-def test_check_false_attribute_type__incorrect(example_boolean_attribute_dict):
-    object_class = _ObjectClass.fromdict({"test_attribute": example_boolean_attribute_dict})
-    annotation_metadata = build_bbox_with_attributes({"test_attribute": "i-like-trains"})
+def test_check__false_attribute_type():
+    object_class = _ObjectClass.fromdict({"likesTrains": {"attribute_type": "boolean"}})
+    annotation_metadata = build_bbox_with_attributes({"likesTrains": "yes"})
 
-    issues = object_class._check_false_attribute_type(annotation_metadata)
-    assert len(issues) == 1
-    assert issues[0].type == IssueType.ATTRIBUTE_TYPE
+    issues = object_class.check(annotation_metadata)
+    assert issues == [
+        Issue(
+            type=IssueType.ATTRIBUTE_TYPE,
+            identifiers=annotation_metadata.to_identifiers(attribute="likesTrains"),
+            reason="Attribute 'likesTrains' is of type str (should be 'bool').",
+        )
+    ]
 
 
 def test_compile_applicable_attributes__not_matching(example_boolean_attribute_dict):
