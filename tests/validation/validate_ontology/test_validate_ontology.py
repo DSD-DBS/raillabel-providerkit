@@ -7,9 +7,7 @@ from uuid import UUID
 
 from raillabel_providerkit.validation.validate_ontology.validate_ontology import (
     validate_ontology,
-    _validate_ontology_schema,
     _load_ontology,
-    OntologySchemaError,
 )
 from raillabel_providerkit.validation import IssueType
 from raillabel.scene_builder import SceneBuilder
@@ -85,25 +83,6 @@ def test_load_ontology__invalid_path():
 def test_load_ontology__osdar23():
     ontology_dict = _load_ontology(ONTOLOGY_PATH)
     assert isinstance(ontology_dict, dict)
-
-
-def test_validate_ontology_schema__none():
-    with pytest.raises(OntologySchemaError):
-        _validate_ontology_schema(None)
-
-
-def test_validate_ontology_schema__empty():
-    _validate_ontology_schema({})
-
-
-def test_validate_ontology_schema__invalid():
-    invalid_dict = {"foo": "bar"}
-    with pytest.raises(OntologySchemaError):
-        _validate_ontology_schema(invalid_dict)
-
-
-def test_validate_ontology_schema__valid(example_ontology_dict):
-    _validate_ontology_schema(example_ontology_dict)
 
 
 def test_unexpected_class(example_ontology_dict):

@@ -3,11 +3,11 @@
 
 import pytest
 
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._scope import _Scope
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._any_attribute import (
+from raillabel_providerkit.validation.validate_ontology._ontology_classes import (
+    _Scope,
     _AnyAttribute,
 )
-from raillabel_providerkit.validation import IssueIdentifiers, IssueType
+from raillabel_providerkit.validation import IssueIdentifiers
 
 
 def test_supports__empty_dict():

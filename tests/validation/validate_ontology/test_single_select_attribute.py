@@ -3,8 +3,8 @@
 
 import pytest
 
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._scope import _Scope
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._single_select_attribute import (
+from raillabel_providerkit.validation.validate_ontology._ontology_classes import (
+    _Scope,
     _SingleSelectAttribute,
 )
 from raillabel_providerkit.validation import IssueIdentifiers, IssueType

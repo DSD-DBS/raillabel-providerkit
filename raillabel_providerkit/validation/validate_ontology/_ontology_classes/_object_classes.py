@@ -4,15 +4,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from uuid import UUID
 
-import raillabel
-
-from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
+from raillabel_providerkit.validation import Issue, IssueType
 from raillabel_providerkit.validation.validate_ontology._ontology_classes._sensor_type import (
     _SensorType,
 )
 
+from ._annotation_with_metadata import _AnnotationWithMetadata
 from ._attributes._attribute_abc import _Attribute, attribute_classes
 
 
@@ -26,36 +24,12 @@ class _ObjectClass:
             attributes={attr_name: cls._attribute_fromdict(attr) for attr_name, attr in data.items()}
         )
 
-    def check(
-        self,
-        annotation_uid: UUID,
-        annotation: raillabel.format.Bbox
-        | raillabel.format.Cuboid
-        | raillabel.format.Poly2d
-        | raillabel.format.Poly3d
-        | raillabel.format.Seg3d,
-        sensor_type: _SensorType,
-        frame_id: int,
-        object_type: str,
-    ) -> list[Issue]:
+    def check(self, annotation_metadata: _AnnotationWithMetadata) -> list[Issue]:
         errors = []
 
-        errors.extend(
-            self._check_undefined_attributes(
-                annotation_uid, annotation, sensor_type, frame_id, object_type
-            )
-        )
-        errors.extend(
-            self._check_missing_attributes(
-                annotation_uid, annotation, sensor_type, frame_id, object_type
-            )
-        )
-        errors.extend(
-            self._check_false_attribute_type(
-                annotation_uid, annotation, sensor_type, frame_id, object_type
-            )
-        )
-
+        errors.extend(self._check_undefined_attributes(annotation_metadata))
+        errors.extend(self._check_missing_attributes(annotation_metadata))
+        errors.extend(self._check_false_attribute_type(annotation_metadata))
         return errors
 
     @classmethod
@@ -67,77 +41,36 @@ class _ObjectClass:
         raise ValueError
 
     def _check_undefined_attributes(
-        self,
-        annotation_uid: UUID,
-        annotation: raillabel.format.Bbox
-        | raillabel.format.Cuboid
-        | raillabel.format.Poly2d
-        | raillabel.format.Poly3d
-        | raillabel.format.Seg3d,
-        sensor_type: _SensorType,
-        frame_id: int,
-        object_type: str,
+        self, annotation_metadata: _AnnotationWithMetadata
     ) -> list[Issue]:
         return [
             Issue(
                 type=IssueType.ATTRIBUTE_UNDEFINED,
-                identifiers=IssueIdentifiers(
-                    annotation=annotation_uid,
-                    attribute=attr_name,
-                    frame=frame_id,
-                    object=annotation.object_id,
-                    object_type=object_type,
-                    sensor=annotation.sensor_id,
-                ),
+                identifiers=annotation_metadata.to_identifiers(attr_name),
             )
-            for attr_name in annotation.attributes
-            if attr_name not in self._compile_applicable_attributes(sensor_type)
+            for attr_name in annotation_metadata.annotation.attributes
+            if attr_name not in self._compile_applicable_attributes(annotation_metadata.sensor_type)
         ]
 
-    def _check_missing_attributes(
-        self,
-        annotation_uid: UUID,
-        annotation: raillabel.format.Bbox
-        | raillabel.format.Cuboid
-        | raillabel.format.Poly2d
-        | raillabel.format.Poly3d
-        | raillabel.format.Seg3d,
-        sensor_type: _SensorType,
-        frame_id: int,
-        object_type: str,
-    ) -> list[Issue]:
+    def _check_missing_attributes(self, annotation_metadata: _AnnotationWithMetadata) -> list[Issue]:
         return [
             Issue(
                 type=IssueType.ATTRIBUTE_MISSING,
-                identifiers=IssueIdentifiers(
-                    annotation=annotation_uid,
-                    attribute=attr_name,
-                    frame=frame_id,
-                    object=annotation.object_id,
-                    object_type=object_type,
-                    sensor=annotation.sensor_id,
-                ),
+                identifiers=annotation_metadata.to_identifiers(attr_name),
             )
-            for attr_name, attr in self._compile_applicable_attributes(sensor_type).items()
-            if attr_name not in annotation.attributes and not attr.optional
+            for attr_name, attr in self._compile_applicable_attributes(
+                annotation_metadata.sensor_type
+            ).items()
+            if attr_name not in annotation_metadata.annotation.attributes and not attr.optional
         ]
 
     def _check_false_attribute_type(
-        self,
-        annotation_uid: UUID,
-        annotation: raillabel.format.Bbox
-        | raillabel.format.Cuboid
-        | raillabel.format.Poly2d
-        | raillabel.format.Poly3d
-        | raillabel.format.Seg3d,
-        sensor_type: _SensorType,
-        frame_id: int,
-        object_type: str,
+        self, annotation_metadata: _AnnotationWithMetadata
     ) -> list[Issue]:
         errors = []
 
-        applicable_attributes = self._compile_applicable_attributes(sensor_type)
-        for attr_name, attr_value in annotation.attributes.items():
+        applicable_attributes = self._compile_applicable_attributes(annotation_metadata.sensor_type)
+        for attr_name, attr_value in annotation_metadata.annotation.attributes.items():
             if attr_name not in applicable_attributes:
                 continue
 
@@ -145,14 +78,7 @@ class _ObjectClass:
                 applicable_attributes[attr_name].check_type_and_value(
                     attr_name,
                     attr_value,
-                    identifiers=IssueIdentifiers(
-                        annotation=annotation_uid,
-                        attribute=attr_name,
-                        frame=frame_id,
-                        object=annotation.object_id,
-                        object_type=object_type,
-                        sensor=annotation.sensor_id,
-                    ),
+                    annotation_metadata.to_identifiers(attr_name),
                 )
             )
 

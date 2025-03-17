@@ -2,27 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import raillabel
-from raillabel.format import Camera, GpsImu, Lidar, Radar
 
+from raillabel_providerkit._util import SENSOR_METADATA
 from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
-
-SENSOR_TYPE_MAPPING = {
-    "rgb_center": Camera,
-    "rgb_left": Camera,
-    "rgb_right": Camera,
-    "rgb_highres_center": Camera,
-    "rgb_highres_left": Camera,
-    "rgb_highres_right": Camera,
-    "rgb_longrange_center": Camera,
-    "rgb_longrange_left": Camera,
-    "rgb_longrange_right": Camera,
-    "ir_center": Camera,
-    "ir_left": Camera,
-    "ir_right": Camera,
-    "lidar": Lidar,
-    "radar": Radar,
-    "gps_imu": GpsImu,
-}
 
 
 def validate_sensors(scene: raillabel.Scene) -> list[Issue]:
@@ -36,13 +18,13 @@ def _validate_sensor_ids(scene: raillabel.Scene) -> list[Issue]:
     issues = []
 
     for sensor_id in scene.sensors:
-        if sensor_id in SENSOR_TYPE_MAPPING:
+        if sensor_id in SENSOR_METADATA:
             continue
         issues.append(
             Issue(
                 type=IssueType.SENSOR_ID_UNKNOWN,
                 identifiers=IssueIdentifiers(sensor=sensor_id),
-                reason=f"Supported sensor ids: {list(SENSOR_TYPE_MAPPING.keys())}",
+                reason=f"Supported sensor ids: {list(SENSOR_METADATA.keys())}",
             )
         )
 
@@ -53,10 +35,10 @@ def _validate_sensor_types(scene: raillabel.Scene) -> list[Issue]:
     issues = []
 
     for sensor_id, sensor in scene.sensors.items():
-        if sensor_id not in SENSOR_TYPE_MAPPING:
+        if sensor_id not in SENSOR_METADATA:
             continue
 
-        expected_type = SENSOR_TYPE_MAPPING[sensor_id]
+        expected_type = SENSOR_METADATA[sensor_id]
         if isinstance(sensor, expected_type):
             continue
 

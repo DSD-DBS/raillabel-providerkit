@@ -12,7 +12,7 @@ import yaml
 from raillabel_providerkit.exceptions import OntologySchemaError
 from raillabel_providerkit.validation import Issue
 
-from ._ontology_classes._ontology import _Ontology
+from ._ontology_classes import _Ontology
 
 
 def validate_ontology(scene: raillabel.Scene, ontology_input: dict | Path) -> list[Issue]:
@@ -49,7 +49,7 @@ def _load_ontology(path: Path) -> dict:
         return yaml.safe_load(f)
 
 
-def _validate_ontology_schema(ontology: dict | None) -> None:
+def _validate_ontology_schema(ontology: dict) -> None:
     schema_path = Path(__file__).parent / "ontology_schema_v2.yaml"
 
     with schema_path.open() as f:
