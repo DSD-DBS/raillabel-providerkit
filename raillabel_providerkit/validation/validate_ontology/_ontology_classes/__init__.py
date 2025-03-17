@@ -1,6 +1,7 @@
 # Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+from ._annotation_with_metadata import _AnnotationWithMetadata
 from ._attributes._any_attribute import _AnyAttribute
 from ._attributes._boolean_attribute import _BooleanAttribute
 from ._attributes._integer_attribute import _IntegerAttribute
@@ -16,6 +17,7 @@ from ._sensor_type import _SensorType
 
 __all__ = [
     "_AnyAttribute",
+    "_AnnotationWithMetadata",
     "_BooleanAttribute",
     "_IntegerAttribute",
     "_MultiReferenceAttribute",

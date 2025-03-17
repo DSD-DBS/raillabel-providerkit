@@ -4,15 +4,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from uuid import UUID
 
 import raillabel
 
 from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._sensor_type import (
-    _SensorType,
-)
 
+from ._annotation_with_metadata import _AnnotationWithMetadata
 from ._object_classes import _ObjectClass
 
 
@@ -32,21 +29,12 @@ class _Ontology:
 
         self._check_class_validity(scene)
         annotations = _Ontology._compile_annotations(scene)
-        for annotation_uid, annotation, sensor_type, frame_id in annotations:
-            annotation_class = scene.objects.get(annotation.object_id).type
-            if annotation_class not in self.classes:
+        for annotation_metadata in annotations:
+            if annotation_metadata.object_type not in self.classes:
                 continue
 
-            identifiers = IssueIdentifiers(
-                annotation=annotation_uid,
-                frame=frame_id,
-                object_type=scene.objects[annotation.object_id].type,
-                object=annotation.object_id,
-                sensor=annotation.sensor_id,
-            )
-
             self.errors.extend(
-                self.classes[annotation_class].check(annotation, sensor_type, identifiers)
+                self.classes[annotation_metadata.object_type].check(annotation_metadata)
             )
 
         return self.errors
@@ -63,39 +51,9 @@ class _Ontology:
                 )
 
     @classmethod
-    def _compile_annotations(
-        cls, scene: raillabel.Scene
-    ) -> list[
-        tuple[
-            UUID,
-            raillabel.format.Bbox
-            | raillabel.format.Cuboid
-            | raillabel.format.Poly2d
-            | raillabel.format.Poly3d
-            | raillabel.format.Seg3d,
-            _SensorType,
-            int,
+    def _compile_annotations(cls, scene: raillabel.Scene) -> list[_AnnotationWithMetadata]:
+        return [
+            _AnnotationWithMetadata(annotation_id, frame_id, scene)
+            for frame_id, frame in scene.frames.items()
+            for annotation_id in frame.annotations
         ]
-    ]:
-        annotations = []
-        for frame_id, frame in scene.frames.items():
-            for annotation_uid, annotation in frame.annotations.items():
-                sensor_type_str = scene.sensors.get(annotation.sensor_id).TYPE
-
-                sensor_type = None
-                try:
-                    sensor_type = _SensorType(sensor_type_str)
-                except ValueError:
-                    # NOTE: This would be detected by validate_schema
-                    continue
-
-                annotations.append(
-                    (
-                        annotation_uid,
-                        annotation,
-                        sensor_type,
-                        frame_id,
-                    )
-                )
-
-        return annotations
