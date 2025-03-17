@@ -39,10 +39,16 @@ class _Ontology:
 
             object_type = scene.objects[annotation.object_id].type
 
+            identifiers = IssueIdentifiers(
+                annotation=annotation_uid,
+                frame=frame_id,
+                object_type=object_type,
+                object=annotation.object_id,
+                sensor=annotation.sensor_id,
+            )
+
             self.errors.extend(
-                self.classes[annotation_class].check(
-                    annotation_uid, annotation, sensor_type, frame_id, object_type
-                )
+                self.classes[annotation_class].check(annotation, sensor_type, identifiers)
             )
 
         return self.errors
