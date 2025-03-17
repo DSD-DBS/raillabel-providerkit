@@ -16,6 +16,7 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _SingleSelectAttribute(_Attribute):
     options: set[str]
+    TYPE_IDENTIFYER = "single-select"
 
     @classmethod
     def supports(cls, attribute_dict: dict) -> bool:

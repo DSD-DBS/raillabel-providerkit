@@ -16,6 +16,7 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _MultiSelectAttribute(_Attribute):
     options: set[str]
+    TYPE_IDENTIFYER = "multi-select"
 
     @classmethod
     def supports(cls, attribute_dict: dict) -> bool:
@@ -23,7 +24,7 @@ class _MultiSelectAttribute(_Attribute):
             "attribute_type" in attribute_dict
             and type(attribute_dict["attribute_type"]) is dict
             and "type" in attribute_dict["attribute_type"]
-            and attribute_dict["attribute_type"]["type"] == "multi-select"
+            and attribute_dict["attribute_type"]["type"] == cls.TYPE_IDENTIFYER
         )
 
     @classmethod

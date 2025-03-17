@@ -12,9 +12,7 @@ from ._attribute_abc import _Attribute
 
 @dataclass
 class _AnyAttribute(_Attribute):
-    @classmethod
-    def supports(cls, attribute_dict: dict) -> bool:
-        return "attribute_type" in attribute_dict and attribute_dict["attribute_type"] == "any"
+    TYPE_IDENTIFYER = "any"
 
     def check_type_and_value(
         self,

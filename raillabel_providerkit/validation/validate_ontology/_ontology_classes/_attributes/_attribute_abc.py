@@ -31,10 +31,17 @@ class _Attribute(abc.ABC):
     scope: _Scope
     sensor_types: list[str]
 
-    @classmethod
+    @property
     @abc.abstractmethod
-    def supports(cls, attribute_dict: dict) -> bool:
+    def TYPE_IDENTIFYER(self) -> str:  # noqa: N802
         raise NotImplementedError
+
+    @classmethod
+    def supports(cls, attribute_dict: dict) -> bool:
+        return (
+            "attribute_type" in attribute_dict
+            and attribute_dict["attribute_type"] == cls.TYPE_IDENTIFYER
+        )
 
     @classmethod
     def fromdict(cls, attribute_dict: dict) -> _Attribute:

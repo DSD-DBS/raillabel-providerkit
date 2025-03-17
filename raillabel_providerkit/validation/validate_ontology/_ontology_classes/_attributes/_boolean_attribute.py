@@ -12,9 +12,7 @@ from ._attribute_abc import _Attribute
 
 @dataclass
 class _BooleanAttribute(_Attribute):
-    @classmethod
-    def supports(cls, attribute_dict: dict) -> bool:
-        return "attribute_type" in attribute_dict and attribute_dict["attribute_type"] == "boolean"
+    TYPE_IDENTIFYER = "boolean"
 
     def check_type_and_value(
         self,
