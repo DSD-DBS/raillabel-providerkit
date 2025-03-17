@@ -3,31 +3,15 @@
 
 import pytest
 
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._object_classes import (
+from raillabel_providerkit.validation.validate_ontology._ontology_classes import (
     _ObjectClass,
-)
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._boolean_attribute import (
     _BooleanAttribute,
-)
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._integer_attribute import (
     _IntegerAttribute,
-)
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._multi_reference_attribute import (
     _MultiReferenceAttribute,
-)
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._multi_select_attribute import (
     _MultiSelectAttribute,
-)
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._single_select_attribute import (
     _SingleSelectAttribute,
-)
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._string_attribute import (
     _StringAttribute,
-)
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._attributes._vector_attribute import (
     _VectorAttribute,
-)
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._sensor_type import (
     _SensorType,
 )
 from raillabel_providerkit.validation import IssueType, IssueIdentifiers

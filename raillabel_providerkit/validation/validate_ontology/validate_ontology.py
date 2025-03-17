@@ -12,7 +12,7 @@ import yaml
 from raillabel_providerkit.exceptions import OntologySchemaError
 from raillabel_providerkit.validation import Issue
 
-from ._ontology_classes._ontology import _Ontology
+from ._ontology_classes import _Ontology
 
 
 def validate_ontology(scene: raillabel.Scene, ontology_input: dict | Path) -> list[Issue]:
