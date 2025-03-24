@@ -12,6 +12,7 @@ from raillabel.json_format import JSONScene
 from raillabel_providerkit.validation import Issue
 
 from . import (
+    validate_dimensions,
     validate_empty_frames,
     validate_missing_ego_track,
     validate_ontology,
@@ -30,6 +31,7 @@ def validate(  # noqa: PLR0913
     validate_for_missing_ego_track: bool = True,
     validate_for_sensors: bool = True,
     validate_for_uris: bool = True,
+    validate_for_dimensions: bool = True,
 ) -> list[Issue]:
     """Validate a scene based on the Deutsche Bahn Requirements.
 
@@ -49,6 +51,8 @@ def validate(  # noqa: PLR0913
             not supported or have the wrong sensor type.
         validate_for_uris: If True, issues are returned if the uri fields in the scene contain
             unsupported values.
+        validate_for_dimensions: If True, issues are returned if the dimensions of cuboids are
+            outside the expected values range.
 
     Returns:
         List of all requirement errors in the scene. If an empty list is returned, then there are no
@@ -82,5 +86,8 @@ def validate(  # noqa: PLR0913
 
     if validate_for_uris:
         errors.extend(validate_uris(scene))
+
+    if validate_for_dimensions:
+        errors.extend(validate_dimensions(scene))
 
     return errors
