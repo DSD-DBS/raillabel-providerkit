@@ -14,7 +14,7 @@ from ._attribute_abc import _Attribute
 
 @dataclass
 class _MultiReferenceAttribute(_Attribute):
-    ATTRIBUTE_TYPE_IDENTIFYER = "multi-reference"
+    ATTRIBUTE_TYPE_IDENTIFIER = "multi-reference"
     PYTHON_TYPE = list
 
     def check_type_and_value(

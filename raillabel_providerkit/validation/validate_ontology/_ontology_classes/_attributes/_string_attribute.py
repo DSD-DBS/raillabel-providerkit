@@ -10,5 +10,5 @@ from ._attribute_abc import _Attribute
 
 @dataclass
 class _StringAttribute(_Attribute):
-    ATTRIBUTE_TYPE_IDENTIFYER = "string"
+    ATTRIBUTE_TYPE_IDENTIFIER = "string"
     PYTHON_TYPE = str

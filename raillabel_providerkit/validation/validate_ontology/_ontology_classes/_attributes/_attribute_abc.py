@@ -33,7 +33,7 @@ class _Attribute(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def ATTRIBUTE_TYPE_IDENTIFYER(self) -> str:  # noqa: N802
+    def ATTRIBUTE_TYPE_IDENTIFIER(self) -> str:  # noqa: N802
         raise NotImplementedError
 
     @property
@@ -45,7 +45,7 @@ class _Attribute(abc.ABC):
     def supports(cls, attribute_dict: dict) -> bool:
         return (
             "attribute_type" in attribute_dict
-            and attribute_dict["attribute_type"] == cls.ATTRIBUTE_TYPE_IDENTIFYER
+            and attribute_dict["attribute_type"] == cls.ATTRIBUTE_TYPE_IDENTIFIER
         )
 
     @classmethod

@@ -10,5 +10,5 @@ from ._attribute_abc import _Attribute
 
 @dataclass
 class _IntegerAttribute(_Attribute):
-    ATTRIBUTE_TYPE_IDENTIFYER = "integer"
+    ATTRIBUTE_TYPE_IDENTIFIER = "integer"
     PYTHON_TYPE = int

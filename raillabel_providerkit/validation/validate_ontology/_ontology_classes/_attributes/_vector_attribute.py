@@ -10,5 +10,5 @@ from ._attribute_abc import _Attribute
 
 @dataclass
 class _VectorAttribute(_Attribute):
-    ATTRIBUTE_TYPE_IDENTIFYER = "vector"
+    ATTRIBUTE_TYPE_IDENTIFIER = "vector"
     PYTHON_TYPE = list

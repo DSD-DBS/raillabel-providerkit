@@ -16,7 +16,7 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _SingleSelectAttribute(_Attribute):
     options: set[str]
-    ATTRIBUTE_TYPE_IDENTIFYER = "single-select"
+    ATTRIBUTE_TYPE_IDENTIFIER = "single-select"
     PYTHON_TYPE = str
 
     @classmethod
@@ -25,7 +25,7 @@ class _SingleSelectAttribute(_Attribute):
             "attribute_type" in attribute_dict
             and type(attribute_dict["attribute_type"]) is dict
             and "type" in attribute_dict["attribute_type"]
-            and attribute_dict["attribute_type"]["type"] == cls.ATTRIBUTE_TYPE_IDENTIFYER
+            and attribute_dict["attribute_type"]["type"] == cls.ATTRIBUTE_TYPE_IDENTIFIER
         )
 
     @classmethod
