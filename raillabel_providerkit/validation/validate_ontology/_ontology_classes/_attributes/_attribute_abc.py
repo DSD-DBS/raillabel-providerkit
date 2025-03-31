@@ -21,10 +21,10 @@ class _Attribute(abc.ABC):
     ----------
     optional: bool
         Whether the attribute is required to exist in every annotation of the object class.
-    sensor_types: list[str]
-        The sensors for which annotations are allowed to have this attribute.
     scope: _Scope
         The scope all attributes following this definition have to adhere to.
+    sensor_types: list[str]
+        The sensors for which annotations are allowed to have this attribute.
     """
 
     optional: bool
