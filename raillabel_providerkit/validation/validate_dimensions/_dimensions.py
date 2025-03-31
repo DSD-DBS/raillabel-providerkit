@@ -146,7 +146,7 @@ DIMENSIONS = [
     _TypeDimensions(
         type=["train", "rail_vehicle", "wagons"],
         height=_DimensionRange(0.9, 6.0),
-        width=_DimensionRange(1.4, 900.0),
+        width=_DimensionRange(1.7, 900.0),
     ),
     _TypeDimensions(
         type="motorcycle",
