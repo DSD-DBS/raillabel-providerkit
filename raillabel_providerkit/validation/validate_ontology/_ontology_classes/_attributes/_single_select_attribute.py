@@ -16,6 +16,8 @@ from ._attribute_abc import _Attribute
 @dataclass
 class _SingleSelectAttribute(_Attribute):
     options: set[str]
+    ATTRIBUTE_TYPE_IDENTIFIER = "single-select"
+    PYTHON_TYPE = str
 
     @classmethod
     def supports(cls, attribute_dict: dict) -> bool:
@@ -23,7 +25,7 @@ class _SingleSelectAttribute(_Attribute):
             "attribute_type" in attribute_dict
             and type(attribute_dict["attribute_type"]) is dict
             and "type" in attribute_dict["attribute_type"]
-            and attribute_dict["attribute_type"]["type"] == "single-select"
+            and attribute_dict["attribute_type"]["type"] == cls.ATTRIBUTE_TYPE_IDENTIFIER
         )
 
     @classmethod
@@ -41,28 +43,20 @@ class _SingleSelectAttribute(_Attribute):
     def check_type_and_value(
         self,
         attribute_name: str,
-        attribute_value: bool | float | str | list,
+        attribute_values: bool | float | str | list,
         identifiers: IssueIdentifiers,
     ) -> list[Issue]:
-        if type(attribute_value) is not str:
-            return [
-                Issue(
-                    type=IssueType.ATTRIBUTE_TYPE,
-                    reason=(
-                        f"Attribute '{attribute_name}' is of type"
-                        f" {attribute_value.__class__.__name__} (should be 'str')."
-                    ),
-                    identifiers=identifiers,
-                )
-            ]
+        type_issues = super().check_type_and_value(attribute_name, attribute_values, identifiers)
+        if len(type_issues) > 0:
+            return type_issues
 
-        if attribute_value not in self.options:
+        if attribute_values not in self.options:
             return [
                 Issue(
                     type=IssueType.ATTRIBUTE_VALUE,
                     reason=(
                         f"Attribute '{attribute_name}' has an undefined value"
-                        f" '{attribute_value}' (defined options: {self._stringify_options()})."
+                        f" '{attribute_values}' (defined options: {self._stringify_options()})."
                     ),
                     identifiers=identifiers,
                 )

@@ -3,6 +3,7 @@
 """Package for validating raillabel data regarding the format requirements."""
 
 from .issue import Issue, IssueIdentifiers, IssueType
+from .validate_dimensions.validate_dimensions import validate_dimensions
 from .validate_empty_frames.validate_empty_frames import validate_empty_frames
 from .validate_missing_ego_track.validate_missing_ego_track import validate_missing_ego_track
 from .validate_ontology.validate_ontology import validate_ontology
@@ -15,6 +16,7 @@ __all__ = [
     "Issue",
     "IssueIdentifiers",
     "IssueType",
+    "validate_dimensions",
     "validate_empty_frames",
     "validate_missing_ego_track",
     "validate_ontology",

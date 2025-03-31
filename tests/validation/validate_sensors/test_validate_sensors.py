@@ -6,12 +6,12 @@ from raillabel.scene_builder import SceneBuilder
 from raillabel.format import Lidar
 
 from raillabel_providerkit.validation import IssueIdentifiers, IssueType, validate_sensors
-from raillabel_providerkit.validation.validate_sensors.validate_sensors import SENSOR_TYPE_MAPPING
+from raillabel_providerkit.validation.validate_sensors.validate_sensors import SENSOR_METADATA
 
 
 def test_all_sensors_valid():
     scene_builder = SceneBuilder.empty()
-    for sensor_id, sensor_type in SENSOR_TYPE_MAPPING.items():
+    for sensor_id, sensor_type in SENSOR_METADATA.items():
         scene_builder.add_sensor(sensor_id)
 
     scene = scene_builder.result

@@ -7,7 +7,7 @@ import json
 import pytest
 
 from raillabel.scene_builder import SceneBuilder
-from raillabel.format import Point2d, SensorReference, Scene
+from raillabel.format import Point2d, SensorReference, Scene, Size3d
 
 from raillabel_providerkit import validate
 
@@ -108,6 +108,18 @@ def test_validate_uris_included():
 
     assert len(validate(scene_dict, validate_for_uris=False)) == 0
     assert len(validate(scene_dict, validate_for_uris=True)) == 1
+
+
+def test_validate_dimensions_included():
+    scene = scene = (
+        SceneBuilder.empty()
+        .add_cuboid(object_name="person_0001", size=Size3d(x=0.5, y=0.5, z=0.01))
+        .result
+    )
+    scene_dict = scene_to_dict(scene)
+
+    assert len(validate(scene_dict, validate_for_dimensions=False)) == 0
+    assert len(validate(scene_dict, validate_for_dimensions=True)) == 1
 
 
 if __name__ == "__main__":

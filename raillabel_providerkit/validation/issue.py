@@ -14,6 +14,7 @@ class IssueType(Enum):
     ATTRIBUTE_TYPE = "AttributeTypeIssue"
     ATTRIBUTE_UNDEFINED = "AttributeUndefined"
     ATTRIBUTE_VALUE = "AttributeValueIssue"
+    DIMENSION_INVALID = "DimensionInvalidIssue"
     EMPTY_FRAMES = "EmptyFramesIssue"
     MISSING_EGO_TRACK = "MissingEgoTrackIssue"
     OBJECT_TYPE_UNDEFINED = "ObjectTypeUndefined"

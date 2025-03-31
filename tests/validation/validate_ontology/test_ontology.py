@@ -5,14 +5,8 @@ from uuid import UUID
 
 import pytest
 
-from raillabel_providerkit.validation.validate_ontology._ontology_classes._ontology import (
-    _Ontology,
-    Issue,
-    IssueType,
-    IssueIdentifiers,
-)
-from raillabel_providerkit.validation import IssueType
-from raillabel.format import Point2d, Size2d
+from raillabel_providerkit.validation.validate_ontology._ontology_classes import _Ontology
+from raillabel_providerkit.validation import IssueType, IssueIdentifiers, Issue
 from raillabel.scene_builder import SceneBuilder
 
 
