@@ -111,6 +111,11 @@ DIMENSIONS = [
         width=_DimensionRange(0.1, 2.0),
     ),
     _TypeDimensions(
+        type="personal_item",
+        height=_DimensionRange(0.2, 3.5),
+        width=_DimensionRange(0.2, 3.5),
+    ),
+    _TypeDimensions(
         type="pram",
         height=_DimensionRange(0.3, 1.6),
         width=_DimensionRange(0.4, 2.0),
@@ -203,6 +208,11 @@ DIMENSIONS = [
     _TypeDimensions(
         type="signal",
         height=_DimensionRange(0.1, 4.0),
+        width=_DimensionRange(0.1, 4.0),
+    ),
+    _TypeDimensions(
+        type="signal_pole",
+        height=_DimensionRange(1.0, 14.0),
         width=_DimensionRange(0.1, 4.0),
     ),
     _TypeDimensions(
