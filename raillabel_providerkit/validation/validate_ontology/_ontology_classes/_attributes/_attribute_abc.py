@@ -107,8 +107,7 @@ class _Attribute(abc.ABC):
         # If the attribute is a list, it is not an error if the lists have the same
         # values, but are in a different order
         if (
-            self.PYTHON_TYPE is list
-            and type(attribute_value_1) is list
+            type(attribute_value_1) is list
             and type(attribute_value_2) is list
             and Counter(attribute_value_1) == Counter(attribute_value_2)
         ):

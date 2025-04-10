@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import pytest
+from uuid import UUID
 
 from raillabel_providerkit.validation.validate_ontology._ontology_classes import (
     _Scope,
@@ -86,3 +87,142 @@ def test_check_type_and_value__wrong_value(example_multi_select_attribute_dict):
 def test_check_type_and_value__correct(example_multi_select_attribute_dict):
     attr = _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
     assert attr.check_type_and_value("example_name", ["foo"], IssueIdentifiers()) == []
+
+
+def test_check_scope_for_two_annotations__ignore_unmatched_types(
+    example_multi_select_attribute_dict,
+):
+    example_multi_select_attribute_dict["scope"] = "annotation"
+    attr = _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
+    assert (
+        attr.check_scope_for_two_annotations(
+            "example_name", ["foo"], 42, IssueIdentifiers(), IssueIdentifiers()
+        )
+        == []
+    )
+
+
+def test_check_scope_for_two_annotations__annotation_correct(example_multi_select_attribute_dict):
+    example_multi_select_attribute_dict["scope"] = "annotation"
+    attr = _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
+    assert (
+        attr.check_scope_for_two_annotations(
+            "example_name", ["foo"], ["bar"], IssueIdentifiers(), IssueIdentifiers()
+        )
+        == []
+    )
+
+
+def test_check_scope_for_two_annotations__frame_correct_same_frame(
+    example_multi_select_attribute_dict, ignore_uuid
+):
+    example_multi_select_attribute_dict["scope"] = "frame"
+    attr = _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
+    assert (
+        attr.check_scope_for_two_annotations(
+            "example_name",
+            ["foo"],
+            ["foo"],
+            IssueIdentifiers(frame=42, object=ignore_uuid),
+            IssueIdentifiers(frame=42, object=ignore_uuid),
+        )
+        == []
+    )
+
+
+def test_check_scope_for_two_annotations__frame_correct_different_frame(
+    example_multi_select_attribute_dict, ignore_uuid
+):
+    example_multi_select_attribute_dict["scope"] = "frame"
+    attr = _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
+    assert (
+        attr.check_scope_for_two_annotations(
+            "example_name",
+            ["foo"],
+            ["bar"],
+            IssueIdentifiers(frame=42, object=ignore_uuid),
+            IssueIdentifiers(frame=73, object=ignore_uuid),
+        )
+        == []
+    )
+
+
+def test_check_scope_for_two_annotations__frame_inconsistent(
+    example_multi_select_attribute_dict, ignore_uuid
+):
+    example_multi_select_attribute_dict["scope"] = "frame"
+    attr = _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
+    errors = attr.check_scope_for_two_annotations(
+        "example_name",
+        ["foo"],
+        ["bar"],
+        IssueIdentifiers(frame=42, object=ignore_uuid),
+        IssueIdentifiers(frame=42, object=ignore_uuid),
+    )
+    assert len(errors) == 1
+    assert errors[0].type == IssueType.ATTRIBUTE_SCOPE
+
+
+def test_check_scope_for_two_annotations__object_correct_same_object(
+    example_multi_select_attribute_dict,
+):
+    example_multi_select_attribute_dict["scope"] = "object"
+    attr = _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
+    assert (
+        attr.check_scope_for_two_annotations(
+            "example_name",
+            ["foo"],
+            ["foo"],
+            IssueIdentifiers(frame=42, object=UUID("44de4109-ee2c-4729-956d-8e965c7ce231")),
+            IssueIdentifiers(frame=42, object=UUID("44de4109-ee2c-4729-956d-8e965c7ce231")),
+        )
+        == []
+    )
+
+
+def test_check_scope_for_two_annotations__object_correct_different_object(
+    example_multi_select_attribute_dict,
+):
+    example_multi_select_attribute_dict["scope"] = "object"
+    attr = _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
+    assert (
+        attr.check_scope_for_two_annotations(
+            "example_name",
+            ["foo"],
+            ["bar"],
+            IssueIdentifiers(frame=42, object=UUID("44de4109-ee2c-4729-956d-8e965c7ce231")),
+            IssueIdentifiers(frame=42, object=UUID("98e93d07-e81a-4827-8c62-a82c3c4bfc42")),
+        )
+        == []
+    )
+
+
+def test_check_scope_for_two_annotations__object_inconsistent(example_multi_select_attribute_dict):
+    example_multi_select_attribute_dict["scope"] = "object"
+    attr = _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
+    errors = attr.check_scope_for_two_annotations(
+        "example_name",
+        ["foo"],
+        ["bar"],
+        IssueIdentifiers(frame=42, object=UUID("44de4109-ee2c-4729-956d-8e965c7ce231")),
+        IssueIdentifiers(frame=42, object=UUID("44de4109-ee2c-4729-956d-8e965c7ce231")),
+    )
+    assert len(errors) == 1
+    assert errors[0].type == IssueType.ATTRIBUTE_SCOPE
+
+
+def test_check_scope_for_two_annotations__object_correct_different_order(
+    example_multi_select_attribute_dict,
+):
+    example_multi_select_attribute_dict["scope"] = "object"
+    attr = _MultiSelectAttribute.fromdict(example_multi_select_attribute_dict)
+    assert (
+        attr.check_scope_for_two_annotations(
+            "example_name",
+            ["foo", "bar"],
+            ["bar", "foo"],
+            IssueIdentifiers(frame=42, object=UUID("44de4109-ee2c-4729-956d-8e965c7ce231")),
+            IssueIdentifiers(frame=42, object=UUID("44de4109-ee2c-4729-956d-8e965c7ce231")),
+        )
+        == []
+    )
