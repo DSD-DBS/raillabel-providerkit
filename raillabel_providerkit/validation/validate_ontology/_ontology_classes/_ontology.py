@@ -68,7 +68,10 @@ class _Ontology:
             if object_type not in checked_attributes_by_object_type:
                 checked_attributes_by_object_type[object_type] = []
 
-            for attribute_name in annotation_with_metadata.annotation.attributes:
+            for (
+                attribute_name,
+                attribute_value,
+            ) in annotation_with_metadata.annotation.attributes.items():
                 attribute = object_class.attributes.get(attribute_name)
                 if attribute is None:
                     continue
@@ -77,15 +80,26 @@ class _Ontology:
                     continue
                 checked_attributes_by_object_type[object_type].append(attribute_name)
 
-                scope = attribute.scope
-
                 for other_annotation_with_metadata in annotations_with_metadata:
+                    if (
+                        other_annotation_with_metadata is annotations_with_metadata
+                        or other_annotation_with_metadata.object_type != object_type
+                    ):
+                        continue
+
+                    if attribute_name not in other_annotation_with_metadata.annotation.attributes:
+                        return []
+                    other_attribute_value = other_annotation_with_metadata.annotation.attributes[
+                        attribute_name
+                    ]
+
                     errors.extend(
                         attribute.check_scope_for_two_annotations(
                             attribute_name,
-                            scope,
-                            annotation_with_metadata,
-                            other_annotation_with_metadata,
+                            attribute_value,
+                            other_attribute_value,
+                            annotation_with_metadata.to_identifiers(attribute_name),
+                            other_annotation_with_metadata.to_identifiers(attribute_name),
                         )
                     )
 
