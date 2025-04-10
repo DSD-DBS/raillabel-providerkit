@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import abc
+from collections import Counter
 from dataclasses import dataclass
 from importlib import import_module
 from inspect import isclass
@@ -10,6 +11,9 @@ from pathlib import Path
 from pkgutil import iter_modules
 
 from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
+from raillabel_providerkit.validation.validate_ontology._ontology_classes._annotation_with_metadata import (  # noqa: E501
+    _AnnotationWithMetadata,
+)
 from raillabel_providerkit.validation.validate_ontology._ontology_classes._scope import _Scope
 
 
@@ -78,6 +82,58 @@ class _Attribute(abc.ABC):
                 ),
             )
         ]
+
+    def check_scope_for_two_annotations(  # noqa: PLR0911
+        self,
+        attribute_name: str,
+        scope: _Scope,
+        annotation_with_metadata_1: _AnnotationWithMetadata,
+        annotation_with_metadata_2: _AnnotationWithMetadata,
+    ) -> list[Issue]:
+        if annotation_with_metadata_1 is annotation_with_metadata_2:
+            return []
+
+        if annotation_with_metadata_1.object_type != annotation_with_metadata_2.object_type:
+            return []
+
+        if scope == _Scope.ANNOTATION:
+            return []
+
+        if (
+            scope == _Scope.FRAME
+            and annotation_with_metadata_1.frame_id != annotation_with_metadata_2.frame_id
+        ):
+            return []
+
+        if (
+            attribute_name not in annotation_with_metadata_1.annotation.attributes
+            or attribute_name not in annotation_with_metadata_2.annotation.attributes
+        ):
+            return []
+        attribute_value_1 = annotation_with_metadata_1.annotation.attributes[attribute_name]
+        attribute_value_2 = annotation_with_metadata_2.annotation.attributes[attribute_name]
+
+        # If the attribute is a list, it is not an error if the lists have the same
+        # values, but are in a different order
+        if self.PYTHON_TYPE is list and Counter(list(attribute_value_1)) == Counter(
+            list(attribute_value_2)
+        ):
+            return []
+
+        if attribute_value_1 != attribute_value_2:
+            return [
+                Issue(
+                    type=IssueType.ATTRIBUTE_SCOPE,
+                    identifiers=annotation_with_metadata_2.to_identifiers(attribute_name),
+                    reason=(
+                        f"Attribute '{attribute_name}' is inconsistent with referenced"
+                        f" annotation '{annotation_with_metadata_1.annotation_id}'"
+                        f" (considering scope {scope})"
+                    ),
+                )
+            ]
+
+        return []
 
 
 def attribute_classes() -> list[type[_Attribute]]:
