@@ -5,7 +5,10 @@ from uuid import UUID
 
 import pytest
 
-from raillabel_providerkit.validation.validate_ontology._ontology_classes import _Ontology
+from raillabel_providerkit.validation.validate_ontology._ontology_classes import (
+    _Ontology,
+    _AnnotationWithMetadata,
+)
 from raillabel_providerkit.validation import IssueType, IssueIdentifiers, Issue
 from raillabel.scene_builder import SceneBuilder
 
@@ -146,6 +149,356 @@ def test_check_class_validity__incorrect():
     assert ontology.errors[0].type == IssueType.OBJECT_TYPE_UNDEFINED
     assert ontology.errors[0].identifiers == IssueIdentifiers(
         object=UUID("ba73e75d-b996-4f6e-bdad-39c465420a33"), object_type="apple"
+    )
+
+
+def test_check_attribute_scopes__empty():
+    ontology = _Ontology.fromdict({})
+    assert ontology._check_attribute_scopes([]) == []
+
+
+def test_check_attribute_scopes__annotation(sample_uuid_1, sample_uuid_2, sample_uuid_3):
+    ontology = _Ontology.fromdict(
+        {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "annotation"}}}
+    )
+    scene = (
+        SceneBuilder.empty()
+        .add_object(object_name="banana_0001")
+        .add_bbox(
+            uid=sample_uuid_1,
+            frame_id=0,
+            object_name="banana_0001",
+            attributes={"is_peelable": True},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_2,
+            frame_id=0,
+            object_name="banana_0001",
+            attributes={"is_peelable": False},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_3,
+            frame_id=0,
+            object_name="banana_0001",
+            attributes={"is_peelable": True},
+            sensor_id="rgb_center",
+        )
+        .result
+    )
+    assert (
+        ontology._check_attribute_scopes(
+            [
+                _AnnotationWithMetadata(sample_uuid_1, 0, scene),
+                _AnnotationWithMetadata(sample_uuid_2, 0, scene),
+                _AnnotationWithMetadata(sample_uuid_3, 0, scene),
+            ]
+        )
+        == []
+    )
+
+
+def test_check_attribute_scopes__frame_correct(
+    sample_uuid_1, sample_uuid_2, sample_uuid_3, sample_uuid_4
+):
+    ontology = _Ontology.fromdict(
+        {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "frame"}}}
+    )
+    scene = (
+        SceneBuilder.empty()
+        .add_object(object_name="banana_0001")
+        .add_object(object_name="banana_0002")
+        .add_bbox(
+            uid=sample_uuid_1,
+            frame_id=0,
+            object_name="banana_0001",
+            attributes={"is_peelable": True},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_2,
+            frame_id=0,
+            object_name="banana_0001",
+            attributes={"is_peelable": True},
+            sensor_id="rgb_left",
+        )
+        .add_bbox(
+            uid=sample_uuid_3,
+            frame_id=1,
+            object_name="banana_0001",
+            attributes={"is_peelable": False},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_4,
+            frame_id=0,
+            object_name="banana_0002",
+            attributes={"is_peelable": False},
+            sensor_id="rgb_center",
+        )
+        .result
+    )
+    assert (
+        ontology._check_attribute_scopes(
+            [
+                _AnnotationWithMetadata(sample_uuid_1, 0, scene),
+                _AnnotationWithMetadata(sample_uuid_2, 0, scene),
+                _AnnotationWithMetadata(sample_uuid_3, 1, scene),
+                _AnnotationWithMetadata(sample_uuid_4, 0, scene),
+            ]
+        )
+        == []
+    )
+
+
+def test_check_attribute_scopes__frame_incorrect(
+    sample_uuid_1, sample_uuid_2, sample_uuid_3, sample_uuid_4, sample_uuid_5
+):
+    ontology = _Ontology.fromdict(
+        {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "frame"}}}
+    )
+    scene = (
+        SceneBuilder.empty()
+        .add_object(object_name="banana_0001")
+        .add_bbox(
+            uid=sample_uuid_1,
+            frame_id=0,
+            object_name="banana_0001",
+            attributes={"is_peelable": True},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_2,
+            frame_id=0,
+            object_name="banana_0001",
+            attributes={"is_peelable": True},
+            sensor_id="rgb_left",
+        )
+        .add_bbox(
+            uid=sample_uuid_3,
+            frame_id=0,
+            object_name="banana_0001",
+            attributes={"is_peelable": False},
+            sensor_id="rgb_right",
+        )
+        .add_bbox(
+            uid=sample_uuid_4,
+            frame_id=0,
+            object_name="banana_0001",
+            attributes={"is_peelable": False},
+            sensor_id="ir_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_5,
+            frame_id=1,
+            object_name="banana_0001",
+            attributes={"is_peelable": False},
+            sensor_id="rgb_center",
+        )
+        .result
+    )
+    errors = ontology._check_attribute_scopes(
+        [
+            _AnnotationWithMetadata(sample_uuid_1, 0, scene),
+            _AnnotationWithMetadata(sample_uuid_2, 0, scene),
+            _AnnotationWithMetadata(sample_uuid_3, 0, scene),
+            _AnnotationWithMetadata(sample_uuid_4, 0, scene),
+            _AnnotationWithMetadata(sample_uuid_5, 1, scene),
+        ]
+    )
+    assert len(errors) == 2
+    for error in errors:
+        assert error.type == IssueType.ATTRIBUTE_SCOPE
+
+
+def test_check_attribute_scopes__object_correct(
+    sample_uuid_1, sample_uuid_2, sample_uuid_3, sample_uuid_4, sample_uuid_5
+):
+    ontology = _Ontology.fromdict(
+        {"person": {"greeting": {"attribute_type": "string", "scope": "object"}}}
+    )
+    scene = (
+        SceneBuilder.empty()
+        .add_object(object_name="person_0001")
+        .add_object(object_name="person_0002")
+        .add_bbox(
+            uid=sample_uuid_1,
+            frame_id=0,
+            object_name="person_0001",
+            attributes={"greeting": "hello"},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_2,
+            frame_id=20,
+            object_name="person_0001",
+            attributes={"greeting": "hello"},
+            sensor_id="rgb_left",
+        )
+        .add_bbox(
+            uid=sample_uuid_3,
+            frame_id=0,
+            object_name="person_0001",
+            attributes={"greeting": "hello"},
+            sensor_id="rgb_right",
+        )
+        .add_bbox(
+            uid=sample_uuid_4,
+            frame_id=42,
+            object_name="person_0001",
+            attributes={"greeting": "hello"},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_5,
+            frame_id=1,
+            object_name="person_0002",
+            attributes={"greeting": "hey"},
+            sensor_id="rgb_center",
+        )
+        .result
+    )
+    assert (
+        ontology._check_attribute_scopes(
+            [
+                _AnnotationWithMetadata(sample_uuid_1, 0, scene),
+                _AnnotationWithMetadata(sample_uuid_2, 20, scene),
+                _AnnotationWithMetadata(sample_uuid_3, 0, scene),
+                _AnnotationWithMetadata(sample_uuid_4, 42, scene),
+                _AnnotationWithMetadata(sample_uuid_5, 1, scene),
+            ]
+        )
+        == []
+    )
+
+
+def test_check_attribute_scopes__object_incorrect(
+    sample_uuid_1, sample_uuid_2, sample_uuid_3, sample_uuid_4, sample_uuid_5
+):
+    ontology = _Ontology.fromdict(
+        {"person": {"greeting": {"attribute_type": "string", "scope": "object"}}}
+    )
+    scene = (
+        SceneBuilder.empty()
+        .add_object(object_name="person_0001")
+        .add_object(object_name="person_0002")
+        .add_bbox(
+            uid=sample_uuid_1,
+            frame_id=0,
+            object_name="person_0001",
+            attributes={"greeting": "hello"},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_2,
+            frame_id=20,
+            object_name="person_0001",
+            attributes={"greeting": "hi"},
+            sensor_id="rgb_left",
+        )
+        .add_bbox(
+            uid=sample_uuid_3,
+            frame_id=0,
+            object_name="person_0001",
+            attributes={"greeting": "hey"},
+            sensor_id="rgb_right",
+        )
+        .add_bbox(
+            uid=sample_uuid_4,
+            frame_id=42,
+            object_name="person_0002",
+            attributes={"greeting": "hello there"},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_5,
+            frame_id=1,
+            object_name="person_0001",
+            attributes={"greeting": "ah, i have expected you"},
+            sensor_id="rgb_center",
+        )
+        .result
+    )
+    errors = ontology._check_attribute_scopes(
+        [
+            _AnnotationWithMetadata(sample_uuid_1, 0, scene),
+            _AnnotationWithMetadata(sample_uuid_2, 20, scene),
+            _AnnotationWithMetadata(sample_uuid_3, 0, scene),
+            _AnnotationWithMetadata(sample_uuid_4, 42, scene),
+            _AnnotationWithMetadata(sample_uuid_5, 1, scene),
+        ]
+    )
+    assert len(errors) == 3
+    for error in errors:
+        assert error.type == IssueType.ATTRIBUTE_SCOPE
+
+
+def test_check_attribute_scopes__ignore_unknown_attribute(sample_uuid_1, sample_uuid_2):
+    ontology = _Ontology.fromdict(
+        {"person": {"greeting": {"attribute_type": "string", "scope": "object"}}}
+    )
+    scene = (
+        SceneBuilder.empty()
+        .add_object(object_name="person_0001")
+        .add_bbox(
+            uid=sample_uuid_1,
+            frame_id=0,
+            object_name="person_0001",
+            attributes={"greeting": "hello", "likes_trains": True},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_2,
+            frame_id=20,
+            object_name="person_0001",
+            attributes={"greeting": "hello", "likes_trains": False},
+            sensor_id="rgb_left",
+        )
+        .result
+    )
+    assert (
+        ontology._check_attribute_scopes(
+            [
+                _AnnotationWithMetadata(sample_uuid_1, 0, scene),
+                _AnnotationWithMetadata(sample_uuid_2, 20, scene),
+            ]
+        )
+        == []
+    )
+
+
+def test_check_attribute_scopes__ignore_missing_attribute_from_one(sample_uuid_1, sample_uuid_2):
+    ontology = _Ontology.fromdict(
+        {"person": {"greeting": {"attribute_type": "string", "scope": "object"}}}
+    )
+    scene = (
+        SceneBuilder.empty()
+        .add_object(object_name="person_0001")
+        .add_bbox(
+            uid=sample_uuid_1,
+            frame_id=0,
+            object_name="person_0001",
+            attributes={"greeting": "hello"},
+            sensor_id="rgb_center",
+        )
+        .add_bbox(
+            uid=sample_uuid_2,
+            frame_id=20,
+            object_name="person_0001",
+            attributes={},
+            sensor_id="rgb_left",
+        )
+        .result
+    )
+    assert (
+        ontology._check_attribute_scopes(
+            [
+                _AnnotationWithMetadata(sample_uuid_1, 0, scene),
+                _AnnotationWithMetadata(sample_uuid_2, 20, scene),
+            ]
+        )
+        == []
     )
 
 

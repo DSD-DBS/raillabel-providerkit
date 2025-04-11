@@ -115,3 +115,28 @@ def empty_annotation() -> raillabel.format.Bbox:
 @pytest.fixture
 def ignore_uuid() -> UUID:
     return UUID("00000000-0000-0000-0000-000000000000")
+
+
+@pytest.fixture
+def sample_uuid_1() -> UUID:
+    return UUID("00000000-0000-0000-0000-000000000001")
+
+
+@pytest.fixture
+def sample_uuid_2() -> UUID:
+    return UUID("00000000-0000-0000-0000-000000000002")
+
+
+@pytest.fixture
+def sample_uuid_3() -> UUID:
+    return UUID("00000000-0000-0000-0000-000000000003")
+
+
+@pytest.fixture
+def sample_uuid_4() -> UUID:
+    return UUID("00000000-0000-0000-0000-000000000004")
+
+
+@pytest.fixture
+def sample_uuid_5() -> UUID:
+    return UUID("00000000-0000-0000-0000-000000000005")
