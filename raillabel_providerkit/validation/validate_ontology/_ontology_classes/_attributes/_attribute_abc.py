@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import abc
+from collections import Counter
 from dataclasses import dataclass
 from importlib import import_module
 from inspect import isclass
@@ -78,6 +79,54 @@ class _Attribute(abc.ABC):
                 ),
             )
         ]
+
+    def check_scope_for_two_annotations(  # noqa: PLR0911
+        self,
+        attribute_name: str,
+        attribute_value_1: bool | float | str | list,
+        attribute_value_2: bool | float | str | list,
+        annotation_1_identifiers: IssueIdentifiers,
+        annotation_2_identifiers: IssueIdentifiers,
+    ) -> list[Issue]:
+        if self.scope == _Scope.ANNOTATION:
+            return []
+
+        if (
+            self.scope == _Scope.FRAME
+            and annotation_1_identifiers.frame != annotation_2_identifiers.frame
+        ):
+            return []
+
+        if annotation_1_identifiers.object != annotation_2_identifiers.object:
+            return []
+
+        if type(attribute_value_1) is not type(attribute_value_2):
+            # NOTE: this is covered by check_type_and_value
+            return []
+
+        # If the attribute is a list, it is not an error if the lists have the same
+        # values, but are in a different order
+        if (
+            type(attribute_value_1) is list
+            and type(attribute_value_2) is list
+            and Counter(attribute_value_1) == Counter(attribute_value_2)
+        ):
+            return []
+
+        if attribute_value_1 != attribute_value_2:
+            return [
+                Issue(
+                    type=IssueType.ATTRIBUTE_SCOPE,
+                    identifiers=annotation_2_identifiers,
+                    reason=(
+                        f"Attribute '{attribute_name}' is inconsistent with referenced"
+                        f" annotation '{annotation_1_identifiers.annotation}'"
+                        f" (considering scope {self.scope})"
+                    ),
+                )
+            ]
+
+        return []
 
 
 def attribute_classes() -> list[type[_Attribute]]:

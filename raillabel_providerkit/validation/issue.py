@@ -11,6 +11,7 @@ class IssueType(Enum):
 
     SCHEMA = "SchemaIssue"
     ATTRIBUTE_MISSING = "AttributeMissing"
+    ATTRIBUTE_SCOPE = "AttributeScopeInconsistency"
     ATTRIBUTE_TYPE = "AttributeTypeIssue"
     ATTRIBUTE_UNDEFINED = "AttributeUndefined"
     ATTRIBUTE_VALUE = "AttributeValueIssue"
