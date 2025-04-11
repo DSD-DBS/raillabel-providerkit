@@ -116,6 +116,53 @@ def test_check__invalid_attribute_type():
     )
 
 
+def test_check__scope_inconsistency():
+    ontology = _Ontology.fromdict(
+        {"banana": {"is_peelable": {"attribute_type": "boolean", "scope": "frame"}}}
+    )
+    scene = (
+        SceneBuilder.empty()
+        .add_object(
+            object_id=UUID("ba73e75d-b996-4f6e-bdad-39c465420a33"),
+            object_type="banana",
+            object_name="banana_0001",
+        )
+        .add_bbox(
+            UUID("f54d41d6-5e36-490b-9efc-05a6deb7549a"),
+            frame_id=0,
+            object_name="banana_0001",
+            sensor_id="rgb_center",
+            attributes={"is_peelable": True},
+        )
+        .add_bbox(
+            UUID("0ef548ab-70bc-4e74-9e11-76cff46ada0f"),
+            frame_id=0,
+            object_name="banana_0001",
+            sensor_id="rgb_left",
+            attributes={"is_peelable": False},
+        )
+        .result
+    )
+    issues = ontology.check(scene)
+    assert len(issues) == 1
+    assert issues[0].type == IssueType.ATTRIBUTE_SCOPE
+    assert issues[0].identifiers == IssueIdentifiers(
+        annotation=UUID("f54d41d6-5e36-490b-9efc-05a6deb7549a"),
+        attribute="is_peelable",
+        frame=0,
+        object=UUID("ba73e75d-b996-4f6e-bdad-39c465420a33"),
+        object_type="banana",
+        sensor="rgb_center",
+    ) or issues[0].identifiers == IssueIdentifiers(
+        annotation=UUID("0ef548ab-70bc-4e74-9e11-76cff46ada0f"),
+        attribute="is_peelable",
+        frame=0,
+        object=UUID("ba73e75d-b996-4f6e-bdad-39c465420a33"),
+        object_type="banana",
+        sensor="rgb_left",
+    )
+
+
 def test_check_class_validity__empty_scene():
     ontology = _Ontology.fromdict({})
     scene = SceneBuilder.empty().result
