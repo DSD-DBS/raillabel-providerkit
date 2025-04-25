@@ -24,12 +24,12 @@ def validate_missing_ego_track(scene: raillabel.Scene) -> list[Issue]:
     Parameters
     ----------
     scene : raillabel.Scene
-        Scene, that should be validated.
+        Scene that should be validated.
 
     Returns
     -------
-    list[str]
-        list of all missing ego track errors in the scene. If an empty list is returned, then there
+    list[Issue]
+        List of all missing ego track errors in the scene. If an empty list is returned, then there
         are no errors present.
     """
     issues = []

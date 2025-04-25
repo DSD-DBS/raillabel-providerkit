@@ -8,7 +8,19 @@ from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 
 
 def validate_sensors(scene: raillabel.Scene) -> list[Issue]:
-    """Validate whether whether all sensors have supported names and have the correct type."""
+    """Validate whether whether all sensors have supported names and have the correct type.
+
+    Parameters
+    ----------
+    scene : raillabel.Scene
+        Scene that should be validated.
+
+    Returns
+    -------
+    list[Issue]
+        List of all sensor name errors in the scene. If an empty list is returned, then there
+        are no errors present.
+    """
     issues = _validate_sensor_ids(scene)
     issues.extend(_validate_sensor_types(scene))
     return issues
