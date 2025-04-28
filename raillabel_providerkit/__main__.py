@@ -112,9 +112,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--ontology",
         metavar="FILEPATH",
-        default=str(OSDAR23_ONTOLOGY_PATH),
         help="The path to the ontology against which to validate attributes of all annotations,"
-        " by default OSDaR23's ontology",
+        " by default none",
     )
     parser.add_argument(
         "--csv",
@@ -132,7 +131,7 @@ if __name__ == "__main__":
 
     annotations_folder = Path(args.annotations_folder)
     output_folder = Path(args.output_folder)
-    ontology_path = Path(args.ontology)
+    ontology_path = Path(args.ontology) if args.ontology is not None else None
     create_csv = args.csv
     create_json = not args.no_json
 
