@@ -12,7 +12,19 @@ from raillabel_providerkit.validation import Issue, IssueType
 
 
 def validate_schema(data: dict) -> list[Issue]:
-    """Validate a scene for adherence to the raillabel schema."""
+    """Validate a scene for adherence to the raillabel schema.
+
+    Parameters
+    ----------
+    data : dict
+        _description_
+
+    Returns
+    -------
+    list[Issue]
+        List of all schema errors in the scene. If an empty list is returned, then there
+        are no errors present
+    """
     try:
         JSONScene(**data)
     except ValidationError as errors:

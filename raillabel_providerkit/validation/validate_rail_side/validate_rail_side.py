@@ -27,8 +27,8 @@ def validate_rail_side(scene: raillabel.Scene) -> list[Issue]:
 
     Returns
     -------
-    list[str]
-        list of all rail side errors in the scene. If an empty list is returned, then there are no
+    list[Issue]
+        List of all rail side errors in the scene. If an empty list is returned, then there are no
         errors present.
 
     """

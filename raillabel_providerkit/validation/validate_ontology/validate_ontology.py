@@ -30,7 +30,7 @@ def validate_ontology(scene: raillabel.Scene, ontology_input: dict | Path) -> li
     Returns
     -------
     list[Issue]
-        list of all ontology errors in the scene. If an empty list is returned, then there are no
+        List of all ontology errors in the scene. If an empty list is returned, then there are no
         errors present.
 
     """

@@ -9,7 +9,19 @@ from ._dimensions import DIMENSIONS, _TypeDimensions
 
 
 def validate_dimensions(scene: Scene) -> list[Issue]:
-    """Validate whether any annotations exceed the predefined bounds."""
+    """Validate whether any annotations exceed the predefined bounds.
+
+    Parameters
+    ----------
+    scene : Scene
+        Scene that should be validated.
+
+    Returns
+    -------
+    list[Issue]
+        List of all dimension errors in the scene. If an empty list is returned, then there
+        are no errors present.
+    """
     issues = []
     for annotation, identifiers in _get_annotations_with_identifiers(scene):
         type_dimensions = _identify_applicable_type_dimension(annotation, identifiers)

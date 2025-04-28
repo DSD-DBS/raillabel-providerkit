@@ -11,7 +11,16 @@ from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 def validate_empty_frames(scene: raillabel.Scene) -> list[Issue]:
     """Validate whether all frames of a scene have at least one annotation.
 
-    If an empty list is returned, then there are no errors present.
+    Parameters
+    ----------
+    scene : raillabel.Scene
+        Scene that should be validated.
+
+    Returns
+    -------
+    list[Issue]
+        List of all empty frame errors in the scene. If an empty list is returned, then there
+        are no errors present.
     """
     errors = []
 
