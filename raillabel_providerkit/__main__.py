@@ -7,14 +7,13 @@ import json
 import sys
 from pathlib import Path
 
+import jsonschema
 from tqdm import tqdm
 
 from raillabel_providerkit import validate
 from raillabel_providerkit.validation.issue import Issue
 
-OSDAR23_ONTOLOGY_PATH = (
-    Path(__file__).parent.parent / "tests" / "__assets__" / "osdar23_ontology.yaml"
-)
+ISSUES_SCHEMA = Path(__file__).parent / "validation" / "issues_schema.json"
 
 
 def store_issues_to_json(issues: list[Issue], filepath: Path) -> None:
@@ -28,9 +27,25 @@ def store_issues_to_json(issues: list[Issue], filepath: Path) -> None:
         The path to the .json file to store the issues in
     """
     issues_serialized = [issue.serialize() for issue in issues]
+    if not _adheres_to_issues_schema(issues_serialized):
+        raise AssertionError
     issues_json = json.dumps(issues_serialized, indent=2)
     with Path.open(filepath, "w") as file:
         file.write(issues_json)
+
+
+def _adheres_to_issues_schema(
+    data: list[dict[str, str | dict[str, str | int] | list[str | int]]],
+) -> bool:
+    schema: dict
+    with ISSUES_SCHEMA.open("r") as file:
+        schema = json.load(file)
+    try:
+        jsonschema.validate(data, schema)
+    except jsonschema.ValidationError:
+        return False
+
+    return True
 
 
 def store_issues_to_csv(issues: list[Issue], filepath: Path) -> None:
