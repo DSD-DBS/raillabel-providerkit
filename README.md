@@ -57,7 +57,7 @@ python -m raillabel_providerkit /path/to/folder_containing_scenes/ /path/to/outp
 If you want to output in .csv format instead of .json format, you can use this command:
 
 ```zsh
-python -m raillabel_providerkit /path/to/folder_containing_scenes/ /path/to/output_folder --csv --no-json
+python -m raillabel_providerkit /path/to/folder_containing_scenes/ /path/to/output_folder --use-csv --no-json
 ```
 
 # Contributing

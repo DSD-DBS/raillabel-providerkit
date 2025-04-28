@@ -1,12 +1,11 @@
 # Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
-import argparse
 import csv
 import json
-import sys
 from pathlib import Path
 
+import click
 import jsonschema
 from tqdm import tqdm
 
@@ -110,53 +109,43 @@ def store_issues_to_csv(issues: list[Issue], filepath: Path) -> None:
     file.close()
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="raillabel_providerkit",
-        description="Check a raillabel scene's annotations for errors",
-        allow_abbrev=False,
-    )
-    parser.add_argument(
-        "annotations_folder",
-        help="The path to the folder that contains the annotation scenes to check",
-    )
-    parser.add_argument(
-        "output_folder",
-        help="The path to the folder where the validation results should be output",
-    )
-    parser.add_argument(
-        "--ontology",
-        metavar="FILEPATH",
-        help="The path to the ontology against which to validate attributes of all annotations,"
-        " by default none",
-    )
-    parser.add_argument(
-        "--csv",
-        action="store_true",
-        default=False,
-        help="Create human-readable .csv files containing the issues in addition to .json output",
-    )
-    parser.add_argument(
-        "--no-json",
-        action="store_true",
-        default=False,
-        help="Don't create .json files containing the issues",
-    )
-    parser.add_argument(
-        "-q", "--quiet", action="store_true", default=False, help="Disable progress bars"
-    )
-    args = parser.parse_args()
-
-    annotations_folder = Path(args.annotations_folder)
-    output_folder = Path(args.output_folder)
-    ontology_path = Path(args.ontology) if args.ontology is not None else None
-    create_csv = args.csv
-    create_json = not args.no_json
-    quiet = args.quiet
-
+@click.command()
+@click.argument(
+    "annotations_folder",
+    type=click.Path(exists=True, file_okay=False, dir_okay=True, path_type=Path),
+)
+@click.argument(
+    "output_folder",
+    type=click.Path(exists=False, file_okay=False, dir_okay=True, path_type=Path),
+)
+@click.option(
+    "--ontology",
+    type=click.Path(exists=True, file_okay=True, dir_okay=False, path_type=Path),
+    default=None,
+    help=(
+        "The path to the ontology against which to validate attributes of all annotations,"
+        " by default none"
+    ),
+)
+@click.option(
+    "--use-csv/--no-csv",
+    default=False,
+    help="Create human-readable .csv files containing the issues",
+)
+@click.option("--use-json/--no-json", default=True, help="Create .json files containing the issues")
+@click.option("-q", "--quiet", is_flag=True, help="Disable progress bars")
+def run_raillabel_providerkit(  # noqa: PLR0913
+    annotations_folder: Path,
+    output_folder: Path,
+    ontology: Path | None,
+    use_csv: bool,
+    use_json: bool,
+    quiet: bool,
+) -> None:
+    """Check a raillabel scene's annotations for errors."""
     # Stop early if there is nothing to output
-    if not create_csv and not create_json:
-        sys.exit(0)
+    if not use_csv and not use_json:
+        return
 
     # Ensure output folder exists
     output_folder.mkdir(parents=True, exist_ok=True)
@@ -169,11 +158,15 @@ if __name__ == "__main__":
     for scene_path in tqdm(scene_files, desc="Validating files", disable=quiet):
         issues = validate(
             scene_path,
-            ontology_path,
+            ontology,
         )
 
         scene_name = scene_path.name
-        if create_json:
+        if use_json:
             store_issues_to_json(issues, output_folder / scene_name.replace(".json", ".issues.json"))
-        if create_csv:
+        if use_csv:
             store_issues_to_csv(issues, output_folder / scene_name.replace(".json", ".issues.csv"))
+
+
+if __name__ == "__main__":
+    run_raillabel_providerkit()
