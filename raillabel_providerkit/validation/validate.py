@@ -14,6 +14,7 @@ from raillabel_providerkit.validation import Issue
 from . import (
     validate_dimensions,
     validate_empty_frames,
+    validate_horizon,
     validate_missing_ego_track,
     validate_ontology,
     validate_rail_side,
@@ -23,7 +24,7 @@ from . import (
 )
 
 
-def validate(  # noqa: PLR0913
+def validate(  # noqa: C901, PLR0913
     scene_source: dict | Path,
     ontology_source: dict | Path | None = None,
     validate_for_empty_frames: bool = True,
@@ -32,6 +33,7 @@ def validate(  # noqa: PLR0913
     validate_for_sensors: bool = True,
     validate_for_uris: bool = True,
     validate_for_dimensions: bool = True,
+    validate_for_horizon: bool = True,
 ) -> list[Issue]:
     """Validate a scene based on the Deutsche Bahn Requirements.
 
@@ -53,6 +55,7 @@ def validate(  # noqa: PLR0913
             unsupported values.
         validate_for_dimensions: If True, issues are returned if the dimensions of cuboids are
             outside the expected values range.
+        validate_for_horizon: If True, issues are returned if annotations cross the horizon.
 
     Returns:
         List of all requirement errors in the scene. If an empty list is returned, then there are no
@@ -89,5 +92,8 @@ def validate(  # noqa: PLR0913
 
     if validate_for_dimensions:
         errors.extend(validate_dimensions(scene))
+
+    if validate_for_horizon:
+        errors.extend(validate_horizon(scene))
 
     return errors

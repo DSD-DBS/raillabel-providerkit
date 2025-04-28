@@ -72,8 +72,13 @@ def test_validate_rail_side_included():
     )
     scene_dict = scene_to_dict(scene)
 
-    assert len(validate(scene_dict, validate_for_rail_side_order=False)) == 0
-    assert len(validate(scene_dict, validate_for_rail_side_order=True)) == 1
+    assert (
+        len(validate(scene_dict, validate_for_rail_side_order=False, validate_for_horizon=False))
+        == 0
+    )
+    assert (
+        len(validate(scene_dict, validate_for_rail_side_order=True, validate_for_horizon=False)) == 1
+    )
 
 
 def test_validate_missing_ego_track_included():
