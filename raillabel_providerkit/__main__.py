@@ -127,6 +127,9 @@ if __name__ == "__main__":
         default=False,
         help="Don't create .json files containing the issues",
     )
+    parser.add_argument(
+        "-q", "--quiet", action="store_true", default=False, help="Disable progress bars"
+    )
     args = parser.parse_args()
 
     annotations_folder = Path(args.annotations_folder)
@@ -134,6 +137,7 @@ if __name__ == "__main__":
     ontology_path = Path(args.ontology) if args.ontology is not None else None
     create_csv = args.csv
     create_json = not args.no_json
+    quiet = args.quiet
 
     # Stop early if there is nothing to output
     if not create_csv and not create_json:
@@ -147,7 +151,7 @@ if __name__ == "__main__":
         set(annotations_folder.glob("**/*.json")) - set(annotations_folder.glob(".*/**/*"))
     )
 
-    for scene_path in tqdm(scene_files, desc="Validating files"):
+    for scene_path in tqdm(scene_files, desc="Validating files", disable=quiet):
         issues = validate(
             scene_path,
             ontology_path,
