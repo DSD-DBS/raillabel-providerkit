@@ -59,14 +59,15 @@ class _Ontology:
         checked_attributes_by_object_type: dict[str, list[str]] = {}
 
         for annotation_with_metadata in annotations_with_metadata:
-            object_type = annotation_with_metadata.object_type
+            object_type_name = annotation_with_metadata.object_type
 
-            if object_type not in self.classes:
+            if object_type_name not in self.classes:
+                # NOTE: This is an UNEXPECTED_CLASS issue and handled elsewhere.
                 continue
-            object_class = self.classes[object_type]
+            object_class = self.classes[object_type_name]
 
-            if object_type not in checked_attributes_by_object_type:
-                checked_attributes_by_object_type[object_type] = []
+            if object_type_name not in checked_attributes_by_object_type:
+                checked_attributes_by_object_type[object_type_name] = []
 
             for (
                 attribute_name,
@@ -76,14 +77,14 @@ class _Ontology:
                 if attribute is None:
                     continue
 
-                if attribute_name in checked_attributes_by_object_type[object_type]:
+                if attribute_name in checked_attributes_by_object_type[object_type_name]:
                     continue
-                checked_attributes_by_object_type[object_type].append(attribute_name)
+                checked_attributes_by_object_type[object_type_name].append(attribute_name)
 
                 for other_annotation_with_metadata in annotations_with_metadata:
                     if (
                         other_annotation_with_metadata is annotations_with_metadata
-                        or other_annotation_with_metadata.object_type != object_type
+                        or other_annotation_with_metadata.object_type != object_type_name
                     ):
                         continue
 
