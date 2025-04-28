@@ -40,6 +40,26 @@ pip install -e '.[docs,test]'
 pre-commit install
 ```
 
+# Command Line Usage
+
+You can use the validation functionality directly from the command line. To get a list of supported arguments, use this command:
+
+```zsh
+python -m raillabel_providerkit --help
+```
+
+To simply validate all scenes in a folder and output any detected issues to an output folder (in .json format), use this command:
+
+```zsh
+python -m raillabel_providerkit /path/to/folder_containing_scenes/ /path/to/output_folder
+```
+
+If you want to output in .csv format instead of .json format, you can use this command:
+
+```zsh
+python -m raillabel_providerkit /path/to/folder_containing_scenes/ /path/to/output_folder --use-csv --no-json
+```
+
 # Contributing
 
 We'd love to see your bug reports and improvement suggestions! Please take a

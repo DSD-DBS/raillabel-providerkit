@@ -1,0 +1,56 @@
+{
+    "type": "array",
+    "definitions": {
+        "issue": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "identifiers": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "annotation": {
+                                    "type": "string"
+                                },
+                                "attribute": {
+                                    "type": "string"
+                                },
+                                "frame": {
+                                    "type": "integer"
+                                },
+                                "object": {
+                                    "type": "string"
+                                },
+                                "object_type": {
+                                    "type": "string"
+                                },
+                                "sensor": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": ["string", "integer"]
+                            }
+                        }
+                    ]
+                },
+                "reason": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "type",
+                "identifiers"
+            ]
+        }
+    },
+    "items": {
+        "$ref": "#/definitions/issue"
+    }
+}
