@@ -16,6 +16,7 @@ class IssueType(Enum):
     ATTRIBUTE_VALUE = "AttributeValueIssue"
     DIMENSION_INVALID = "DimensionInvalidIssue"
     EMPTY_FRAMES = "EmptyFramesIssue"
+    HORIZON_CROSSED = "HorizonCrossedIssue"
     MISSING_EGO_TRACK = "MissingEgoTrackIssue"
     OBJECT_TYPE_UNDEFINED = "ObjectTypeUndefined"
     RAIL_SIDE = "RailSide"
