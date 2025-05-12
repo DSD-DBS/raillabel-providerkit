@@ -45,20 +45,16 @@ class IssueIdentifiers:
         dict[str, str | int]
             The serialized IssueIdentifiers as a JSON-compatible dictionary
         """
-        serialized_issue_identifiers: dict[str, str | int] = {}
-        if self.annotation is not None:
-            serialized_issue_identifiers["annotation"] = str(self.annotation)
-        if self.attribute is not None:
-            serialized_issue_identifiers["attribute"] = self.attribute
-        if self.frame is not None:
-            serialized_issue_identifiers["frame"] = self.frame
-        if self.object is not None:
-            serialized_issue_identifiers["object"] = str(self.object)
-        if self.object_type is not None:
-            serialized_issue_identifiers["object_type"] = self.object_type
-        if self.sensor is not None:
-            serialized_issue_identifiers["sensor"] = self.sensor
-        return serialized_issue_identifiers
+        return _clean_dict(
+            {
+                "annotation": str(self.annotation),
+                "attribute": self.attribute,
+                "frame": self.frame,
+                "object": str(self.object),
+                "object_type": self.object_type,
+                "sensor": self.sensor,
+            }
+        )
 
     @classmethod
     def deserialize(cls, serialized_issue_identifiers: dict[str, str | int]) -> "IssueIdentifiers":  # noqa: C901
@@ -184,3 +180,8 @@ class Issue:
             else serialized_identifiers,
             serialized_reason,
         )
+
+
+def _clean_dict(d: dict) -> dict:
+    """Remove all fields in a dict that are None or 'None'."""
+    return {k: v for k, v in d.items() if str(v) != "None"}
