@@ -15,6 +15,7 @@ def test_issue_identifiers_serialize__empty():
 def test_issue_identifiers_serialize__filled():
     identifiers = IssueIdentifiers(
         annotation=UUID("f9b8aa82-e42b-43df-85fb-99ab51145732"),
+        annotation_type="Poly3d",
         attribute="likes_trains",
         frame=42,
         object=UUID("6caf0a36-3872-4368-8d88-801593c7bc24"),
@@ -23,6 +24,7 @@ def test_issue_identifiers_serialize__filled():
     )
     assert identifiers.serialize() == {
         "annotation": "f9b8aa82-e42b-43df-85fb-99ab51145732",
+        "annotation_type": "Poly3d",
         "attribute": "likes_trains",
         "frame": 42,
         "object": "6caf0a36-3872-4368-8d88-801593c7bc24",
@@ -35,6 +37,7 @@ def test_issue_identifiers_deserialize__empty():
     identifiers = IssueIdentifiers.deserialize({})
     assert identifiers == IssueIdentifiers(
         annotation=None,
+        annotation_type=None,
         attribute=None,
         frame=None,
         object=None,
@@ -47,6 +50,7 @@ def test_issue_identifiers_deserialize__filled():
     identifiers = IssueIdentifiers.deserialize(
         {
             "annotation": "f9b8aa82-e42b-43df-85fb-99ab51145732",
+            "annotation_type": "Poly3d",
             "attribute": "likes_trains",
             "frame": 42,
             "object": "6caf0a36-3872-4368-8d88-801593c7bc24",
@@ -56,6 +60,7 @@ def test_issue_identifiers_deserialize__filled():
     )
     assert identifiers == IssueIdentifiers(
         annotation=UUID("f9b8aa82-e42b-43df-85fb-99ab51145732"),
+        annotation_type="Poly3d",
         attribute="likes_trains",
         frame=42,
         object=UUID("6caf0a36-3872-4368-8d88-801593c7bc24"),

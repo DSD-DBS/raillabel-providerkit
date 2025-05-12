@@ -3,6 +3,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import Literal
 from uuid import UUID
 
 
@@ -31,6 +32,7 @@ class IssueIdentifiers:
     """Information for locating an issue."""
 
     annotation: UUID | None = None
+    annotation_type: Literal["Bbox", "Cuboid", "Num", "Poly2d", "Poly3d", "Seg3d"] | None = None
     attribute: str | None = None
     frame: int | None = None
     object: UUID | None = None
@@ -48,6 +50,7 @@ class IssueIdentifiers:
         return _clean_dict(
             {
                 "annotation": str(self.annotation),
+                "annotation_type": self.annotation_type,
                 "attribute": self.attribute,
                 "frame": self.frame,
                 "object": str(self.object),
@@ -57,7 +60,7 @@ class IssueIdentifiers:
         )
 
     @classmethod
-    def deserialize(cls, serialized_issue_identifiers: dict[str, str | int]) -> "IssueIdentifiers":  # noqa: C901
+    def deserialize(cls, serialized_issue_identifiers: dict[str, str | int]) -> "IssueIdentifiers":  # noqa: C901, PLR0912
         """Deserialize a JSON-compatible dictionary back into an IssueIdentifiers class instance.
 
         Parameters
@@ -82,6 +85,10 @@ class IssueIdentifiers:
             raise TypeError
         if annotation is not None:
             identifiers.annotation = UUID(annotation)
+
+        annotation_type = serialized_issue_identifiers.get("annotation_type")
+        if annotation_type is not None:
+            identifiers.annotation_type = annotation_type
 
         attribute = serialized_issue_identifiers.get("attribute")
         if isinstance(attribute, int):

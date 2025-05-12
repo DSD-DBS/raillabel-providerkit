@@ -46,6 +46,7 @@ def _get_annotations_with_identifiers(scene: Scene) -> list[tuple[Cuboid, IssueI
                     annotation,
                     IssueIdentifiers(
                         annotation=annotation_id,
+                        annotation_type=annotation.__class__.__name__,
                         frame=frame_id,
                         object=annotation.object_id,
                         object_type=scene.objects[annotation.object_id].type,

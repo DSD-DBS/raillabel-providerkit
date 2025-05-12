@@ -15,6 +15,9 @@
                                 "annotation": {
                                     "type": "string"
                                 },
+                                "annotation_type": {
+                                    "enum": ["Bbox", "Cuboid", "Num", "Poly2d", "Poly3d", "Seg3d"]
+                                },
                                 "attribute": {
                                     "type": "string"
                                 },
