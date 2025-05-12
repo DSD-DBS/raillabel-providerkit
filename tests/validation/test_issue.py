@@ -1,8 +1,11 @@
 # Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+import jsonschema.exceptions
 import pytest
 from uuid import UUID
+
+import jsonschema
 
 from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 
@@ -221,7 +224,7 @@ def test_issue_deserialize__schema_error():
             "reason": "some reason",
         }
     )
-    Issue(
+    assert issue == Issue(
         type=IssueType.SCHEMA,
         identifiers=["this", "is", "some", "schema", "error", 73],
         reason="some reason",
@@ -229,7 +232,7 @@ def test_issue_deserialize__schema_error():
 
 
 def test_issue_deserialize__invalid_reason_type():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         Issue.deserialize(
             {
                 "type": "SchemaIssue",
@@ -240,7 +243,7 @@ def test_issue_deserialize__invalid_reason_type():
 
 
 def test_issue_deserialize__invalid_identifiers_type():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         Issue.deserialize(
             {
                 "type": "SchemaIssue",

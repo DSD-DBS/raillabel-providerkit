@@ -6,6 +6,8 @@ from enum import Enum
 from typing import Literal
 from uuid import UUID
 
+import jsonschema
+
 
 class IssueType(Enum):
     """General classification of the issue."""
@@ -169,26 +171,58 @@ class Issue:
 
         Raises
         ------
-        TypeError
-            If the reason is not None or a string or if the identifiers are a string
+        jsonschema.exceptions.ValidationError
+            If the serialized data does not match the Issue JSONSchema.
         """
-        serialized_type = serialized_issue["type"]
-        serialized_identifiers = serialized_issue["identifiers"]
-        serialized_reason = serialized_issue.get("reason")
-        if serialized_reason is not None and not isinstance(serialized_reason, str):
-            raise TypeError
-        if isinstance(serialized_identifiers, str):
-            raise TypeError
-
+        _verify_issue_schema(serialized_issue)
         return Issue(
-            IssueType(serialized_type),
-            IssueIdentifiers.deserialize(serialized_identifiers)
-            if not isinstance(serialized_identifiers, list)
-            else serialized_identifiers,
-            serialized_reason,
+            type=IssueType(serialized_issue["type"]),
+            identifiers=IssueIdentifiers.deserialize(serialized_issue["identifiers"])
+            if not isinstance(serialized_issue["identifiers"], list)
+            else serialized_issue["identifiers"],
+            reason=serialized_issue.get("reason"),
         )
 
 
 def _clean_dict(d: dict) -> dict:
     """Remove all fields in a dict that are None or 'None'."""
     return {k: v for k, v in d.items() if str(v) != "None"}
+
+
+ISSUES_SCHEMA = {
+    "type": "array",
+    "definitions": {
+        "issue": {
+            "type": "object",
+            "properties": {
+                "type": {"type": "string"},
+                "identifiers": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "annotation": {"type": "string"},
+                                "annotation_type": {
+                                    "enum": ["Bbox", "Cuboid", "Num", "Poly2d", "Poly3d", "Seg3d"]
+                                },
+                                "attribute": {"type": "string"},
+                                "frame": {"type": "integer"},
+                                "object": {"type": "string"},
+                                "object_type": {"type": "string"},
+                                "sensor": {"type": "string"},
+                            },
+                        },
+                        {"type": "array", "items": {"type": ["string", "integer"]}},
+                    ]
+                },
+                "reason": {"type": "string"},
+            },
+            "required": ["type", "identifiers"],
+        }
+    },
+    "items": {"$ref": "#/definitions/issue"},
+}
+
+
+def _verify_issue_schema(d: dict) -> None:
+    jsonschema.validate(d, ISSUES_SCHEMA["definitions"]["issue"])
