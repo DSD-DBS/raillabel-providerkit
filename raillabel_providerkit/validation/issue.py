@@ -141,17 +141,17 @@ class Issue:
         dict[str, str | dict[str, str | int] | list[str | int]]
             The serialized Issue as a JSON-compatible dictionary
         """
-        serialized_issue = {
-            "type": str(self.type.value),
-            "identifiers": (
-                self.identifiers.serialize()
-                if isinstance(self.identifiers, IssueIdentifiers)
-                else self.identifiers
-            ),
-        }
-        if self.reason is not None:
-            serialized_issue["reason"] = self.reason
-        return serialized_issue
+        return _clean_dict(
+            {
+                "type": str(self.type.value),
+                "identifiers": (
+                    self.identifiers.serialize()
+                    if isinstance(self.identifiers, IssueIdentifiers)
+                    else self.identifiers
+                ),
+                "reason": self.reason,
+            }
+        )
 
     @classmethod
     def deserialize(
