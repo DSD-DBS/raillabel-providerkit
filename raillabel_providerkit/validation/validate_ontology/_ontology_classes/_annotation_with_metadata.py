@@ -50,6 +50,7 @@ class _AnnotationWithMetadata:
     def to_identifiers(self, attribute: str | None = None) -> IssueIdentifiers:
         return IssueIdentifiers(
             annotation=self.annotation_id,
+            annotation_type=self.annotation.__class__.__name__,
             frame=self.frame_id,
             sensor=self.annotation.sensor_id,
             object=self.annotation.object_id,

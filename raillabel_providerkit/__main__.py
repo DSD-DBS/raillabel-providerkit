@@ -10,9 +10,7 @@ import jsonschema
 from tqdm import tqdm
 
 from raillabel_providerkit import validate
-from raillabel_providerkit.validation.issue import Issue
-
-ISSUES_SCHEMA = Path(__file__).parent / "validation" / "issues_schema.json"
+from raillabel_providerkit.validation.issue import ISSUES_SCHEMA, Issue
 
 
 def store_issues_to_json(issues: list[Issue], filepath: Path) -> None:
@@ -36,11 +34,8 @@ def store_issues_to_json(issues: list[Issue], filepath: Path) -> None:
 def _adheres_to_issues_schema(
     data: list[dict[str, str | dict[str, str | int] | list[str | int]]],
 ) -> bool:
-    schema: dict
-    with ISSUES_SCHEMA.open("r") as file:
-        schema = json.load(file)
     try:
-        jsonschema.validate(data, schema)
+        jsonschema.validate(data, ISSUES_SCHEMA)
     except jsonschema.ValidationError:
         return False
 

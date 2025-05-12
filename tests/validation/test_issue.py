@@ -1,8 +1,11 @@
 # Copyright DB InfraGO AG and contributors
 # SPDX-License-Identifier: Apache-2.0
 
+import jsonschema.exceptions
 import pytest
 from uuid import UUID
+
+import jsonschema
 
 from raillabel_providerkit.validation import Issue, IssueIdentifiers, IssueType
 
@@ -14,15 +17,17 @@ def test_issue_identifiers_serialize__empty():
 
 def test_issue_identifiers_serialize__filled():
     identifiers = IssueIdentifiers(
-        UUID("f9b8aa82-e42b-43df-85fb-99ab51145732"),
-        "likes_trains",
-        42,
-        UUID("6caf0a36-3872-4368-8d88-801593c7bc24"),
-        "person",
-        "rgb_center",
+        annotation=UUID("f9b8aa82-e42b-43df-85fb-99ab51145732"),
+        annotation_type="Poly3d",
+        attribute="likes_trains",
+        frame=42,
+        object=UUID("6caf0a36-3872-4368-8d88-801593c7bc24"),
+        object_type="person",
+        sensor="rgb_center",
     )
     assert identifiers.serialize() == {
         "annotation": "f9b8aa82-e42b-43df-85fb-99ab51145732",
+        "annotation_type": "Poly3d",
         "attribute": "likes_trains",
         "frame": 42,
         "object": "6caf0a36-3872-4368-8d88-801593c7bc24",
@@ -33,18 +38,22 @@ def test_issue_identifiers_serialize__filled():
 
 def test_issue_identifiers_deserialize__empty():
     identifiers = IssueIdentifiers.deserialize({})
-    assert identifiers.annotation is None
-    assert identifiers.attribute is None
-    assert identifiers.frame is None
-    assert identifiers.object is None
-    assert identifiers.object_type is None
-    assert identifiers.sensor is None
+    assert identifiers == IssueIdentifiers(
+        annotation=None,
+        annotation_type=None,
+        attribute=None,
+        frame=None,
+        object=None,
+        object_type=None,
+        sensor=None,
+    )
 
 
 def test_issue_identifiers_deserialize__filled():
     identifiers = IssueIdentifiers.deserialize(
         {
             "annotation": "f9b8aa82-e42b-43df-85fb-99ab51145732",
+            "annotation_type": "Poly3d",
             "attribute": "likes_trains",
             "frame": 42,
             "object": "6caf0a36-3872-4368-8d88-801593c7bc24",
@@ -52,16 +61,19 @@ def test_issue_identifiers_deserialize__filled():
             "sensor": "rgb_center",
         }
     )
-    assert identifiers.annotation == UUID("f9b8aa82-e42b-43df-85fb-99ab51145732")
-    assert identifiers.attribute == "likes_trains"
-    assert identifiers.frame == 42
-    assert identifiers.object == UUID("6caf0a36-3872-4368-8d88-801593c7bc24")
-    assert identifiers.object_type == "person"
-    assert identifiers.sensor == "rgb_center"
+    assert identifiers == IssueIdentifiers(
+        annotation=UUID("f9b8aa82-e42b-43df-85fb-99ab51145732"),
+        annotation_type="Poly3d",
+        attribute="likes_trains",
+        frame=42,
+        object=UUID("6caf0a36-3872-4368-8d88-801593c7bc24"),
+        object_type="person",
+        sensor="rgb_center",
+    )
 
 
 def test_issue_identifiers_deserialize__invalid_type_annotation():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "annotation": 42,
@@ -70,7 +82,7 @@ def test_issue_identifiers_deserialize__invalid_type_annotation():
 
 
 def test_issue_identifiers_deserialize__invalid_type_attribute():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "attribute": 42,
@@ -79,7 +91,7 @@ def test_issue_identifiers_deserialize__invalid_type_attribute():
 
 
 def test_issue_identifiers_deserialize__invalid_type_frame():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "frame": "the_first_frame",
@@ -88,7 +100,7 @@ def test_issue_identifiers_deserialize__invalid_type_frame():
 
 
 def test_issue_identifiers_deserialize__invalid_type_object():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "object": 42,
@@ -97,7 +109,7 @@ def test_issue_identifiers_deserialize__invalid_type_object():
 
 
 def test_issue_identifiers_deserialize__invalid_type_object_type():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "object_type": 42,
@@ -106,7 +118,7 @@ def test_issue_identifiers_deserialize__invalid_type_object_type():
 
 
 def test_issue_identifiers_deserialize__invalid_type_sensor():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "sensor": 42,
@@ -129,14 +141,7 @@ def test_issue_serialize__simple():
     )
     assert issue.serialize() == {
         "type": "AttributeMissing",
-        "identifiers": {
-            "annotation": "f9b8aa82-e42b-43df-85fb-99ab51145732",
-            "attribute": "likes_trains",
-            "frame": 42,
-            "object": "6caf0a36-3872-4368-8d88-801593c7bc24",
-            "object_type": "person",
-            "sensor": "rgb_center",
-        },
+        "identifiers": issue.identifiers.serialize(),
         "reason": "some reason",
     }
 
@@ -155,14 +160,7 @@ def test_issue_serialize__do_not_add_reason_if_none():
     )
     assert issue.serialize() == {
         "type": "AttributeMissing",
-        "identifiers": {
-            "annotation": "f9b8aa82-e42b-43df-85fb-99ab51145732",
-            "attribute": "likes_trains",
-            "frame": 42,
-            "object": "6caf0a36-3872-4368-8d88-801593c7bc24",
-            "object_type": "person",
-            "sensor": "rgb_center",
-        },
+        "identifiers": issue.identifiers.serialize(),
     }
 
 
@@ -180,54 +178,47 @@ def test_issue_serialize__schema_error():
 
 
 def test_issue_deserialize__simple():
-    issue = Issue.deserialize(
-        {
-            "type": "AttributeMissing",
-            "identifiers": {
-                "annotation": "f9b8aa82-e42b-43df-85fb-99ab51145732",
-                "attribute": "likes_trains",
-                "frame": 42,
-                "object": "6caf0a36-3872-4368-8d88-801593c7bc24",
-                "object_type": "person",
-                "sensor": "rgb_center",
-            },
-            "reason": "some reason",
-        }
+    serialized = {
+        "type": "AttributeMissing",
+        "identifiers": {
+            "annotation": "f9b8aa82-e42b-43df-85fb-99ab51145732",
+            "attribute": "likes_trains",
+            "frame": 42,
+            "object": "6caf0a36-3872-4368-8d88-801593c7bc24",
+            "object_type": "person",
+            "sensor": "rgb_center",
+        },
+        "reason": "some reason",
+    }
+    issue = Issue.deserialize(serialized)
+    assert issue == Issue(
+        IssueType.ATTRIBUTE_MISSING,
+        IssueIdentifiers.deserialize(serialized["identifiers"]),
+        "some reason",
     )
-    assert issue.type == IssueType.ATTRIBUTE_MISSING
-    assert isinstance(issue.identifiers, IssueIdentifiers)
-    assert issue.identifiers.annotation == UUID("f9b8aa82-e42b-43df-85fb-99ab51145732")
-    assert issue.identifiers.attribute == "likes_trains"
-    assert issue.identifiers.frame == 42
-    assert issue.identifiers.object == UUID("6caf0a36-3872-4368-8d88-801593c7bc24")
-    assert issue.identifiers.object_type == "person"
-    assert issue.identifiers.sensor == "rgb_center"
-    assert issue.reason == "some reason"
 
 
 def test_issue_deserialize__without_reason():
-    issue = Issue.deserialize(
-        {
-            "type": "AttributeMissing",
-            "identifiers": {
-                "annotation": "f9b8aa82-e42b-43df-85fb-99ab51145732",
-                "attribute": "likes_trains",
-                "frame": 42,
-                "object": "6caf0a36-3872-4368-8d88-801593c7bc24",
-                "object_type": "person",
-                "sensor": "rgb_center",
-            },
-        }
+    serialized = {
+        "type": "AttributeMissing",
+        "identifiers": {
+            "annotation": "f9b8aa82-e42b-43df-85fb-99ab51145732",
+            "attribute": "likes_trains",
+            "frame": 42,
+            "object": "6caf0a36-3872-4368-8d88-801593c7bc24",
+            "object_type": "person",
+            "sensor": "rgb_center",
+        },
+    }
+    issue = Issue.deserialize(serialized)
+    assert issue == Issue(
+        IssueType.ATTRIBUTE_MISSING, IssueIdentifiers.deserialize(serialized["identifiers"]), None
     )
-    assert issue.type == IssueType.ATTRIBUTE_MISSING
-    assert isinstance(issue.identifiers, IssueIdentifiers)
-    assert issue.identifiers.annotation == UUID("f9b8aa82-e42b-43df-85fb-99ab51145732")
-    assert issue.identifiers.attribute == "likes_trains"
-    assert issue.identifiers.frame == 42
-    assert issue.identifiers.object == UUID("6caf0a36-3872-4368-8d88-801593c7bc24")
-    assert issue.identifiers.object_type == "person"
-    assert issue.identifiers.sensor == "rgb_center"
-    assert issue.reason is None
+
+
+def test_issue_deserialize__undefined_issue_type():
+    with pytest.raises(jsonschema.exceptions.ValidationError):
+        Issue.deserialize({"type": "INVALID", "identifiers": {}})
 
 
 def test_issue_deserialize__schema_error():
@@ -238,14 +229,15 @@ def test_issue_deserialize__schema_error():
             "reason": "some reason",
         }
     )
-    assert issue.type == IssueType.SCHEMA
-    assert isinstance(issue.identifiers, list)
-    assert issue.identifiers == ["this", "is", "some", "schema", "error", 73]
-    assert issue.reason == "some reason"
+    assert issue == Issue(
+        type=IssueType.SCHEMA,
+        identifiers=["this", "is", "some", "schema", "error", 73],
+        reason="some reason",
+    )
 
 
 def test_issue_deserialize__invalid_reason_type():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         Issue.deserialize(
             {
                 "type": "SchemaIssue",
@@ -256,7 +248,7 @@ def test_issue_deserialize__invalid_reason_type():
 
 
 def test_issue_deserialize__invalid_identifiers_type():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         Issue.deserialize(
             {
                 "type": "SchemaIssue",
@@ -264,3 +256,7 @@ def test_issue_deserialize__invalid_identifiers_type():
                 "reason": "ignore",
             }
         )
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-vv"])

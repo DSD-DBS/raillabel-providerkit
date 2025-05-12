@@ -108,6 +108,7 @@ def test_check__invalid_attribute_type():
     assert issues[0].type == IssueType.ATTRIBUTE_TYPE
     assert issues[0].identifiers == IssueIdentifiers(
         annotation=UUID("f54d41d6-5e36-490b-9efc-05a6deb7549a"),
+        annotation_type="Bbox",
         attribute="is_peelable",
         frame=0,
         object=UUID("ba73e75d-b996-4f6e-bdad-39c465420a33"),
@@ -148,6 +149,7 @@ def test_check__scope_inconsistency():
     assert issues[0].type == IssueType.ATTRIBUTE_SCOPE
     assert issues[0].identifiers == IssueIdentifiers(
         annotation=UUID("f54d41d6-5e36-490b-9efc-05a6deb7549a"),
+        annotation_type="Bbox",
         attribute="is_peelable",
         frame=0,
         object=UUID("ba73e75d-b996-4f6e-bdad-39c465420a33"),
@@ -155,6 +157,7 @@ def test_check__scope_inconsistency():
         sensor="rgb_center",
     ) or issues[0].identifiers == IssueIdentifiers(
         annotation=UUID("0ef548ab-70bc-4e74-9e11-76cff46ada0f"),
+        annotation_type="Bbox",
         attribute="is_peelable",
         frame=0,
         object=UUID("ba73e75d-b996-4f6e-bdad-39c465420a33"),
