@@ -73,7 +73,7 @@ def test_issue_identifiers_deserialize__filled():
 
 
 def test_issue_identifiers_deserialize__invalid_type_annotation():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "annotation": 42,
@@ -82,7 +82,7 @@ def test_issue_identifiers_deserialize__invalid_type_annotation():
 
 
 def test_issue_identifiers_deserialize__invalid_type_attribute():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "attribute": 42,
@@ -91,7 +91,7 @@ def test_issue_identifiers_deserialize__invalid_type_attribute():
 
 
 def test_issue_identifiers_deserialize__invalid_type_frame():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "frame": "the_first_frame",
@@ -100,7 +100,7 @@ def test_issue_identifiers_deserialize__invalid_type_frame():
 
 
 def test_issue_identifiers_deserialize__invalid_type_object():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "object": 42,
@@ -109,7 +109,7 @@ def test_issue_identifiers_deserialize__invalid_type_object():
 
 
 def test_issue_identifiers_deserialize__invalid_type_object_type():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "object_type": 42,
@@ -118,7 +118,7 @@ def test_issue_identifiers_deserialize__invalid_type_object_type():
 
 
 def test_issue_identifiers_deserialize__invalid_type_sensor():
-    with pytest.raises(TypeError):
+    with pytest.raises(jsonschema.exceptions.ValidationError):
         IssueIdentifiers.deserialize(
             {
                 "sensor": 42,
@@ -214,6 +214,11 @@ def test_issue_deserialize__without_reason():
     assert issue == Issue(
         IssueType.ATTRIBUTE_MISSING, IssueIdentifiers.deserialize(serialized["identifiers"]), None
     )
+
+
+def test_issue_deserialize__undefined_issue_type():
+    with pytest.raises(jsonschema.exceptions.ValidationError):
+        Issue.deserialize({"type": "INVALID", "identifiers": {}})
 
 
 def test_issue_deserialize__schema_error():
