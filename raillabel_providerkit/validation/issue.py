@@ -3,7 +3,10 @@
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import Literal
 from uuid import UUID
+
+import jsonschema
 
 
 class IssueType(Enum):
@@ -26,12 +29,18 @@ class IssueType(Enum):
     UNEXPECTED_CLASS = "UnexpectedClassIssue"
     URI_FORMAT = "UriFormatIssue"
 
+    @classmethod
+    def names(cls) -> list[str]:
+        """Return the string names of all IssueTypes as a list."""
+        return [type_.value for type_ in cls]
+
 
 @dataclass
 class IssueIdentifiers:
     """Information for locating an issue."""
 
     annotation: UUID | None = None
+    annotation_type: Literal["Bbox", "Cuboid", "Num", "Poly2d", "Poly3d", "Seg3d"] | None = None
     attribute: str | None = None
     frame: int | None = None
     object: UUID | None = None
@@ -46,28 +55,25 @@ class IssueIdentifiers:
         dict[str, str | int]
             The serialized IssueIdentifiers as a JSON-compatible dictionary
         """
-        serialized_issue_identifiers: dict[str, str | int] = {}
-        if self.annotation is not None:
-            serialized_issue_identifiers["annotation"] = str(self.annotation)
-        if self.attribute is not None:
-            serialized_issue_identifiers["attribute"] = self.attribute
-        if self.frame is not None:
-            serialized_issue_identifiers["frame"] = self.frame
-        if self.object is not None:
-            serialized_issue_identifiers["object"] = str(self.object)
-        if self.object_type is not None:
-            serialized_issue_identifiers["object_type"] = self.object_type
-        if self.sensor is not None:
-            serialized_issue_identifiers["sensor"] = self.sensor
-        return serialized_issue_identifiers
+        return _clean_dict(
+            {
+                "annotation": str(self.annotation),
+                "annotation_type": self.annotation_type,
+                "attribute": self.attribute,
+                "frame": self.frame,
+                "object": str(self.object),
+                "object_type": self.object_type,
+                "sensor": self.sensor,
+            }
+        )
 
     @classmethod
-    def deserialize(cls, serialized_issue_identifiers: dict[str, str | int]) -> "IssueIdentifiers":  # noqa: C901
+    def deserialize(cls, serialized_identifiers: dict[str, str | int]) -> "IssueIdentifiers":
         """Deserialize a JSON-compatible dictionary back into an IssueIdentifiers class instance.
 
         Parameters
         ----------
-        serialized_issue_identifiers : dict[str, str  |  int]
+        serialized_identifiers : dict[str, str  |  int]
             The serialized IssueIdentifiers as a JSON-compatible dictionary
 
         Returns
@@ -80,45 +86,20 @@ class IssueIdentifiers:
         TypeError
             If any of the fields have an unexpected type
         """
-        identifiers = IssueIdentifiers()
-
-        annotation = serialized_issue_identifiers.get("annotation")
-        if isinstance(annotation, int):
-            raise TypeError
-        if annotation is not None:
-            identifiers.annotation = UUID(annotation)
-
-        attribute = serialized_issue_identifiers.get("attribute")
-        if isinstance(attribute, int):
-            raise TypeError
-        if attribute is not None:
-            identifiers.attribute = attribute
-
-        frame = serialized_issue_identifiers.get("frame")
-        if isinstance(frame, str):
-            raise TypeError
-        if frame is not None:
-            identifiers.frame = frame
-
-        object = serialized_issue_identifiers.get("object")  # noqa: A001
-        if isinstance(object, int):
-            raise TypeError
-        if object is not None:
-            identifiers.object = UUID(object)
-
-        object_type = serialized_issue_identifiers.get("object_type")
-        if isinstance(object_type, int):
-            raise TypeError
-        if object_type is not None:
-            identifiers.object_type = object_type
-
-        sensor = serialized_issue_identifiers.get("sensor")
-        if isinstance(sensor, int):
-            raise TypeError
-        if sensor is not None:
-            identifiers.sensor = sensor
-
-        return identifiers
+        _verify_identifiers_schema(serialized_identifiers)
+        return IssueIdentifiers(
+            annotation=UUID(serialized_identifiers.get("annotation"))
+            if serialized_identifiers.get("annotation") is not None
+            else None,
+            annotation_type=serialized_identifiers.get("annotation_type"),
+            attribute=serialized_identifiers.get("attribute"),
+            frame=serialized_identifiers.get("frame"),
+            object=UUID(serialized_identifiers.get("object"))
+            if serialized_identifiers.get("object") is not None
+            else None,
+            object_type=serialized_identifiers.get("object_type"),
+            sensor=serialized_identifiers.get("sensor"),
+        )
 
 
 @dataclass
@@ -137,17 +118,17 @@ class Issue:
         dict[str, str | dict[str, str | int] | list[str | int]]
             The serialized Issue as a JSON-compatible dictionary
         """
-        serialized_issue = {
-            "type": str(self.type.value),
-            "identifiers": (
-                self.identifiers.serialize()
-                if isinstance(self.identifiers, IssueIdentifiers)
-                else self.identifiers
-            ),
-        }
-        if self.reason is not None:
-            serialized_issue["reason"] = self.reason
-        return serialized_issue
+        return _clean_dict(
+            {
+                "type": str(self.type.value),
+                "identifiers": (
+                    self.identifiers.serialize()
+                    if isinstance(self.identifiers, IssueIdentifiers)
+                    else self.identifiers
+                ),
+                "reason": self.reason,
+            }
+        )
 
     @classmethod
     def deserialize(
@@ -167,21 +148,68 @@ class Issue:
 
         Raises
         ------
-        TypeError
-            If the reason is not None or a string or if the identifiers are a string
+        jsonschema.exceptions.ValidationError
+            If the serialized data does not match the Issue JSONSchema.
         """
-        serialized_type = serialized_issue["type"]
-        serialized_identifiers = serialized_issue["identifiers"]
-        serialized_reason = serialized_issue.get("reason")
-        if serialized_reason is not None and not isinstance(serialized_reason, str):
-            raise TypeError
-        if isinstance(serialized_identifiers, str):
-            raise TypeError
-
+        _verify_issue_schema(serialized_issue)
         return Issue(
-            IssueType(serialized_type),
-            IssueIdentifiers.deserialize(serialized_identifiers)
-            if not isinstance(serialized_identifiers, list)
-            else serialized_identifiers,
-            serialized_reason,
+            type=IssueType(serialized_issue["type"]),
+            identifiers=IssueIdentifiers.deserialize(serialized_issue["identifiers"])
+            if not isinstance(serialized_issue["identifiers"], list)
+            else serialized_issue["identifiers"],
+            reason=serialized_issue.get("reason"),
         )
+
+
+def _clean_dict(d: dict) -> dict:
+    """Remove all fields in a dict that are None or 'None'."""
+    return {k: v for k, v in d.items() if str(v) != "None"}
+
+
+ISSUES_SCHEMA = {
+    "type": "array",
+    "definitions": {
+        "issue": {
+            "type": "object",
+            "properties": {
+                "type": {"enum": IssueType.names()},
+                "identifiers": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "annotation": {
+                                    "type": "string",
+                                    "pattern": "^(-?[0-9]+|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$",  # noqa: E501
+                                },
+                                "annotation_type": {
+                                    "enum": ["Bbox", "Cuboid", "Num", "Poly2d", "Poly3d", "Seg3d"]
+                                },
+                                "attribute": {"type": "string"},
+                                "frame": {"type": "integer"},
+                                "object": {
+                                    "type": "string",
+                                    "pattern": "^(-?[0-9]+|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$",  # noqa: E501
+                                },
+                                "object_type": {"type": "string"},
+                                "sensor": {"type": "string"},
+                            },
+                        },
+                        {"type": "array", "items": {"type": ["string", "integer"]}},
+                    ]
+                },
+                "reason": {"type": "string"},
+            },
+            "required": ["type", "identifiers"],
+        },
+    },
+    "items": {"$ref": "#/definitions/issue"},
+}
+
+
+def _verify_issue_schema(d: dict) -> None:
+    jsonschema.validate(d, ISSUES_SCHEMA["definitions"]["issue"])
+
+
+def _verify_identifiers_schema(d: dict) -> None:
+    jsonschema.validate(d, ISSUES_SCHEMA["definitions"]["issue"]["properties"]["identifiers"])
