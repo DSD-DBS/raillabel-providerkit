@@ -28,6 +28,7 @@ To set up a development environment, clone the project and install it into a
 virtual environment.
 
 ```zsh
+# Note that contributors should clone via ssh instead as GitHub does not allow pushing via https!
 git clone https://github.com/DSD-DBS/raillabel-providerkit
 cd raillabel-providerkit
 python -m venv .venv
@@ -58,6 +59,12 @@ If you want to output in .csv format instead of .json format, you can use this c
 
 ```zsh
 python -m raillabel_providerkit /path/to/folder_containing_scenes/ /path/to/output_folder --use-csv --no-json
+```
+
+Note that you need to provide a project-specific ontology (in .yaml format) to make use of the ontology validation functionality! You can point raillabel_providerkit at it like this:
+
+```zsh
+python -m raillabel_providerkit /path/to/folder_containing_scenes/ /path/to/output_folder --ontology /path/to/project-ontology.yaml
 ```
 
 # Contributing
